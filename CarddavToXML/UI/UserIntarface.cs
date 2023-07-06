@@ -1,4 +1,6 @@
 ﻿using CarddavToXML.Components;
+using CarddavToXML.Data;
+using CarddavToXML.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +12,13 @@ namespace CarddavToXML.UI
     public class UserIntarface : IChoise
     {
         private readonly ICsvReader _csvReader;
+        private readonly PhonebookDbContext _phonebookDbContext;
 
-        public UserIntarface(ICsvReader csvReader)
+        public UserIntarface(ICsvReader csvReader,PhonebookDbContext phonebookDbContext )
         {
             _csvReader = csvReader;
+            _phonebookDbContext = phonebookDbContext;
+            _phonebookDbContext.Database.EnsureCreated();
         }
         public void FirstUIChoise()
         {
@@ -43,7 +48,7 @@ namespace CarddavToXML.UI
 
             Console.WriteLine("Prosze wybrać typ pliku");
             UISeparator();
-            Console.WriteLine("\t1)Yealink XML");
+            Console.WriteLine("\t1)Yealink CSV");
             Console.WriteLine("\t2)Yealink CSV");
             Console.WriteLine("\t3)Fanvil XML");
             Console.WriteLine("\t4)Fanvil CSV");
@@ -51,7 +56,9 @@ namespace CarddavToXML.UI
             switch(fileType)
             {
                 case "1":
-
+                    Console.WriteLine("Podaj ścierzkę pliku");
+                    string path = Console.ReadLine();
+                    InsertDataFromYealinkCsv(path);
                     break;
                 case "2":
                     break;
@@ -64,6 +71,23 @@ namespace CarddavToXML.UI
                     break;
             }
         }
+
+        private void InsertDataFromYealinkCsv(string? path)
+        {
+            var contacts = _csvReader.ProcessYealinkCsv(path);
+            foreach (var contact in contacts)
+            {
+                _phonebookDbContext.Phonebook.Add(new PhonebookInDb()
+                {
+                    Name = contact.Name,
+                    Phone1 = contact.Phone1,
+                    Phone2  = contact.Phone2,
+                    Phone3 = contact.Phone3,
+                });
+            }
+            _phonebookDbContext.SaveChanges();
+        }
+
         public void UISeparator()
         {
             Console.WriteLine("");

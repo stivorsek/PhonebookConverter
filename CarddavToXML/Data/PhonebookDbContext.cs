@@ -10,6 +10,6 @@ namespace CarddavToXML.Data
             : base(options)
         {
         }
-        public DbSet<YealinkCsv> Phonebook {get;set;}
+        public DbSet<PhonebookInDb> Phonebook {get;set;}
     }
 }

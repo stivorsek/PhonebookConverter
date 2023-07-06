@@ -9,11 +9,15 @@ namespace CarddavToXML.Components
 {
     public class CsvReader : ICsvReader
     {
-        public List<YealinkCsv> ProcessYealinkCsv (string filePath)
+        public List<PhonebookInDb> ProcessYealinkCsv (string filePath)
         {
             if (!File.Exists(filePath))
             {
-                return new List<YealinkCsv>();
+                return new List<PhonebookInDb>();
+            }
+            if (filePath.Contains(".csv`"))
+            {
+                throw new ArgumentException("To nie jest plik csv");
             }
             var contactRecord = 
                 File.ReadAllLines(filePath)
@@ -21,12 +25,12 @@ namespace CarddavToXML.Components
                 .Select(x =>
                 {
                     var columns = x.Split(',');
-                    return new YealinkCsv()
+                    return new PhonebookInDb()
                     {
-                        Name = columns[0],
-                        Surname = columns[1],
-                        Company = columns[2],
-                        PhoneNumber = int.Parse(columns[3])
+                        Name = columns[0]+" " + columns[1],
+                        Phone1 = columns[3],
+                        Phone2 = columns[4],
+                        Phone3 = columns[5]
                     };
                 });
             return contactRecord.ToList();

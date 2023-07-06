@@ -9,6 +9,6 @@ namespace CarddavToXML.Components
 {
     public interface ICsvReader
     {
-        List<YealinkCsv> ProcessYealinkCsv(string filepath);
+        List<PhonebookInDb> ProcessYealinkCsv(string filepath);
     }
 }
