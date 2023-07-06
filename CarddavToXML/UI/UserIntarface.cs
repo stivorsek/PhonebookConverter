@@ -1,6 +1,7 @@
 ﻿using CarddavToXML.Components;
 using CarddavToXML.Data;
 using CarddavToXML.Data.Entities;
+using PhonebookConverter.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,14 @@ namespace CarddavToXML.UI
     {
         private readonly ICsvReader _csvReader;
         private readonly PhonebookDbContext _phonebookDbContext;
+        private readonly IXmlWriter _xmlWriter;
 
-        public UserIntarface(ICsvReader csvReader,PhonebookDbContext phonebookDbContext )
+        public UserIntarface(ICsvReader csvReader,IXmlWriter xmlWriter,PhonebookDbContext phonebookDbContext )
         {
             _csvReader = csvReader;
             _phonebookDbContext = phonebookDbContext;
             _phonebookDbContext.Database.EnsureCreated();
+            _xmlWriter = xmlWriter;
         }
         public void FirstUIChoise()
         {
@@ -26,7 +29,7 @@ namespace CarddavToXML.UI
             UISeparator();
             Console.WriteLine("\tProszę wybierz co będziemy dzisiaj robić");
             Console.WriteLine("1) Załaduj Dane do bazy danych z pliku");
-            Console.WriteLine("2) Wykonaj konwersje CSV");
+            Console.WriteLine("2) Exportuj dane do XML");
             var choise = Console.ReadLine();
             switch (choise)
             {
@@ -35,14 +38,17 @@ namespace CarddavToXML.UI
                     ChoseFileType();
                     break;
                 case "2":
-                    UISeparator();
-                    Console.WriteLine("Wybrałeś 2");
+                    UISeparator();                    
+                    Console.WriteLine("Wybierz folder do którego chcesz exportować");
+                    var pathXml = Console.ReadLine();
+                    ExportToXML(pathXml);
                     break;
                 default:
                     Console.WriteLine("Podałeś zły wybór");
                     break;
             }
         }
+
         private void ChoseFileType()
         {
 
@@ -93,6 +99,11 @@ namespace CarddavToXML.UI
             Console.WriteLine("");
             Console.WriteLine("/////////////////////");
             Console.WriteLine("");
+        }
+        private void ExportToXML(string pathXml)
+        {
+            var contatsFromDb = _phonebookDbContext.Phonebook.Skip(1).ToList();
+            _xmlWriter.ExportToXml(pathXml, contatsFromDb);
         }
     }
 }
