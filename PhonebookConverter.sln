@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33424.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhonebookConverter", "CarddavToXML\PhonebookConverter.csproj", "{DFAD4980-B8FF-4940-B3F0-314BB1F856AB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DFAD4980-B8FF-4940-B3F0-314BB1F856AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFAD4980-B8FF-4940-B3F0-314BB1F856AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFAD4980-B8FF-4940-B3F0-314BB1F856AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFAD4980-B8FF-4940-B3F0-314BB1F856AB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C5C17842-D98D-46AB-B26B-4ABC6C08FB67}
+	EndGlobalSection
+EndGlobal
