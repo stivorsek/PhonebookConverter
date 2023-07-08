@@ -9,31 +9,51 @@ namespace CarddavToXML.Components
 {
     public class CsvReader : ICsvReader
     {
-        public List<PhonebookInDb> ProcessYealinkCsv (string filePath)
+        public List<PhonebookInDb> ProcessYealinkCsv(string filePath)
         {
             if (!File.Exists(filePath))
             {
                 return new List<PhonebookInDb>();
             }
-            if (filePath.Contains(".csv`"))
-            {
-                throw new ArgumentException("To nie jest plik csv");
-            }
-            var contactRecord = 
+            var contactRecords =
                 File.ReadAllLines(filePath)
                 .Where(x => x.Length > 1)
+                .Skip(1)
                 .Select(x =>
                 {
                     var columns = x.Split(',');
                     return new PhonebookInDb()
                     {
-                        Name = columns[0]+" " + columns[1],
+                        Name = columns[0] + " " + columns[1],
                         Phone1 = columns[3],
                         Phone2 = columns[4],
                         Phone3 = columns[5]
                     };
                 });
-            return contactRecord.ToList();
+            return contactRecords.ToList();
+        }
+        public List<PhonebookInDb> CsvTypeChecker(string filePath)
+        {
+             
+            if (!File.Exists(filePath))
+            {
+                throw new ArgumentException("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
+            }
+            if (filePath.Contains(".csv`"))
+            {
+                throw new ArgumentException("To nie jest plik csv!!!");
+            }
+            string firstLine = File.ReadLines(filePath).FirstOrDefault();
+            switch (firstLine)
+            {
+                case "Name,Surname,Company,PhoneNumber,MobileNumber,MainNumber":
+                    return ProcessYealinkCsv(filePath);
+                case "2343242342":
+                    return null;
+                default:
+                    throw new ArgumentException("Ten format pliku csv nie jest osługiwany");
+            }
         }
     }
 }
+

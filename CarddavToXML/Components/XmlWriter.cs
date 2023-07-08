@@ -15,6 +15,7 @@ namespace PhonebookConverter.Components
     {
         public void ExportToXml(string path, List<PhonebookInDb> contactsFromDb) 
         {
+            path = path + "//Phonebook.xml";
             List<PhonebookToXml> phonebookWithoutID = new List<PhonebookToXml>();
            
             foreach (var contact in contactsFromDb) 
