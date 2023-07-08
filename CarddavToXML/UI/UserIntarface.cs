@@ -202,6 +202,7 @@ namespace CarddavToXML.UI
             Console.WriteLine("===============================");
             foreach (var contactFromDb in contactsFromDb)
             {
+                Console.WriteLine($"\t ID: {contactFromDb.Id}");
                 Console.WriteLine($"\t Nazwa: {contactFromDb.Name}");
                 Console.WriteLine($"\t Phone1: {contactFromDb.Phone1}");
                 Console.WriteLine($"\t Phone2: {contactFromDb.Phone2}");
