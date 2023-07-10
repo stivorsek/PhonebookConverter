@@ -19,14 +19,20 @@ namespace CarddavToXML.UI
         private readonly PhonebookDbContext _phonebookDbContext;
         private readonly IXmlWriter _xmlWriter;
         private readonly IXmlReader _xmlReader;
+        private readonly IDbOperations _dbOperations;
 
-        public UserIntarface(ICsvReader csvReader, IXmlWriter xmlWriter, PhonebookDbContext phonebookDbContext, IXmlReader xmlReader)
+        public UserIntarface(ICsvReader csvReader
+            , IXmlWriter xmlWriter
+            , PhonebookDbContext phonebookDbContext
+            , IXmlReader xmlReader
+            , IDbOperations dbOperations)
         {
             _csvReader = csvReader;
             _phonebookDbContext = phonebookDbContext;
             _phonebookDbContext.Database.EnsureCreated();
             _xmlWriter = xmlWriter;
             _xmlReader = xmlReader;
+            _dbOperations = dbOperations;
         }
         public void FirstUIChoise()
         {
@@ -54,41 +60,21 @@ namespace CarddavToXML.UI
                 case "3":
                     UISeparator();
                     ExportToXML();
+                    LoopUI();
                     break;
                 case "4":
                     UISeparator();
-                    ReadAllContactsFromDb();
+                    _dbOperations.ReadAllContactsFromDb();
+                    LoopUI();
                     break;
                 case "5":
                     UISeparator();
                     ChoseDatabaseOperations();
+                    LoopUI();
                     break;
                 case "6":
                     break;
                 case "7":
-                    XElement document = XElement.Load($"C:\\Users\\Admin\\Downloads\\Phonebook.xml");
-                    var attributes = document
-                 //.Descendants("Name")
-                 .Elements()
-                 .Select(entry => new
-                 {
-                     Name = entry.Element("Name").Value,
-                     Phone1 = entry.Element("Phone1").Value,
-                     Phone2 = entry.Element("Phone2").Value,
-                     Phone3 = entry.Element("Phone3").Value,
-                 }
-                        )
-                        .ToList();
-                    //string test = document.Value;
-                    //Console.WriteLine($"Wartość {test}");
-                    foreach (var x in attributes)
-                    {
-                        Console.WriteLine(x.Name);
-                        Console.WriteLine(x.Phone1);
-                        Console.WriteLine(x.Phone2);
-                        Console.WriteLine(x.Phone3);
-                        Console.WriteLine("=======================================================");
-                    }
                     break;
                 default:
                     Console.WriteLine("Podałeś zły wybór");
@@ -110,107 +96,20 @@ namespace CarddavToXML.UI
                 case "1":
                     Console.WriteLine("Podaj ID");
                     id = Console.ReadLine();
-                    DeleteFromDbByID(id);
+                    _dbOperations.DeleteFromDbByID(id);
                     break;
                 case "2":
                     Console.WriteLine("Podaj ID");
                     id = Console.ReadLine();
-                    EditFromDbByID(id);
+                    _dbOperations.EditFromDbByID(id);
                     break;
                 case "3":
-                    AddNewDbEntry();
+                    _dbOperations.AddNewDbEntry();
                     break;
                 default:
                     Console.WriteLine("Podano niepoprawny parametr");
-                    LoopUI();
                     break;
             }
-        }
-        private void AddNewDbEntry()
-        {
-            Console.WriteLine("Podaj Nazwę");
-            var Name = Console.ReadLine();
-            Console.WriteLine("Podaj pierwszy numer telefonu");
-            var Phone1 = Console.ReadLine();
-            Console.WriteLine("Podaj drugi numer telefonu");
-            var Phone2 = Console.ReadLine();
-            Console.WriteLine("Podaj trzeci numer telefonu");
-            var Phone3 = Console.ReadLine();
-            _phonebookDbContext.Add(new PhonebookInDb()
-            {
-                Name = Name,
-                Phone1 = Phone1,
-                Phone2 = Phone2,
-                Phone3 = Phone3
-            });
-            _phonebookDbContext.SaveChanges();
-            LoopUI();
-        }
-        private void EditFromDbByID(string? id)
-        {
-            var Id = int.Parse(id);
-            var contactFromDb = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == Id);
-            Console.WriteLine($"\t1) Name : {contactFromDb.Name}");
-            Console.WriteLine($"\t2) Phone1 : {contactFromDb.Phone1}");
-            Console.WriteLine($"\t3) Phone2 : {contactFromDb.Phone2}");
-            Console.WriteLine($"\t4) Phone3 : {contactFromDb.Phone3}");
-            Console.WriteLine("");
-            Console.WriteLine("Który parametr chcesz zmienić?");
-            var choise = Console.ReadLine();
-            Console.WriteLine("Podaj na co chcesz zmienić parametr");
-            var parameter = Console.ReadLine();
-            switch (choise)
-            {
-                case "1":
-                    contactFromDb.Name = parameter;
-                    _phonebookDbContext.SaveChanges();
-                    LoopUI();
-                    break;
-                case "2":
-                    contactFromDb.Phone1 = parameter;
-                    _phonebookDbContext.SaveChanges();
-                    LoopUI();
-                    break;
-                case "3":
-                    contactFromDb.Phone2 = parameter;
-                    _phonebookDbContext.SaveChanges();
-                    LoopUI();
-                    break;
-                case "4":
-                    contactFromDb.Phone3 = parameter;
-                    _phonebookDbContext.SaveChanges();
-                    LoopUI();
-                    break;
-                default:
-                    Console.WriteLine("Podano niepoprawny paramert");
-                    LoopUI();
-                    break;
-            }
-        }
-        private void DeleteFromDbByID(string? id)
-        {
-            int Id = int.Parse(id);
-            var toRemove = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == Id);
-            _phonebookDbContext.Phonebook.Remove(toRemove);
-            _phonebookDbContext.SaveChanges();
-            LoopUI();
-        }
-        private void ReadAllContactsFromDb()
-        {
-            var contactsFromDb = _phonebookDbContext.Phonebook.ToList();
-            Console.WriteLine("===============================");
-            foreach (var contactFromDb in contactsFromDb)
-            {
-                Console.WriteLine($"\t ID: {contactFromDb.Id}");
-                Console.WriteLine($"\t Nazwa: {contactFromDb.Name}");
-                Console.WriteLine($"\t Phone1: {contactFromDb.Phone1}");
-                Console.WriteLine($"\t Phone2: {contactFromDb.Phone2}");
-                Console.WriteLine($"\t Phone3{contactFromDb.Phone3}");
-                Console.WriteLine("===============================");
-            }
-
-
-            LoopUI();
         }
         private void ImportDataFromCsv()
         {
@@ -290,18 +189,15 @@ namespace CarddavToXML.UI
             switch (choise)
             {
                 case "1":
-                    _xmlWriter.ExportToXmlYealinkRemote(pathXml, contatsFromDb);
-                    LoopUI();
+                    _xmlWriter.ExportToXmlYealinkRemote(pathXml, contatsFromDb);                    
                     break;
                 case "2":
-                    _xmlWriter.ExportToXmlYealinkLocal(pathXml, contatsFromDb);
-                    LoopUI();
+                    _xmlWriter.ExportToXmlYealinkLocal(pathXml, contatsFromDb);                    
                     break;
-                case "3":
-                    LoopUI();
+                case "3":                    
                     break;
                 case "4":
-                    LoopUI();
+                    _xmlWriter.ExportToXmlFanvilRemote(pathXml, contatsFromDb);                    
                     break;
                 default:
                     break;

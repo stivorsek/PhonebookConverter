@@ -11,10 +11,6 @@ namespace CarddavToXML.Components
     {
         public List<PhonebookInDb> ImportFromCsvYealinkLocal(string filePath)
         {
-            if (!File.Exists(filePath))
-            {
-                return new List<PhonebookInDb>();
-            }
             var contactRecords =
                 File.ReadAllLines(filePath)
                 .Where(x => x.Length > 1)
@@ -32,12 +28,28 @@ namespace CarddavToXML.Components
                 });
             return contactRecords.ToList();
         }
-        public List<PhonebookInDb> ImportFromCsvCustom(string filePath)
+        public List<PhonebookInDb> ImportFromCsvFanvilLocal(string filePath)
         {
-            if (!File.Exists(filePath))
-            {
-                return new List<PhonebookInDb>();
-            }
+            var contactRecords =
+                File.ReadAllLines(filePath)
+                .Where(x => x.Length > 1)
+                .Skip(1)
+                .Select(x =>
+                {
+                    var columns = x.Split('"');
+                    return new PhonebookInDb()
+                    {
+                        Name = columns[1],
+                        Phone1 = columns[3],
+                        Phone2 = columns[5],
+                        Phone3 = columns[7]
+                    };
+                });
+            return contactRecords.ToList();
+        }
+        private List<PhonebookInDb> ImportFromCsvYeastarPSeries(string filePath)
+        {
+
             var contactRecords =
                 File.ReadAllLines(filePath)
                 .Where(x => x.Length > 1)
@@ -47,22 +59,22 @@ namespace CarddavToXML.Components
                     var columns = x.Split(',');
                     return new PhonebookInDb()
                     {
-                        Name = columns[0],
-                        Phone1 = columns[1],
-                        Phone2 = columns[2],
-                        Phone3 = columns[3]
+                        Name = columns[0] +" "+ columns[1],
+                        Phone1 = columns[4],
+                        Phone2 = columns[7],
+                        Phone3 = columns[9]
                     };
                 });
             return contactRecords.ToList();
         }
         public List<PhonebookInDb> CsvTypeChecker(string filePath)
         {
-             
+
             if (!File.Exists(filePath))
             {
                 throw new ArgumentException("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
             }
-            if (!filePath.Contains(".csv`"))
+            if (!filePath.Contains(".csv"))
             {
                 throw new ArgumentException("To nie jest plik csv!!!");
             }
@@ -71,12 +83,17 @@ namespace CarddavToXML.Components
             {
                 case "Name,Surname,Company,PhoneNumber,MobileNumber,MainNumber":
                     return ImportFromCsvYealinkLocal(filePath);
-                case "Name,Phone1,Phone2,Phone3":
-                    return ImportFromCsvCustom(filePath);
+                case "\"name\",\"work\",\"mobile\",\"other\",\"ring\",\"groups\"":                  
+                    return ImportFromCsvFanvilLocal(filePath);
+                case "First Name,Last Name,Company Name,Email,Business Number,Business Number 2,Business Fax,Mobile,Mobile 2,Home,Home 2,Home Fax,Other,ZIP Code,Street,City,State,Country,Remark,Phonebook":
+                    return ImportFromCsvYeastarPSeries(filePath);
                 default:
                     throw new ArgumentException("Ten format pliku csv nie jest osługiwany");
             }
         }
+
+
+
     }
 }
 

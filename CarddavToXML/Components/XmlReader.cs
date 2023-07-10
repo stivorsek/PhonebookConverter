@@ -49,19 +49,19 @@ namespace PhonebookConverter.Components
                 .ToList();
             return attributes;
         }
-        public List<PhonebookInDb> ImportFromXmlCustom(string path)
+        public List<PhonebookInDb> ImportFromXmlFanvilRemote(string path)
         {
             XElement document = XElement.Load(path);
             var attributes = document
-                .Descendants("PhonebookToXml")
+                .Descendants("DirectoryEntry")                
                 .Select(entry =>
                 {
                     return new PhonebookInDb()
                     {
                         Name = entry.Element("Name").Value,
-                        Phone1 = entry.Element("Phone1").Value,
-                        Phone2 = entry.Element("Phone2").Value,
-                        Phone3 = entry.Element("Phone3").Value,
+                        Phone1 = entry.Element("Telephone").Value,
+                        Phone2 = entry.Element("Mobile").Value,
+                        Phone3 = entry.Element("Other").Value,
                     };
                 })
                 .ToList();
@@ -86,8 +86,8 @@ namespace PhonebookConverter.Components
                     return ImportFromXmlYealinkRemote(filePath);
                 case var name when name == "vp_contact":
                     return ImportFromXmlYealinkLocal(filePath);
-                case var name when name == "Phonebook":
-                    return ImportFromXmlCustom(filePath);
+                case var name when name == "PhoneBook":
+                    return ImportFromXmlFanvilRemote(filePath);
                 default:
                     throw new ArgumentException("Ten format pliku csv nie jest osługiwany");
             }

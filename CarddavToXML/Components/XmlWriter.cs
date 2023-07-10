@@ -22,7 +22,22 @@ namespace PhonebookConverter.Components
 
         public void ExportToXmlFanvilRemote(string filepath, List<PhonebookInDb> contactsFromDb)
         {
-            throw new NotImplementedException();
+
+            filepath = filepath + "//PhonebookFanvilRemote.xml";
+            List<PhonebookToXml> phonebookWithoutID = new List<PhonebookToXml>();
+            var document = new XDocument();
+            var contacts = 
+                new XElement("PhoneBook", contactsFromDb
+            .Select(x =>
+                new XElement("DirectoryEntry",
+                    new XElement("Name", x.Name),
+                    new XElement("Telephone", x.Phone1),
+                    new XElement("Mobile", x.Phone2),
+                    new XElement("Othere", x.Phone3)
+                    )
+            ));
+            document.Add(contacts);
+            document.Save(filepath);
         }
 
         public void ExportToXmlYealinkLocal(string filepath, List<PhonebookInDb> contactsFromDb)
