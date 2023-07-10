@@ -5,9 +5,11 @@ using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using PhonebookConverter.Components;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace CarddavToXML.UI
 {
@@ -47,7 +49,7 @@ namespace CarddavToXML.UI
                     break;
                 case "2":
                     UISeparator();
-                    ChosePhoneModelXml();
+                    ImportDataFromXml();
                     break;
                 case "3":
                     UISeparator();
@@ -62,6 +64,31 @@ namespace CarddavToXML.UI
                     ChoseDatabaseOperations();
                     break;
                 case "6":
+                    break;
+                case "7":
+                    XElement document = XElement.Load($"C:\\Users\\Admin\\Downloads\\Phonebook.xml");
+                    var attributes = document
+                 //.Descendants("Name")
+                 .Elements()
+                 .Select(entry => new
+                 {
+                     Name = entry.Element("Name").Value,
+                     Phone1 = entry.Element("Phone1").Value,
+                     Phone2 = entry.Element("Phone2").Value,
+                     Phone3 = entry.Element("Phone3").Value,
+                 }
+                        )
+                        .ToList();
+                    //string test = document.Value;
+                    //Console.WriteLine($"Wartość {test}");
+                    foreach (var x in attributes)
+                    {
+                        Console.WriteLine(x.Name);
+                        Console.WriteLine(x.Phone1);
+                        Console.WriteLine(x.Phone2);
+                        Console.WriteLine(x.Phone3);
+                        Console.WriteLine("=======================================================");
+                    }
                     break;
                 default:
                     Console.WriteLine("Podałeś zły wybór");
@@ -168,34 +195,6 @@ namespace CarddavToXML.UI
             _phonebookDbContext.SaveChanges();
             LoopUI();
         }
-        private void ChosePhoneModelXml()
-        {
-
-            Console.WriteLine("Prosze wybrać model");
-            UISeparator();
-            Console.WriteLine("\t1)Yealink");
-            Console.WriteLine("\t2)Fanvil");
-            var phoneType = Console.ReadLine();
-            Console.WriteLine("Podaj ścierzkę pliku");
-            string pathXml = Console.ReadLine();
-            switch (phoneType)
-            {
-                case "1":
-                    ImportDataFromXml(pathXml);
-                    LoopUI();
-                    break;
-                case "2":
-                    break;
-                case "3":
-                    break;
-                case "4":
-                    break;
-                default:
-                    Console.WriteLine("Zly wybór");
-                    LoopUI();
-                    break;
-            }
-        }
         private void ReadAllContactsFromDb()
         {
             var contactsFromDb = _phonebookDbContext.Phonebook.ToList();
@@ -209,6 +208,8 @@ namespace CarddavToXML.UI
                 Console.WriteLine($"\t Phone3{contactFromDb.Phone3}");
                 Console.WriteLine("===============================");
             }
+
+
             LoopUI();
         }
         private void ImportDataFromCsv()
@@ -243,30 +244,69 @@ namespace CarddavToXML.UI
                 }
 
             }
+            else
+                LoopUI();
         }
-        private void ImportDataFromXml(string? path)
+        private void ImportDataFromXml()
         {
-            var contacts = _xmlReader.ImportFromXml(path);
-            foreach (var contact in contacts)
+
+            Console.WriteLine("Podaj ścierzkę pliku");
+            string path = Console.ReadLine();
+            try
             {
-                _phonebookDbContext.Phonebook.Add(new PhonebookInDb()
+                var contacts = _xmlReader.XmlTypeChecker(path);
+                foreach (var contact in contacts)
                 {
-                    Name = contact.Name,
-                    Phone1 = contact.Phone1,
-                    Phone2 = contact.Phone2,
-                    Phone3 = contact.Phone3,
-                });
+                    _phonebookDbContext.Phonebook.Add(new PhonebookInDb()
+                    {
+                        Name = contact.Name,
+                        Phone1 = contact.Phone1,
+                        Phone2 = contact.Phone2,
+                        Phone3 = contact.Phone3,
+                    });
+                }
+                _phonebookDbContext.SaveChanges();
+                LoopUI();
             }
-            _phonebookDbContext.SaveChanges();
-            LoopUI();
+            catch (Exception ex)
+            {
+                UISeparator();
+                Console.WriteLine("Wystąpił wyjątek: ");
+                Console.WriteLine($"\t{ex.Message}");
+                LoopUIWithError();
+            }
         }
         private void ExportToXML()
         {
+            Console.WriteLine("Wybierz rodzaj pliku XML do którego chcesz exportować pliki");
+            Console.WriteLine("\t 1)Yealink Local Phonnebook");
+            Console.WriteLine("\t 2)Yealink Remote Phonebook");
+            Console.WriteLine("\t 3)Fanvil Local Phonebook");
+            Console.WriteLine("\t 4)Fanvil Remote Phonebook");
+            var choise = Console.ReadLine();
             Console.WriteLine("Wybierz folder do którego chcesz exportować");
             var pathXml = Console.ReadLine();
             var contatsFromDb = _phonebookDbContext.Phonebook.ToList();
-            _xmlWriter.ExportToXml(pathXml, contatsFromDb);
-            LoopUI();
+            switch (choise)
+            {
+                case "1":
+                    _xmlWriter.ExportToXmlYealinkRemote(pathXml, contatsFromDb);
+                    LoopUI();
+                    break;
+                case "2":
+                    _xmlWriter.ExportToXmlYealinkLocal(pathXml, contatsFromDb);
+                    LoopUI();
+                    break;
+                case "3":
+                    LoopUI();
+                    break;
+                case "4":
+                    LoopUI();
+                    break;
+                default:
+                    break;
+            }
+
         }
         public void UISeparator()
         {

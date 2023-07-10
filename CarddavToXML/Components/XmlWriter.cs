@@ -7,39 +7,62 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using PhonebookConverter.Data.Entities;
+using System.Xml.Linq;
+using System.IO;
 
 namespace PhonebookConverter.Components
 {
-    [XmlRoot("Phonebook")]
     public class XmlWriter : IXmlWriter
     {
-        public void ExportToXml(string path, List<PhonebookInDb> contactsFromDb) 
-        {
-            path = path + "//Phonebook.xml";
-            List<PhonebookToXml> phonebookWithoutID = new List<PhonebookToXml>();
-           
-            foreach (var contact in contactsFromDb) 
-            {
-                phonebookWithoutID.Add(new PhonebookToXml()
-                {
-                    Name = contact.Name,
-                    Phone1 = contact.Phone1,
-                    Phone2 = contact.Phone2,
-                    Phone3 = contact.Phone3,
-                });
-            }
-            XmlSerializer serializer = new XmlSerializer(typeof(List<PhonebookToXml>), new XmlRootAttribute("Phonebook"));
-            XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
-            namespaces.Add(string.Empty, string.Empty);
-            using (StreamWriter streamWriter = new StreamWriter (path))
-            {
-                serializer.Serialize(streamWriter, phonebookWithoutID, namespaces);
-            }
 
-            //foreach (var contact in contactsFromDb) 
-            //{
-             //       
-            //}
+        public void ExportToXmlFanvilLocal(string filepath, List<PhonebookInDb> contactsFromDb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExportToXmlFanvilRemote(string filepath, List<PhonebookInDb> contactsFromDb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExportToXmlYealinkLocal(string filepath, List<PhonebookInDb> contactsFromDb)
+        {
+            filepath = filepath + "//PhonebookYealinkLocal.xml";
+            List<PhonebookToXml> phonebookWithoutID = new List<PhonebookToXml>();
+            var document = new XDocument();
+            var contacts = new XElement("vp_contact",
+                new XElement("root_group",""),
+                new XElement("root_contact", contactsFromDb
+            .Select(x =>
+                new XElement("contact",
+                    new XAttribute("display_name", x.Name),
+                    new XAttribute("mobile_number", x.Phone1),
+                    new XAttribute("office_number", x.Phone2),
+                    new XAttribute("other_number", x.Phone3)
+                    )
+            )));
+            document.Add(contacts);
+            document.Save(filepath);
+        }
+
+        public void ExportToXmlYealinkRemote(string filepath, List<PhonebookInDb> contactsFromDb)
+        {
+            filepath = filepath + "//PhonebookYealinkRemote.xml";
+            List<PhonebookToXml> phonebookWithoutID = new List<PhonebookToXml>();
+            var document = new XDocument();
+            var contacts = new XElement("YealinkIPPhoneBook",
+                new XElement("Title", "Phonebook"),
+                new XElement("Phonebook", contactsFromDb
+            .Select(x =>
+                new XElement("Entry",
+                    new XAttribute("Name", x.Name),
+                    new XAttribute("Phone1", x.Phone1),
+                    new XAttribute("Phone2", x.Phone2),
+                    new XAttribute("Phone3", x.Phone3)
+                    )
+            )));
+            document.Add(contacts);
+            document.Save(filepath);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using PhonebookConverter.Data.Entities;
+﻿using CarddavToXML.Data.Entities;
+using PhonebookConverter.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace PhonebookConverter.Components
 {
     public interface IXmlReader
     {
-        List<PhonebookToXml> ImportFromXml(string filepath);
+        List<PhonebookInDb> XmlTypeChecker(string filepath);
     }
 }

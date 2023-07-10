@@ -9,7 +9,7 @@ namespace CarddavToXML.Components
 {
     public class CsvReader : ICsvReader
     {
-        public List<PhonebookInDb> ProcessYealinkCsv(string filePath)
+        public List<PhonebookInDb> ImportFromCsvYealinkLocal(string filePath)
         {
             if (!File.Exists(filePath))
             {
@@ -32,6 +32,29 @@ namespace CarddavToXML.Components
                 });
             return contactRecords.ToList();
         }
+        public List<PhonebookInDb> ImportFromCsvCustom(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                return new List<PhonebookInDb>();
+            }
+            var contactRecords =
+                File.ReadAllLines(filePath)
+                .Where(x => x.Length > 1)
+                .Skip(1)
+                .Select(x =>
+                {
+                    var columns = x.Split(',');
+                    return new PhonebookInDb()
+                    {
+                        Name = columns[0],
+                        Phone1 = columns[1],
+                        Phone2 = columns[2],
+                        Phone3 = columns[3]
+                    };
+                });
+            return contactRecords.ToList();
+        }
         public List<PhonebookInDb> CsvTypeChecker(string filePath)
         {
              
@@ -39,7 +62,7 @@ namespace CarddavToXML.Components
             {
                 throw new ArgumentException("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
             }
-            if (filePath.Contains(".csv`"))
+            if (!filePath.Contains(".csv`"))
             {
                 throw new ArgumentException("To nie jest plik csv!!!");
             }
@@ -47,9 +70,9 @@ namespace CarddavToXML.Components
             switch (firstLine)
             {
                 case "Name,Surname,Company,PhoneNumber,MobileNumber,MainNumber":
-                    return ProcessYealinkCsv(filePath);
-                case "2343242342":
-                    return null;
+                    return ImportFromCsvYealinkLocal(filePath);
+                case "Name,Phone1,Phone2,Phone3":
+                    return ImportFromCsvCustom(filePath);
                 default:
                     throw new ArgumentException("Ten format pliku csv nie jest osługiwany");
             }

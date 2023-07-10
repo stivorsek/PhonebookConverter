@@ -9,6 +9,10 @@ namespace PhonebookConverter.Components
 {
     public interface IXmlWriter
     {
-       void ExportToXml(string filepath,List<PhonebookInDb> contactsFromDb); 
+       void ExportToXmlYealinkLocal(string filepath,List<PhonebookInDb> contactsFromDb);
+       void ExportToXmlYealinkRemote(string filepath, List<PhonebookInDb> contactsFromDb);
+       void ExportToXmlFanvilLocal(string filepath, List<PhonebookInDb> contactsFromDb);
+       void ExportToXmlFanvilRemote(string filepath, List<PhonebookInDb> contactsFromDb);
+        
     }
 }
