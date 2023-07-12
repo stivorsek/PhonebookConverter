@@ -1,7 +1,4 @@
 ﻿using CarddavToXML.Data;
-using CarddavToXML.Data.Entities;
-using PhonebookConverter.Data.Entities;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace PhonebookConverter.Components

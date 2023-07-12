@@ -35,16 +35,7 @@ namespace CarddavToXML.UI
             bool endProgram=false;
             do
             {
-                Console.WriteLine("\tWitam w programie do zarządzania plikami książek telefonicznych");
-                UISeparator();
-                Console.WriteLine("\tProszę wybierz co będziemy dzisiaj robić");
-                Console.WriteLine("1) Załaduj Dane do bazy danych z pliku CSV");
-                Console.WriteLine("2) Załaduj Dane do bazy danych z pliku XML");
-                Console.WriteLine("3) Exportuj dane do XML");
-                Console.WriteLine("4) Wyświetl liste kontaktow w bazie danych");
-                Console.WriteLine("5) Aby wybrać operacje na bazie danych");
-                Console.WriteLine("6) Aby zakończyć program");
-                var choise = Console.ReadLine();
+                var choise = _dataFromUser.FirstUIChoise();
                 try
                 {
                     switch (choise)
@@ -64,28 +55,22 @@ namespace CarddavToXML.UI
                             Console.Clear();
                             EndOperation();
                             break;
-                        case "4":
-                            UISeparator();
-                            _dbOperations.ReadAllContactsFromDb();
-                            Console.Clear();
-                            EndOperation();
-                            break;
-                        case "5":
+                        case "4":                            
                             UISeparator();
                             ChoseDatabaseOperations();
                             Console.Clear();
                             EndOperation();
                             break;
-                        case "6":
+                        case "5":
                             endProgram = true;
+                            break;
+                        case "6":                            
                             break;
                         case "7":
                             EndOperation();
                             break;
                         default:
-                            Console.WriteLine("Podałeś zły wybór");
-                            EndOperation();
-                            break;
+                            throw new Exception("Podałeś nieprawidłowy wybór");                            
                     }
                 }
                 catch (Exception ex)
@@ -95,30 +80,8 @@ namespace CarddavToXML.UI
                     Console.WriteLine($"\t{ex.Message}");
                     Console.WriteLine("========================================");                    
                 }
-            }while (endProgram = false);
-        }                
-        private void ChoseDatabaseOperations()
-        {
-            Console.Clear();
-            string choise = _dataFromUser.GetDatabaseOperation();
-            UISeparator();
-            string id = null;
-            switch (choise)
-            {
-                case "1":
-                    id = _dataFromUser.DatabaseOperationsGetID();
-                    _dbOperations.DeleteFromDbByID(id);
-                    break;
-                case "2":
-                    Console.Clear();
-                    id = _dataFromUser.DatabaseOperationsGetID();
-                    _dbOperations.EditFromDbByID(id);
-                    break;
-                case "3":
-                    _dbOperations.AddNewDbEntry();
-                    break;
-            }
-        }
+            }while (endProgram == false);
+        }                        
         private void ImportDataFromCsv()
         {            
             string path = _dataFromUser.ImportGetPath();
@@ -174,6 +137,31 @@ namespace CarddavToXML.UI
                     break;
             }
 
+        }
+        private void ChoseDatabaseOperations()
+        {
+            Console.Clear();
+            string choise = _dataFromUser.DatabaseOperationsGetType();
+            UISeparator();
+            string id = null;
+            switch (choise)
+            {
+                case "1":
+                    id = _dataFromUser.DatabaseOperationsGetID();
+                    _dbOperations.DeleteFromDbByID(id);
+                    break;
+                case "2":
+                    Console.Clear();
+                    id = _dataFromUser.DatabaseOperationsGetID();
+                    _dbOperations.EditFromDbByID(id);
+                    break;
+                case "3":
+                    _dbOperations.AddNewDbEntry();
+                    break;
+                case "4":
+                    _dbOperations.ReadAllContactsFromDb();
+                    break;
+            }
         }
         public void UISeparator()
         {

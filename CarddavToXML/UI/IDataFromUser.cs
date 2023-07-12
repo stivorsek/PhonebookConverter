@@ -13,6 +13,7 @@ namespace PhonebookConverter.UI
         bool ExportToXmlGetLoopState();
         string ImportGetPath();
         string DatabaseOperationsGetID();
-        string GetDatabaseOperation();
+        string DatabaseOperationsGetType();
+        string FirstUIChoise();
     }
 }

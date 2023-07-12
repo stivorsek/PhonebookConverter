@@ -69,17 +69,33 @@ namespace PhonebookConverter.UI
             string id = Console.ReadLine();
             return id;
         }
-        public string GetDatabaseOperation()
+        public string DatabaseOperationsGetType()
         {
             Console.Clear();
             Console.WriteLine("1) Usunąć wpis po ID");
             Console.WriteLine("2) Edytować wpis po ID");
             Console.WriteLine("3) Dodać wpis ręcznie");
+            Console.WriteLine("3) Wyświetlić wszystkie dane");
             var choise = Console.ReadLine();
             if (choise != "1" && choise != "2" && choise != "3")
             {
                 throw new ArgumentException("Podano nieprawidłowy wybór!!!");
             }
+            return choise;
+        }
+        public string FirstUIChoise()
+        {
+            Console.WriteLine("\tWitam w programie do zarządzania plikami książek telefonicznych");
+            Console.WriteLine("");
+            Console.WriteLine("///////////////////////////////////////////////////////////////////////////////");
+            Console.WriteLine("");
+            Console.WriteLine("\tProszę wybierz co będziemy dzisiaj robić");
+            Console.WriteLine("1) Załaduj Dane do bazy danych z pliku CSV");
+            Console.WriteLine("2) Załaduj Dane do bazy danych z pliku XML");
+            Console.WriteLine("3) Exportuj dane do XML");
+            Console.WriteLine("4) Aby wybrać operacje na bazie danych");
+            Console.WriteLine("5) Aby zakończyć program");
+            var choise = Console.ReadLine();
             return choise;
         }
     }
