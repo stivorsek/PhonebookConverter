@@ -11,9 +11,14 @@ namespace PhonebookConverter.Components
         {
             _phonebookDbContext = phonebookDbContext;
         }
-        public void ExportToXmlFanvilRemoteAndLocal(string filePath, bool period)
+        public void ExportToXmlFanvilRemoteAndLocal(string filePath, bool period, int loopTime)
         { 
-            if (period = false )
+            if (period == true)
+            {
+                string type = "ExportYealinkLocal";
+                SetPeriodicExport(filePath, type, loopTime);
+            }
+            else
             {
                 filePath = filePath + "//PhonebookFanvilRemote.xml";
                 var contactsFromDb = _phonebookDbContext.Phonebook.ToList();
@@ -29,16 +34,16 @@ namespace PhonebookConverter.Components
                                 ));
                 document.Add(contacts);
                 document.Save(filePath);
-            }            
-            else
-            {
-                string type = "ExportYealinkLocal";
-                SetPeriodicExport(filePath, type);
             }
         }
-        public void ExportToXmlYealinkLocal(string filePath, bool period)
+        public void ExportToXmlYealinkLocal(string filePath, bool period, int loopTime)
         {
-            if (period == false)
+            if (period == true)
+            {
+                string type = "ExportYealinkLocal";
+                SetPeriodicExport(filePath, type, loopTime);
+            }
+            else
             {
                 filePath = filePath + "//PhonebookYealinkLocal.xml";
                 var contactsFromDb = _phonebookDbContext.Phonebook.ToList();
@@ -57,15 +62,16 @@ namespace PhonebookConverter.Components
                 document.Add(contacts);
                 document.Save(filePath);
             }
-            else
-            {
-                string type = "ExportYealinkLocal";
-                SetPeriodicExport(filePath, type);
-            }
         }
-        public void ExportToXmlYealinkRemote(string filePath, bool period)
+        public void ExportToXmlYealinkRemote(string filePath, bool period, int loopTime)
         {
-            if (period = false)
+            if (period == true)
+            {
+                string type = "ExportYealinkRemote";
+                SetPeriodicExport(filePath, type, loopTime);
+                
+            }
+            else
             {
                 filePath = filePath + "//PhonebookYealinkRemote.xml";
                 var contactsFromDb = _phonebookDbContext.Phonebook.ToList();
@@ -84,35 +90,30 @@ namespace PhonebookConverter.Components
                 document.Add(contacts);
                 document.Save(filePath);
             }
-            else
-            {
-                string type = "ExportYealinkRemote";
-                SetPeriodicExport(filePath, type );
-            }
         }
-        private void SetPeriodicExport(string filePath,string type )
+        private void SetPeriodicExport(string filePath,string type, int loopTime)
         {
-            System.Timers.Timer timer = new System.Timers.Timer(30000);
+            System.Timers.Timer timer = new System.Timers.Timer(loopTime);
             timer.Elapsed += async (sender, e) =>
             {
                 var period = false;
                 switch (type)
                 {
                    case "ExportYealinkRemote":
-                        ExportToXmlYealinkRemote(filePath, period);
+                        ExportToXmlYealinkRemote(filePath, period, loopTime);
                             break;
                     case "ExportYealinkLocal":
-                        ExportToXmlYealinkLocal(filePath, period);
+                        ExportToXmlYealinkLocal(filePath, period, loopTime);
                         break;
                     case "ExportFanvilRemoteAndLocal":
-                        ExportToXmlFanvilRemoteAndLocal(filePath, period);
+                        ExportToXmlFanvilRemoteAndLocal(filePath, period, loopTime);
                         break;
                     default:
-                        ExportToXmlYealinkRemote(filePath, period);
+                        ExportToXmlYealinkRemote(filePath, period, loopTime);
                         break;
                 }
                 Console.WriteLine("====================");
-                Console.WriteLine("Wykonano export pliku o godzinie: " + DateTime.Now);
+                Console.WriteLine("\tyWykonano export pliku o godzinie: " + DateTime.Now);
                 Console.WriteLine("====================");
             };
             timer.Start();

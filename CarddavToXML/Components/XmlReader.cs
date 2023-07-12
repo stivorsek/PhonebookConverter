@@ -62,10 +62,6 @@ namespace PhonebookConverter.Components
         public List<ContactInDb> XmlTypeChecker(string filePath)
         {
             string format = ".xml";
-            if (!File.Exists(filePath))
-            {
-                throw new ArgumentException("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
-            }
             if (!filePath.Contains(format))
             {
                 throw new ArgumentException("To nie jest plik xml!!!");

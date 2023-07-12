@@ -93,24 +93,12 @@ namespace PhonebookConverter.Components
                 Console.WriteLine($"\t Phone3{contactFromDb.Phone3}");
                 Console.WriteLine("===============================");
             }
-            Console.WriteLine("Czy chcesz zapisać plik do pliku tekstowego?");
-            Console.WriteLine("\t 1)Tak");
-            Console.WriteLine("\t 2)Nie");
-            var choise = Console.ReadLine();
-            switch (choise)
-            {
-                case "1":
-                    SaveDataFromDbToTxt(contactsFromDb);
-                    break;
-                case "2":
-                    break;
-                default:
-                    throw new ArgumentException("Podany wybór nie istnieje!!!");                    
-            }
+           
             
         }
-        public void SaveDataFromDbToTxt(List<ContactInDb> contactsFromDb)
+        public void SaveDataFromDbToTxt()
         {
+            var contactsFromDb = _phonebookDbContext.Phonebook.ToList();
             Console.WriteLine("Proszę podać lokalizację nowego pliku");
             string fileName = Console.ReadLine();
             if (File.Exists(fileName))

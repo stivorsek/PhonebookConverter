@@ -64,15 +64,6 @@ namespace CarddavToXML.Components
         }
         public List<ContactInDb> CsvTypeChecker(string filePath)
         {
-
-            if (!File.Exists(filePath))
-            {
-                throw new ArgumentException("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
-            }
-            if (!filePath.Contains(".csv"))
-            {
-                throw new ArgumentException("To nie jest plik csv!!!");
-            }
             string firstLine = File.ReadLines(filePath).FirstOrDefault();
             switch (firstLine)
             {

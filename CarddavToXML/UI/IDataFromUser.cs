@@ -14,6 +14,8 @@ namespace PhonebookConverter.UI
         string ImportGetPath();
         string DatabaseOperationsGetID();
         string DatabaseOperationsGetType();
+        int ExportToXmlGetLoopTime();
         string FirstUIChoise();
+        string DatabaseOperationsExportToTxt();
     }
 }
