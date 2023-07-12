@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Google.Cloud.Translate.V3;
-using Google.Api.Gax.ResourceNames;
-using CarddavToXML.UI;
+﻿using CarddavToXML.UI;
 
 namespace CarddavToXML
 {

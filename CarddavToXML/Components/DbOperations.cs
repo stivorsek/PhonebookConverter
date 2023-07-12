@@ -1,12 +1,5 @@
 ﻿using CarddavToXML.Data.Entities;
 using CarddavToXML.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CarddavToXML.Components;
-using System.Xml;
 
 namespace PhonebookConverter.Components
 {
@@ -27,7 +20,7 @@ namespace PhonebookConverter.Components
             var Phone2 = Console.ReadLine();
             Console.WriteLine("Podaj trzeci numer telefonu");
             var Phone3 = Console.ReadLine();
-            _phonebookDbContext.Add(new PhonebookInDb()
+            _phonebookDbContext.Add(new ContactInDb()
             {
                 Name = Name,
                 Phone1 = Phone1,
@@ -41,6 +34,10 @@ namespace PhonebookConverter.Components
         {
             var Id = int.Parse(id);
             var contactFromDb = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == Id);
+            if (contactFromDb == null) 
+            {
+                throw new ArgumentException("Podane ID nie istnieje w bazie danych!!!");
+            }
             Console.WriteLine($"\t1) Name : {contactFromDb.Name}");
             Console.WriteLine($"\t2) Phone1 : {contactFromDb.Phone1}");
             Console.WriteLine($"\t3) Phone2 : {contactFromDb.Phone2}");
@@ -69,17 +66,19 @@ namespace PhonebookConverter.Components
                     _phonebookDbContext.SaveChanges();
                     break;
                 default:
-                    Console.WriteLine("Podano niepoprawny paramert");
-                    break;
+                    throw new ArgumentException("Nie ma takiego parametru!!!");
             }
         }
         public void DeleteFromDbByID(string? id)
         {
             int Id = int.Parse(id);
             var toRemove = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == Id);
+            if (toRemove == null)
+            {
+                throw new ArgumentException("Podane ID nie istnieje w bazie danych!!!");
+            }
             _phonebookDbContext.Phonebook.Remove(toRemove);
-            _phonebookDbContext.SaveChanges();
-            
+            _phonebookDbContext.SaveChanges();            
         }
         public void ReadAllContactsFromDb()
         {
@@ -106,26 +105,33 @@ namespace PhonebookConverter.Components
                 case "2":
                     break;
                 default:
-                    Console.WriteLine("Wybrano nieprawidłową wartość, następuje powrót do głównego menu");
-                    break;
+                    throw new ArgumentException("Podany wybór nie istnieje!!!");                    
             }
             
         }
-        public void SaveDataFromDbToTxt(List<PhonebookInDb> contactsFromDb)
+        public void SaveDataFromDbToTxt(List<ContactInDb> contactsFromDb)
         {
             Console.WriteLine("Proszę podać lokalizację nowego pliku");
-            string fileName = Console.ReadLine() + "\\DaneZBazyDanych.txt";
-            using (var writer = File.AppendText(fileName))
+            string fileName = Console.ReadLine();
+            if (File.Exists(fileName))
             {
-                foreach (var contact in contactsFromDb)
+                fileName =fileName + "\\DaneZBazyDanych.txt";
+                using (var writer = File.AppendText(fileName))
                 {
-                    writer.WriteLine($"\t ID: {contact.Id}");
-                    writer.WriteLine($"\t Name: {contact.Name}");
-                    writer.WriteLine($"\t Phone1: {contact.Phone1}");
-                    writer.WriteLine($"\t Phone2: {contact.Phone2}");
-                    writer.WriteLine($"\t Phone3: {contact.Phone3}");
-                    writer.WriteLine("=========================");
+                    foreach (var contact in contactsFromDb)
+                    {
+                        writer.WriteLine($"\t ID: {contact.Id}");
+                        writer.WriteLine($"\t Name: {contact.Name}");
+                        writer.WriteLine($"\t Phone1: {contact.Phone1}");
+                        writer.WriteLine($"\t Phone2: {contact.Phone2}");
+                        writer.WriteLine($"\t Phone3: {contact.Phone3}");
+                        writer.WriteLine("=========================");
+                    }
                 }
+            }
+            else
+            {
+                throw new ArgumentException("Podana ścierzka pliku nie istnieje!!!");
             }
         }
     }

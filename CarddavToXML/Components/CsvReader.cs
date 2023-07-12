@@ -1,15 +1,10 @@
 ﻿using CarddavToXML.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CarddavToXML.Components
 {
     public class CsvReader : ICsvReader
     {
-        public List<PhonebookInDb> ImportFromCsvYealinkLocal(string filePath)
+        public List<ContactInDb> ImportFromCsvYealinkLocal(string filePath)
         {
             var contactRecords =
                 File.ReadAllLines(filePath)
@@ -18,7 +13,7 @@ namespace CarddavToXML.Components
                 .Select(x =>
                 {
                     var columns = x.Split(',');
-                    return new PhonebookInDb()
+                    return new ContactInDb()
                     {
                         Name = columns[0] + " " + columns[1],
                         Phone1 = columns[3],
@@ -28,7 +23,7 @@ namespace CarddavToXML.Components
                 });
             return contactRecords.ToList();
         }
-        public List<PhonebookInDb> ImportFromCsvFanvilLocal(string filePath)
+        public List<ContactInDb> ImportFromCsvFanvilLocal(string filePath)
         {
             var contactRecords =
                 File.ReadAllLines(filePath)
@@ -37,7 +32,7 @@ namespace CarddavToXML.Components
                 .Select(x =>
                 {
                     var columns = x.Split('"');
-                    return new PhonebookInDb()
+                    return new ContactInDb()
                     {
                         Name = columns[1],
                         Phone1 = columns[3],
@@ -47,7 +42,7 @@ namespace CarddavToXML.Components
                 });
             return contactRecords.ToList();
         }
-        private List<PhonebookInDb> ImportFromCsvYeastarPSeries(string filePath)
+        private List<ContactInDb> ImportFromCsvYeastarPSeries(string filePath)
         {
 
             var contactRecords =
@@ -57,7 +52,7 @@ namespace CarddavToXML.Components
                 .Select(x =>
                 {
                     var columns = x.Split(',');
-                    return new PhonebookInDb()
+                    return new ContactInDb()
                     {
                         Name = columns[0] +" "+ columns[1],
                         Phone1 = columns[4],
@@ -67,7 +62,7 @@ namespace CarddavToXML.Components
                 });
             return contactRecords.ToList();
         }
-        public List<PhonebookInDb> CsvTypeChecker(string filePath)
+        public List<ContactInDb> CsvTypeChecker(string filePath)
         {
 
             if (!File.Exists(filePath))
@@ -91,9 +86,6 @@ namespace CarddavToXML.Components
                     throw new ArgumentException("Ten format pliku csv nie jest osługiwany");
             }
         }
-
-
-
     }
 }
 

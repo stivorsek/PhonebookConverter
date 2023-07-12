@@ -1,7 +1,6 @@
 ﻿using CarddavToXML.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace CarddavToXML.Data
 {
     public class PhonebookDbContext : DbContext
@@ -10,6 +9,6 @@ namespace CarddavToXML.Data
             : base(options)
         {
         }
-        public DbSet<PhonebookInDb> Phonebook {get;set;}
+        public DbSet<ContactInDb> Phonebook {get;set;}
     }
 }

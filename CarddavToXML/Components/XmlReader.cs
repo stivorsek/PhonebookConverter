@@ -1,26 +1,18 @@
 ﻿using CarddavToXML.Data.Entities;
-using PhonebookConverter.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace PhonebookConverter.Components
 {
     public class XmlReader : IXmlReader
     {
-        public List<PhonebookInDb> ImportFromXmlYealinkRemote(string path)
+        public List<ContactInDb> ImportFromXmlYealinkRemote(string path)
         {
             XElement document = XElement.Load(path);
             var attributes = document
                 .Descendants("Entry")
                 .Select(entry =>
                 {
-                    return new PhonebookInDb()
+                    return new ContactInDb()
                     {
                         Name = entry.Attribute("Name").Value,
                         Phone1 = entry.Attribute("Phone1").Value,
@@ -31,14 +23,14 @@ namespace PhonebookConverter.Components
                 .ToList();
             return attributes;
         }
-        public List<PhonebookInDb> ImportFromXmlYealinkLocal(string path)
+        public List<ContactInDb> ImportFromXmlYealinkLocal(string path)
         {
             XElement document = XElement.Load(path);
             var attributes = document
                 .Descendants("contact")
                 .Select(entry =>
                 {
-                    return new PhonebookInDb()
+                    return new ContactInDb()
                     {
                         Name = entry.Attribute("display_name").Value,
                         Phone1 = entry.Attribute("mobile_number").Value,
@@ -49,14 +41,14 @@ namespace PhonebookConverter.Components
                 .ToList();
             return attributes;
         }
-        public List<PhonebookInDb> ImportFromXmlFanvilRemote(string path)
+        public List<ContactInDb> ImportFromXmlFanvilRemoteAndLocal(string path)
         {
             XElement document = XElement.Load(path);
             var attributes = document
                 .Descendants("DirectoryEntry")                
                 .Select(entry =>
                 {
-                    return new PhonebookInDb()
+                    return new ContactInDb()
                     {
                         Name = entry.Element("Name").Value,
                         Phone1 = entry.Element("Telephone").Value,
@@ -67,7 +59,7 @@ namespace PhonebookConverter.Components
                 .ToList();
             return attributes;
         }
-        public List<PhonebookInDb> XmlTypeChecker(string filePath)
+        public List<ContactInDb> XmlTypeChecker(string filePath)
         {
             string format = ".xml";
             if (!File.Exists(filePath))
@@ -87,7 +79,7 @@ namespace PhonebookConverter.Components
                 case var name when name == "vp_contact":
                     return ImportFromXmlYealinkLocal(filePath);
                 case var name when name == "PhoneBook":
-                    return ImportFromXmlFanvilRemote(filePath);
+                    return ImportFromXmlFanvilRemoteAndLocal(filePath);
                 default:
                     throw new ArgumentException("Ten format pliku csv nie jest osługiwany");
             }
