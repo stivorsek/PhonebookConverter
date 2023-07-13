@@ -1,6 +1,6 @@
 ﻿using CarddavToXML.Data.Entities;
 
-namespace CarddavToXML.Components
+namespace PhonebookConverter.Components.Import
 {
     public class CsvReader : ICsvReader
     {
@@ -54,7 +54,7 @@ namespace CarddavToXML.Components
                     var columns = x.Split(',');
                     return new ContactInDb()
                     {
-                        Name = columns[0] +" "+ columns[1],
+                        Name = columns[0] + " " + columns[1],
                         Phone1 = IntParseValidation(columns[4]),
                         Phone2 = int.Parse(columns[7]),
                         Phone3 = IntParseValidation(columns[9])
@@ -69,7 +69,7 @@ namespace CarddavToXML.Components
             {
                 case "Name,Surname,Company,PhoneNumber,MobileNumber,MainNumber":
                     return ImportFromCsvYealinkLocal(filePath);
-                case "\"name\",\"work\",\"mobile\",\"other\",\"ring\",\"groups\"":                  
+                case "\"name\",\"work\",\"mobile\",\"other\",\"ring\",\"groups\"":
                     return ImportFromCsvFanvilLocal(filePath);
                 case "First Name,Last Name,Company Name,Email,Business Number,Business Number 2,Business Fax,Mobile,Mobile 2,Home,Home 2,Home Fax,Other,ZIP Code,Street,City,State,Country,Remark,Phonebook":
                     return ImportFromCsvYeastarPSeries(filePath);
@@ -79,7 +79,7 @@ namespace CarddavToXML.Components
         }
         public int? IntParseValidation(string data)
         {
-            int? result = string.IsNullOrEmpty(data) ? (int?)null : int.Parse(data);
+            int? result = string.IsNullOrEmpty(data) ? null : int.Parse(data);
             return result;
         }
     }

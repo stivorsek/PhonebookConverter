@@ -1,6 +1,6 @@
 ﻿using CarddavToXML.Data.Entities;
 
-namespace PhonebookConverter.Components
+namespace PhonebookConverter.Components.Import
 {
     public interface IXmlReader
     {

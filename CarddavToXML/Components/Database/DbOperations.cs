@@ -1,15 +1,15 @@
 ﻿using CarddavToXML.Data.Entities;
 using CarddavToXML.Data;
-using PhonebookConverter.UI;
+using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
 
-namespace PhonebookConverter.Components
+namespace PhonebookConverter.Components.Database
 {
     public class DbOperations : IDbOperations
     {
         private readonly PhonebookDbContext _phonebookDbContext;
         private readonly IExceptions _exceptions;
 
-        public DbOperations( PhonebookDbContext phonebookDbContext, IExceptions exceptions)
+        public DbOperations(PhonebookDbContext phonebookDbContext, IExceptions exceptions)
         {
             _phonebookDbContext = phonebookDbContext;
             _exceptions = exceptions;
@@ -18,7 +18,7 @@ namespace PhonebookConverter.Components
         {
             Console.Clear();
             _exceptions.ExceptionsLoop(() =>
-            {                
+            {
                 Console.WriteLine("Podaj Nazwę");
                 var Name = Console.ReadLine();
                 Console.WriteLine("Podaj pierwszy numer telefonu");
@@ -37,7 +37,7 @@ namespace PhonebookConverter.Components
                 _phonebookDbContext.SaveChanges();
                 Console.Clear();
             });
-            
+
         }
         public void EditFromDbByID(int? id)
         {
@@ -85,17 +85,17 @@ namespace PhonebookConverter.Components
                     break;
 
                 } while (true);
-                });
+            });
         }
         public void DeleteFromDbByID(int? id)
-        {            
-                var toRemove = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);
-                if (toRemove == null)
-                {
-                    throw new ArgumentException("Podane ID nie istnieje w bazie danych!!!");
-                }
-                _phonebookDbContext.Phonebook.Remove(toRemove);
-                _phonebookDbContext.SaveChanges();            
+        {
+            var toRemove = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);
+            if (toRemove == null)
+            {
+                throw new ArgumentException("Podane ID nie istnieje w bazie danych!!!");
+            }
+            _phonebookDbContext.Phonebook.Remove(toRemove);
+            _phonebookDbContext.SaveChanges();
         }
         public void ReadAllContactsFromDb()
         {
@@ -110,8 +110,8 @@ namespace PhonebookConverter.Components
                 Console.WriteLine($"\t Phone3: {contactFromDb.Phone3}");
                 Console.WriteLine("===============================");
             }
-           
-            
+
+
         }
         public void SaveDataFromDbToTxt()
         {
@@ -120,7 +120,7 @@ namespace PhonebookConverter.Components
             string fileName = Console.ReadLine();
             if (File.Exists(fileName))
             {
-                fileName =fileName + "\\DaneZBazyDanych.txt";
+                fileName = fileName + "\\DaneZBazyDanych.txt";
                 using (var writer = File.AppendText(fileName))
                 {
                     foreach (var contact in contactsFromDb)
@@ -141,7 +141,7 @@ namespace PhonebookConverter.Components
         }
         public int? IntParseValidation(string data)
         {
-            int? result = string.IsNullOrEmpty(data) ? (int?)null : int.Parse(data);
+            int? result = string.IsNullOrEmpty(data) ? null : int.Parse(data);
             return result;
         }
     }

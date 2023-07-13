@@ -1,11 +1,13 @@
 ﻿using CarddavToXML;
-using CarddavToXML.Components;
 using CarddavToXML.Data;
 using CarddavToXML.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PhonebookConverter.Components;
+using PhonebookConverter.Components.Database;
+using PhonebookConverter.Components.Export;
+using PhonebookConverter.Components.Import;
 using PhonebookConverter.UI;
+using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
 
 var services = new ServiceCollection();
 services.AddSingleton<IApp, App>();

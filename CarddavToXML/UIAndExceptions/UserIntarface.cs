@@ -1,8 +1,10 @@
-﻿using CarddavToXML.Components;
-using CarddavToXML.Data;
+﻿using CarddavToXML.Data;
 using CarddavToXML.Data.Entities;
-using PhonebookConverter.Components;
+using PhonebookConverter.Components.Database;
+using PhonebookConverter.Components.Export;
+using PhonebookConverter.Components.Import;
 using PhonebookConverter.UI;
+using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
 using System;
 
 namespace CarddavToXML.UI
@@ -131,6 +133,7 @@ namespace CarddavToXML.UI
                 bool loopState = _dataFromUser.ExportToXmlGetLoopState();
                 if (loopState == false) break;                
                 int loopTime = _dataFromUser.ExportToXmlGetLoopTime();
+                if (loopTime == 0) break;
                 var tuple = (choiseType, loopState);
                 switch (tuple)
                 {
@@ -146,8 +149,7 @@ namespace CarddavToXML.UI
                     default:
                         _xmlWriter.SetPeriodicExport(pathXml, choiseType, loopTime);
                         Console.Clear();
-                        break;
-                        
+                        break;                        
                 }
                 break;
             }

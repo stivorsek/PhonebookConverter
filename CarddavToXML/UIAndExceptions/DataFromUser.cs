@@ -1,4 +1,5 @@
 ﻿using CarddavToXML.Data;
+using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,6 +105,7 @@ namespace PhonebookConverter.UI
                 {
                     throw new ArgumentException("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
                 }
+                Console.Clear();
                 return path;
             });
         }
@@ -126,7 +128,8 @@ namespace PhonebookConverter.UI
                 if (!File.Exists(path))
                 {
                     throw new ArgumentException("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
-                }                
+                }
+                Console.Clear();
                 return path;
             });
         }
@@ -163,6 +166,7 @@ namespace PhonebookConverter.UI
                 {
                     throw new ArgumentException("Podano nieprawidłowy wybór!!!");
                 }
+                Console.Clear();
                 return choise;
             });
         }
@@ -178,6 +182,7 @@ namespace PhonebookConverter.UI
                 {
                     throw new ArgumentException("Podano nieprawidłowy wybór!!!");
                 }
+                Console.Clear();
                 return choise;
             });
         }
@@ -196,5 +201,11 @@ namespace PhonebookConverter.UI
             var choise = Console.ReadLine();
             return choise;
         }
+        public int? IntParseValidation(string data)
+        {
+            int? result = string.IsNullOrEmpty(data) ? null : int.Parse(data);
+            return result;
+        }
+
     }
 }

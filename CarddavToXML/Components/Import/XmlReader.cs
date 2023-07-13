@@ -2,13 +2,13 @@
 using System.Xml.Linq;
 using static Grpc.Core.Metadata;
 
-namespace PhonebookConverter.Components
+namespace PhonebookConverter.Components.Import
 {
     public class XmlReader : IXmlReader
     {
         public List<ContactInDb> ImportFromXmlYealinkRemote(string path)
         {
-            XElement document = XElement.Load(path);            
+            XElement document = XElement.Load(path);
             var attributes = document
                 .Descendants("Entry")
                 .Select(entry =>
@@ -47,7 +47,7 @@ namespace PhonebookConverter.Components
         {
             XElement document = XElement.Load(path);
             var attributes = document
-                .Descendants("DirectoryEntry")                
+                .Descendants("DirectoryEntry")
                 .Select(entry =>
                 {
                     return new ContactInDb()
@@ -63,7 +63,7 @@ namespace PhonebookConverter.Components
         }
         public List<ContactInDb> XmlTypeChecker(string filePath)
         {
-            XElement document = XElement.Load(filePath);            
+            XElement document = XElement.Load(filePath);
             switch (document.Name.LocalName)
             {
                 case var name when name == "YealinkIPPhoneBook":
@@ -78,7 +78,7 @@ namespace PhonebookConverter.Components
         }
         public int? IntParseValidation(string data)
         {
-            int? result = string.IsNullOrEmpty(data) ?  (int?)null : int.Parse(data) ;
+            int? result = string.IsNullOrEmpty(data) ? null : int.Parse(data);
             return result;
         }
     }

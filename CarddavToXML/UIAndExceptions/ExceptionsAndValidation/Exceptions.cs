@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PhonebookConverter.UI
+namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
 {
     public class Exceptions : IExceptions
     {
@@ -14,11 +14,11 @@ namespace PhonebookConverter.UI
             {
                 try
                 {
-                    metoda.Invoke();                    
+                    metoda.Invoke();
                     break;
                 }
                 catch (Exception ex)
-                {                    
+                {
                     CatchError(ex);
                     continue;
                 }

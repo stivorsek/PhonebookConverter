@@ -1,7 +1,7 @@
 ﻿using CarddavToXML.Data;
 using System.Xml.Linq;
 
-namespace PhonebookConverter.Components
+namespace PhonebookConverter.Components.Export
 {
     public class XmlWriter : IXmlWriter
     {
@@ -69,7 +69,7 @@ namespace PhonebookConverter.Components
             document.Save(filePath);
         }
         public void SetPeriodicExport(string filePath, string type, int loopTime)
-        {
+        {                        
             System.Timers.Timer timer = new System.Timers.Timer(loopTime);
             timer.Elapsed += async (sender, e) =>
             {
