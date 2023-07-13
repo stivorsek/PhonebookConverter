@@ -160,18 +160,23 @@ namespace CarddavToXML.UI
             UISeparator();
             if (choise != "1")
             {
-                string id = null;
+                int? id = null;
                 switch (choise)
                 {
                     case "1":
                         break;
                     case "2":
+                        Console.Clear();
                         id = _dataFromUser.DatabaseOperationsGetID();
+                        if (id == null)
+                            break;
                         _dbOperations.DeleteFromDbByID(id);
                         break;
                     case "3":
                         Console.Clear();
                         id = _dataFromUser.DatabaseOperationsGetID();
+                        if (id == null)                                
+                                break;                        
                         _dbOperations.EditFromDbByID(id);
                         break;
                     case "4":

@@ -22,11 +22,11 @@ namespace PhonebookConverter.Components
                 Console.WriteLine("Podaj Nazwę");
                 var Name = Console.ReadLine();
                 Console.WriteLine("Podaj pierwszy numer telefonu");
-                var Phone1 = int.Parse(Console.ReadLine());
+                var Phone1 = IntParseValidation(Console.ReadLine());
                 Console.WriteLine("Podaj drugi numer telefonu");
-                var Phone2 = int.Parse(Console.ReadLine());
+                var Phone2 = IntParseValidation(Console.ReadLine());
                 Console.WriteLine("Podaj trzeci numer telefonu");
-                var Phone3 = int.Parse(Console.ReadLine());
+                var Phone3 = IntParseValidation(Console.ReadLine());
                 _phonebookDbContext.Add(new ContactInDb()
                 {
                     Name = Name,
@@ -39,59 +39,63 @@ namespace PhonebookConverter.Components
             });
             
         }
-        public void EditFromDbByID(string? id)
+        public void EditFromDbByID(int? id)
         {
             _exceptions.ExceptionsLoop(() =>
             {
-                Console.Clear();
-                var Id = int.Parse(id);
-                var contactFromDb = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == Id);
-                if (contactFromDb == null)
+                do
+                {
+                    var contactFromDb = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);
+                    Console.WriteLine($"\t1) Name : {contactFromDb.Name}");
+                    Console.WriteLine($"\t2) Phone1 : {contactFromDb.Phone1}");
+                    Console.WriteLine($"\t3) Phone2 : {contactFromDb.Phone2}");
+                    Console.WriteLine($"\t4) Phone3 : {contactFromDb.Phone3}");
+                    Console.WriteLine("");
+                    Console.WriteLine("Który parametr chcesz zmienić lub wybierz 0 aby cofnąć?");
+                    var choise = Console.ReadLine();
+                    if (choise == "0")
+                    {
+                        break;
+                    }
+                    if (choise != "1" && choise != "2" && choise != "3" && choise != "4")
+                    { throw new ArgumentException("Nie ma takiego parametru!!!"); }
+                    Console.WriteLine("Podaj na co chcesz zmienić parametr");
+                    var parameter = Console.ReadLine();
+                    switch (choise)
+                    {
+                        case "1":
+                            contactFromDb.Name = parameter;
+                            _phonebookDbContext.SaveChanges();
+                            break;
+                        case "2":
+                            contactFromDb.Phone1 = int.Parse(parameter);
+                            _phonebookDbContext.SaveChanges();
+                            break;
+                        case "3":
+                            contactFromDb.Phone2 = int.Parse(parameter);
+                            _phonebookDbContext.SaveChanges();
+                            break;
+                        case "4":
+                            contactFromDb.Phone3 = int.Parse(parameter);
+                            _phonebookDbContext.SaveChanges();
+                            break;
+                        default:
+                            throw new ArgumentException("Nie ma takiego parametru!!!");
+                    }
+                    break;
+
+                } while (true);
+                });
+        }
+        public void DeleteFromDbByID(int? id)
+        {            
+                var toRemove = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);
+                if (toRemove == null)
                 {
                     throw new ArgumentException("Podane ID nie istnieje w bazie danych!!!");
                 }
-                Console.WriteLine($"\t1) Name : {contactFromDb.Name}");
-                Console.WriteLine($"\t2) Phone1 : {contactFromDb.Phone1}");
-                Console.WriteLine($"\t3) Phone2 : {contactFromDb.Phone2}");
-                Console.WriteLine($"\t4) Phone3 : {contactFromDb.Phone3}");
-                Console.WriteLine("");
-                Console.WriteLine("Który parametr chcesz zmienić?");
-                var choise = Console.ReadLine();
-                Console.WriteLine("Podaj na co chcesz zmienić parametr");
-                var parameter = int.Parse(Console.ReadLine());
-                switch (choise)
-                {
-                    case "1":
-                        contactFromDb.Name = parameter.ToString();
-                        _phonebookDbContext.SaveChanges();
-                        break;
-                    case "2":
-                        contactFromDb.Phone1 = parameter;
-                        _phonebookDbContext.SaveChanges();
-                        break;
-                    case "3":
-                        contactFromDb.Phone2 = parameter;
-                        _phonebookDbContext.SaveChanges();
-                        break;
-                    case "4":
-                        contactFromDb.Phone3 = parameter;
-                        _phonebookDbContext.SaveChanges();
-                        break;
-                    default:
-                        throw new ArgumentException("Nie ma takiego parametru!!!");
-                }
-            });
-        }
-        public void DeleteFromDbByID(string? id)
-        {
-            int Id = int.Parse(id);
-            var toRemove = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == Id);
-            if (toRemove == null)
-            {
-                throw new ArgumentException("Podane ID nie istnieje w bazie danych!!!");
-            }
-            _phonebookDbContext.Phonebook.Remove(toRemove);
-            _phonebookDbContext.SaveChanges();            
+                _phonebookDbContext.Phonebook.Remove(toRemove);
+                _phonebookDbContext.SaveChanges();            
         }
         public void ReadAllContactsFromDb()
         {
@@ -103,7 +107,7 @@ namespace PhonebookConverter.Components
                 Console.WriteLine($"\t Nazwa: {contactFromDb.Name}");
                 Console.WriteLine($"\t Phone1: {contactFromDb.Phone1}");
                 Console.WriteLine($"\t Phone2: {contactFromDb.Phone2}");
-                Console.WriteLine($"\t Phone3{contactFromDb.Phone3}");
+                Console.WriteLine($"\t Phone3: {contactFromDb.Phone3}");
                 Console.WriteLine("===============================");
             }
            
@@ -134,6 +138,11 @@ namespace PhonebookConverter.Components
             {
                 throw new ArgumentException("Podana ścierzka pliku nie istnieje!!!");
             }
+        }
+        public int? IntParseValidation(string data)
+        {
+            int? result = string.IsNullOrEmpty(data) ? (int?)null : int.Parse(data);
+            return result;
         }
     }
 }

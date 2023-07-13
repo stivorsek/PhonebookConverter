@@ -35,7 +35,6 @@ namespace PhonebookConverter.UI
                 }
                 catch (Exception ex)
                 {
-                    Console.Clear();
                     CatchError(ex);
                     continue;
                 }

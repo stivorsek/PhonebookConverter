@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CarddavToXML.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +10,12 @@ namespace PhonebookConverter.UI
     public class DataFromUser : IDataFromUser
     {
         private IExceptions _exceptions;
+        private PhonebookDbContext _phonebookDbContext;
 
-        public DataFromUser(IExceptions exceptions) 
+        public DataFromUser(IExceptions exceptions,PhonebookDbContext phonebookDbContext) 
         {
             _exceptions= exceptions;
+            _phonebookDbContext= phonebookDbContext;
         }
         public string ExportToXmlGetFolder()
         {
@@ -127,16 +130,27 @@ namespace PhonebookConverter.UI
                 return path;
             });
         }
-        public string DatabaseOperationsGetID()
+        public int? DatabaseOperationsGetID()
         {
-            Console.Clear();
-            Console.WriteLine("Podaj ID");
-            string id = Console.ReadLine();
-            return id;
+            return _exceptions.ExceptionsLoop(() =>
+            {
+                Console.WriteLine("Podaj ID lub 0 aby wrócić do poprzedniego menu");               
+                int? id = int.Parse(Console.ReadLine());
+                if (id == 0)
+                {
+                    return null;
+                }    
+                var contactFromDb = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);
+                if (contactFromDb == null)
+                {
+                    throw new ArgumentException("Podane ID nie istnieje w bazie danych!!!");
+                }
+                Console.Clear();
+                return id;
+            });
         }
         public string DatabaseOperationsGetType()
         {
-            Console.Clear();
             return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("1) Aby cofnąć do poprzedniego menu");
