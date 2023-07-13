@@ -14,7 +14,7 @@ namespace PhonebookConverter.UI
             {
                 Console.WriteLine("Wybierz folder do którego chcesz exportować lub 1 aby wrócić do główneg menu");
                 var pathXml = Console.ReadLine();
-                if (!Directory.Exists(pathXml) && pathXml !="1")
+                if (!Directory.Exists(pathXml) && pathXml != "1")
                 {
                     throw new ArgumentException("Podany folder nie istnieje");
                 }
@@ -32,7 +32,7 @@ namespace PhonebookConverter.UI
                 Console.WriteLine("\t 2)Yealink Local Phonnebook");
                 Console.WriteLine("\t 3)Yealink Remote Phonebook");
                 Console.WriteLine("\t 4)Fanvil Local and Remote Phonebook");
-                string choiseType = Console.ReadLine();                
+                string choiseType = Console.ReadLine();
                 if (choiseType != "1" && choiseType != "2" && choiseType != "3" && choiseType != "4")
                 {
                     throw new ArgumentException("Podano nieprawidłowy rodzaj pliku XML");
@@ -115,7 +115,7 @@ namespace PhonebookConverter.UI
                 Console.WriteLine("3) Edytować wpis po ID");
                 Console.WriteLine("4) Dodać wpis ręcznie");
                 Console.WriteLine("5) Wyświetlić wszystkie dane");
-                var choise = Console.ReadLine();                
+                var choise = Console.ReadLine();
                 if (choise != "1" && choise != "2" && choise != "3" && choise != "4" && choise != "5")
                 {
                     throw new ArgumentException("Podano nieprawidłowy wybór!!!");
@@ -130,7 +130,7 @@ namespace PhonebookConverter.UI
                 Console.WriteLine("Czy chcesz zapisać plik do pliku tekstowego?");
                 Console.WriteLine("\t 1)Tak");
                 Console.WriteLine("\t 2)Nie");
-                var choise = Console.ReadLine();              
+                var choise = Console.ReadLine();
                 if (choise != "1" && choise != "2")
                 {
                     throw new ArgumentException("Podano nieprawidłowy wybór!!!");
@@ -165,12 +165,25 @@ namespace PhonebookConverter.UI
                 catch (Exception ex)
                 {
                     Console.Clear();
-                    Console.WriteLine("///////////////////////////////////////////////////////////////////////////////");
-                    Console.WriteLine("Wystąpił wyjątek: " + DateTime.Now);
-                    Console.WriteLine($"\t{ex.Message}");                    
-                    Console.WriteLine("=======================================================================");
+                    CatchError(ex);
                     continue;
                 }
+            }
+        }
+        public void CatchError(Exception ex)
+        {
+
+            string separator = "///////////////////////////////////////////////////////////////////////////////";
+            string exceptionHeader = "Wystąpił wyjątek: " + DateTime.Now;
+            Console.WriteLine(separator);
+            Console.WriteLine(exceptionHeader);
+            Console.WriteLine($"\t{ex.Message}");
+            Console.WriteLine(separator);
+            using (var writer = File.AppendText("ErrorLog.txt"))
+            {
+                writer.Write(separator);
+                writer.Write(exceptionHeader);
+                writer.Write(ex.Message);
             }
         }
     }

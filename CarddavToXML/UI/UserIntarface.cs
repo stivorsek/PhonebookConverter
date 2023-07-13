@@ -128,30 +128,31 @@ namespace CarddavToXML.UI
             do
             {
                 string choiseType = _dataFromUser.ExportToXmlGetType();
-                if (choiseType == "1") 
-                { break; }
+                if (choiseType == "1") break;
                 string pathXml = _dataFromUser.ExportToXmlGetFolder();
-                if (pathXml == "1")
-                { break; }
+                if (pathXml == "1") break;                
                 bool loopState = _dataFromUser.ExportToXmlGetLoopState();
-                if (loopState == false)
-                { break; }
+                if (loopState == false) break;                
                 int loopTime = _dataFromUser.ExportToXmlGetLoopTime();
-                switch (choiseType)
+                var tuple = (choiseType, loopState);
+                switch (tuple)
                 {
-                    case "2":
-                        _xmlWriter.ExportToXmlYealinkRemote(pathXml, loopState, loopTime);
+                    case ("2", false):
+                        _xmlWriter.ExportToXmlYealinkRemote(pathXml);
                         break;
-                    case "3":
-                        _xmlWriter.ExportToXmlYealinkLocal(pathXml, loopState, loopTime);
+                    case ("3", false):
+                        _xmlWriter.ExportToXmlYealinkLocal(pathXml);
                         break;
-                    case "4":
-                        _xmlWriter.ExportToXmlFanvilRemoteAndLocal(pathXml, loopState, loopTime);
+                    case ("4", false):
+                        _xmlWriter.ExportToXmlFanvilRemoteAndLocal(pathXml);
                         break;
                     default:
+                        _xmlWriter.SetPeriodicExport(pathXml, choiseType, loopTime);
                         Console.Clear();
                         break;
+                        
                 }
+                break;
             }
             while (true);
         }
