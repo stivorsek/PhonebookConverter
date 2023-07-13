@@ -1,73 +1,86 @@
 ﻿using CarddavToXML.Data.Entities;
 using CarddavToXML.Data;
+using PhonebookConverter.UI;
 
 namespace PhonebookConverter.Components
 {
     public class DbOperations : IDbOperations
     {
         private readonly PhonebookDbContext _phonebookDbContext;
-        public DbOperations( PhonebookDbContext phonebookDbContext)
+        private readonly IExceptions _exceptions;
+
+        public DbOperations( PhonebookDbContext phonebookDbContext, IExceptions exceptions)
         {
             _phonebookDbContext = phonebookDbContext;
+            _exceptions = exceptions;
         }
         public void AddNewDbEntry()
         {
-            Console.WriteLine("Podaj Nazwę");
-            var Name = Console.ReadLine();
-            Console.WriteLine("Podaj pierwszy numer telefonu");
-            var Phone1 = Console.ReadLine();
-            Console.WriteLine("Podaj drugi numer telefonu");
-            var Phone2 = Console.ReadLine();
-            Console.WriteLine("Podaj trzeci numer telefonu");
-            var Phone3 = Console.ReadLine();
-            _phonebookDbContext.Add(new ContactInDb()
-            {
-                Name = Name,
-                Phone1 = Phone1,
-                Phone2 = Phone2,
-                Phone3 = Phone3
+            Console.Clear();
+            _exceptions.ExceptionsLoop(() =>
+            {                
+                Console.WriteLine("Podaj Nazwę");
+                var Name = Console.ReadLine();
+                Console.WriteLine("Podaj pierwszy numer telefonu");
+                var Phone1 = int.Parse(Console.ReadLine());
+                Console.WriteLine("Podaj drugi numer telefonu");
+                var Phone2 = int.Parse(Console.ReadLine());
+                Console.WriteLine("Podaj trzeci numer telefonu");
+                var Phone3 = int.Parse(Console.ReadLine());
+                _phonebookDbContext.Add(new ContactInDb()
+                {
+                    Name = Name,
+                    Phone1 = Phone1,
+                    Phone2 = Phone2,
+                    Phone3 = Phone3
+                });
+                _phonebookDbContext.SaveChanges();
+                Console.Clear();
             });
-            _phonebookDbContext.SaveChanges();
             
         }
         public void EditFromDbByID(string? id)
         {
-            var Id = int.Parse(id);
-            var contactFromDb = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == Id);
-            if (contactFromDb == null) 
+            _exceptions.ExceptionsLoop(() =>
             {
-                throw new ArgumentException("Podane ID nie istnieje w bazie danych!!!");
-            }
-            Console.WriteLine($"\t1) Name : {contactFromDb.Name}");
-            Console.WriteLine($"\t2) Phone1 : {contactFromDb.Phone1}");
-            Console.WriteLine($"\t3) Phone2 : {contactFromDb.Phone2}");
-            Console.WriteLine($"\t4) Phone3 : {contactFromDb.Phone3}");
-            Console.WriteLine("");
-            Console.WriteLine("Który parametr chcesz zmienić?");
-            var choise = Console.ReadLine();
-            Console.WriteLine("Podaj na co chcesz zmienić parametr");
-            var parameter = Console.ReadLine();
-            switch (choise)
-            {
-                case "1":
-                    contactFromDb.Name = parameter;
-                    _phonebookDbContext.SaveChanges();
-                    break;
-                case "2":
-                    contactFromDb.Phone1 = parameter;
-                    _phonebookDbContext.SaveChanges();
-                    break;
-                case "3":
-                    contactFromDb.Phone2 = parameter;
-                    _phonebookDbContext.SaveChanges();
-                    break;
-                case "4":
-                    contactFromDb.Phone3 = parameter;
-                    _phonebookDbContext.SaveChanges();
-                    break;
-                default:
-                    throw new ArgumentException("Nie ma takiego parametru!!!");
-            }
+                Console.Clear();
+                var Id = int.Parse(id);
+                var contactFromDb = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == Id);
+                if (contactFromDb == null)
+                {
+                    throw new ArgumentException("Podane ID nie istnieje w bazie danych!!!");
+                }
+                Console.WriteLine($"\t1) Name : {contactFromDb.Name}");
+                Console.WriteLine($"\t2) Phone1 : {contactFromDb.Phone1}");
+                Console.WriteLine($"\t3) Phone2 : {contactFromDb.Phone2}");
+                Console.WriteLine($"\t4) Phone3 : {contactFromDb.Phone3}");
+                Console.WriteLine("");
+                Console.WriteLine("Który parametr chcesz zmienić?");
+                var choise = Console.ReadLine();
+                Console.WriteLine("Podaj na co chcesz zmienić parametr");
+                var parameter = int.Parse(Console.ReadLine());
+                switch (choise)
+                {
+                    case "1":
+                        contactFromDb.Name = parameter.ToString();
+                        _phonebookDbContext.SaveChanges();
+                        break;
+                    case "2":
+                        contactFromDb.Phone1 = parameter;
+                        _phonebookDbContext.SaveChanges();
+                        break;
+                    case "3":
+                        contactFromDb.Phone2 = parameter;
+                        _phonebookDbContext.SaveChanges();
+                        break;
+                    case "4":
+                        contactFromDb.Phone3 = parameter;
+                        _phonebookDbContext.SaveChanges();
+                        break;
+                    default:
+                        throw new ArgumentException("Nie ma takiego parametru!!!");
+                }
+            });
         }
         public void DeleteFromDbByID(string? id)
         {

@@ -20,9 +20,9 @@ namespace PhonebookConverter.Components
                     .Select(x =>
                          new XElement("DirectoryEntry",
                              new XElement("Name", x.Name),
-                             new XElement("Telephone", x.Phone1),
-                             new XElement("Mobile", x.Phone2),
-                             new XElement("Othere", x.Phone3)
+                             new XElement("Telephone", x.Phone1.ToString()),
+                             new XElement("Mobile", x.Phone2.ToString()),
+                             new XElement("Othere", x.Phone3.ToString())
                                      )
                             ));
             document.Add(contacts);
@@ -40,9 +40,9 @@ namespace PhonebookConverter.Components
             .Select(x =>
                 new XElement("contact",
                     new XAttribute("display_name", x.Name),
-                    new XAttribute("mobile_number", x.Phone1),
-                    new XAttribute("office_number", x.Phone2),
-                    new XAttribute("other_number", x.Phone3)
+                    new XAttribute("mobile_number", x.Phone1.ToString()),
+                    new XAttribute("office_number", x.Phone2.ToString()),
+                    new XAttribute("other_number", x.Phone3.ToString())
                     )
             )));
             document.Add(contacts);
@@ -60,9 +60,9 @@ namespace PhonebookConverter.Components
             .Select(x =>
                 new XElement("Entry",
                     new XAttribute("Name", x.Name),
-                    new XAttribute("Phone1", x.Phone1),
-                    new XAttribute("Phone2", x.Phone2),
-                    new XAttribute("Phone3", x.Phone3)
+                    new XAttribute("Phone1", x.Phone1.ToString()),
+                    new XAttribute("Phone2", x.Phone2.ToString()),
+                    new XAttribute("Phone3", x.Phone3.ToString())
                     )
             )));
             document.Add(contacts);

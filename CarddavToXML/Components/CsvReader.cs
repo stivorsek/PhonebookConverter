@@ -16,9 +16,9 @@ namespace CarddavToXML.Components
                     return new ContactInDb()
                     {
                         Name = columns[0] + " " + columns[1],
-                        Phone1 = columns[3],
-                        Phone2 = columns[4],
-                        Phone3 = columns[5]
+                        Phone1 = IntParseValidation(columns[3]),
+                        Phone2 = IntParseValidation(columns[4]),
+                        Phone3 = IntParseValidation(columns[5])
                     };
                 });
             return contactRecords.ToList();
@@ -35,9 +35,9 @@ namespace CarddavToXML.Components
                     return new ContactInDb()
                     {
                         Name = columns[1],
-                        Phone1 = columns[3],
-                        Phone2 = columns[5],
-                        Phone3 = columns[7]
+                        Phone1 = IntParseValidation(columns[3]),
+                        Phone2 = int.Parse(columns[5]),
+                        Phone3 = IntParseValidation(columns[7])
                     };
                 });
             return contactRecords.ToList();
@@ -55,9 +55,9 @@ namespace CarddavToXML.Components
                     return new ContactInDb()
                     {
                         Name = columns[0] +" "+ columns[1],
-                        Phone1 = columns[4],
-                        Phone2 = columns[7],
-                        Phone3 = columns[9]
+                        Phone1 = IntParseValidation(columns[4]),
+                        Phone2 = int.Parse(columns[7]),
+                        Phone3 = IntParseValidation(columns[9])
                     };
                 });
             return contactRecords.ToList();
@@ -76,6 +76,11 @@ namespace CarddavToXML.Components
                 default:
                     throw new ArgumentException("Ten format pliku csv nie jest osługiwany");
             }
+        }
+        public int? IntParseValidation(string data)
+        {
+            int? result = string.IsNullOrEmpty(data) ? (int?)null : int.Parse(data);
+            return result;
         }
     }
 }

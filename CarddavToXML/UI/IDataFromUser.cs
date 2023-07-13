@@ -11,7 +11,8 @@ namespace PhonebookConverter.UI
         string ExportToXmlGetFolder();
         string ExportToXmlGetType();
         bool ExportToXmlGetLoopState();
-        string ImportGetPath();
+        string ImportGetPathCsv();
+        string ImportGetPathXml();
         string DatabaseOperationsGetID();
         string DatabaseOperationsGetType();
         int ExportToXmlGetLoopTime();

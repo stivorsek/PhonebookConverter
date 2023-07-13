@@ -3,11 +3,13 @@ using CarddavToXML.Data;
 using CarddavToXML.Data.Entities;
 using PhonebookConverter.Components;
 using PhonebookConverter.UI;
+using System;
 
 namespace CarddavToXML.UI
 {
     public class UserIntarface : IChoise
     {
+        private readonly IExceptions _exceptions;
         private readonly ICsvReader _csvReader;
         private readonly PhonebookDbContext _phonebookDbContext;
         private readonly IXmlWriter _xmlWriter;
@@ -20,8 +22,10 @@ namespace CarddavToXML.UI
             , PhonebookDbContext phonebookDbContext
             , IXmlReader xmlReader
             , IDataFromUser dataFromUser
+            , IExceptions exceptions
             , IDbOperations dbOperations)
         {
+            _exceptions = exceptions;
             _csvReader = csvReader;
             _phonebookDbContext = phonebookDbContext;
             _phonebookDbContext.Database.EnsureCreated();
@@ -32,11 +36,12 @@ namespace CarddavToXML.UI
         }
         public void FirstUIChoise()
         {
+
             bool endProgram = false;
             do
             {
                 var choise = _dataFromUser.FirstUIChoise();
-                try
+                _exceptions.ExceptionsLoop(() =>
                 {
                     switch (choise)
                     {
@@ -72,21 +77,12 @@ namespace CarddavToXML.UI
                         default:
                             throw new Exception("Podałeś nieprawidłowy wybór");
                     }
-                }
-                catch (Exception ex)
-                {
-                    Console.Clear();
-                    UISeparator();
-                    Console.WriteLine("Wystąpił wyjątek: ");
-                    Console.WriteLine($"\t{ex.Message}");
-                    Console.WriteLine($"\t{ex.Source}");
-                    Console.WriteLine("========================================");
-                }
+                });                
             } while (endProgram == false);
         }
         private void ImportDataFromCsv()
         {
-            string path = _dataFromUser.ImportGetPath();
+            string path = _dataFromUser.ImportGetPathCsv();
             if (path != "1")
             {
                 var contacts = _csvReader.CsvTypeChecker(path);
@@ -105,7 +101,8 @@ namespace CarddavToXML.UI
         }
         private void ImportDataFromXml()
         {
-            string path = _dataFromUser.ImportGetPath();
+            Console.Clear();
+            string path = _dataFromUser.ImportGetPathXml();
             if (path != "1")
             {
                 var contacts = _xmlReader.XmlTypeChecker(path);
@@ -198,33 +195,10 @@ namespace CarddavToXML.UI
         }
         private void EndOperation()
         {
+            Console.Clear();
             UISeparator();
             Console.WriteLine("\tPomyślnie wykonano operacje");
             UISeparator();
-        }
-        public void WykonajMetodeZObslugaWyjatkow(Action metoda)
-        {
-            while (true)
-            {
-                try
-                {
-                    metoda.Invoke();
-
-                    // Jeśli nie wystąpił żaden wyjątek, możemy wyjść z pętli
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    // Tutaj możesz umieścić kod obsługi wyjątku
-
-                    UISeparator();
-                    Console.WriteLine("Wystąpił wyjątek: ");
-                    Console.WriteLine($"\t{ex.Message}");
-                    Console.WriteLine("=======================================================================");
-                    // Jeśli chcesz, żeby program wrócił na początek metody, kontynuuj pętlę
-                    continue;
-                }
-            }
         }
 
     }

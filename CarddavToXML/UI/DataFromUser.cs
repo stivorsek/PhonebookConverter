@@ -8,9 +8,15 @@ namespace PhonebookConverter.UI
 {
     public class DataFromUser : IDataFromUser
     {
+        private IExceptions _exceptions;
+
+        public DataFromUser(IExceptions exceptions) 
+        {
+            _exceptions= exceptions;
+        }
         public string ExportToXmlGetFolder()
         {
-            return ExceptionsLoop(() =>
+            return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Wybierz folder do którego chcesz exportować lub 1 aby wrócić do główneg menu");
                 var pathXml = Console.ReadLine();
@@ -25,7 +31,7 @@ namespace PhonebookConverter.UI
         public string ExportToXmlGetType()
         {
             Console.Clear();
-            return ExceptionsLoop(() =>
+            return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Wybierz rodzaj pliku XML do którego chcesz exportować pliki");
                 Console.WriteLine("\t 1)Aby wrócić do poprzedniego menu");
@@ -45,7 +51,7 @@ namespace PhonebookConverter.UI
         public bool ExportToXmlGetLoopState()
         {
             Console.Clear();
-            return ExceptionsLoop(() =>
+            return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Czy chcesz wykonywać taki sam cykliczny export?");
                 Console.WriteLine("1) Tak");
@@ -67,7 +73,7 @@ namespace PhonebookConverter.UI
         public int ExportToXmlGetLoopTime()
         {
             Console.Clear();
-            return ExceptionsLoop(() =>
+            return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Proszę podać co jaki interwał czasu ma byc wykonywany expert w sekundach");
                 int loopTime;
@@ -75,10 +81,10 @@ namespace PhonebookConverter.UI
                 return loopTime * 1000;
             });
         }
-        public string ImportGetPath()
+        public string ImportGetPathCsv()
         {
             Console.Clear();
-            return ExceptionsLoop(() =>
+            return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Podaj ścierzkę pliku lub wybierz 1 aby cofnąć do poprzedniego menu");
                 string path = Console.ReadLine();
@@ -87,14 +93,37 @@ namespace PhonebookConverter.UI
                     Console.Clear();
                     return path;
                 }
+                if (!path.Contains(".csv"))
+                {
+                    throw new ArgumentException("To nie jest plik csv!!!");
+                }
                 if (!File.Exists(path))
                 {
                     throw new ArgumentException("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
                 }
-                if (path.Contains(".csv"))
+                return path;
+            });
+        }
+        public string ImportGetPathXml()            
+        {
+            
+            return _exceptions.ExceptionsLoop(() =>
+            {
+                Console.WriteLine("Podaj ścierzkę pliku lub wybierz 1 aby cofnąć do poprzedniego menu");
+                string path = Console.ReadLine();
+                if (path == "1")
                 {
-                    throw new ArgumentException("To nie jest plik csv!!!");
+                    Console.Clear();
+                    return path;
                 }
+                if (!path.Contains(".xml"))
+                {
+                    throw new ArgumentException("To nie jest plik xml");
+                }
+                if (!File.Exists(path))
+                {
+                    throw new ArgumentException("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
+                }                
                 return path;
             });
         }
@@ -108,7 +137,7 @@ namespace PhonebookConverter.UI
         public string DatabaseOperationsGetType()
         {
             Console.Clear();
-            return ExceptionsLoop(() =>
+            return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("1) Aby cofnąć do poprzedniego menu");
                 Console.WriteLine("2) Usunąć wpis po ID");
@@ -125,7 +154,7 @@ namespace PhonebookConverter.UI
         }
         public string DatabaseOperationsExportToTxt()
         {
-            return ExceptionsLoop(() =>
+            return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Czy chcesz zapisać plik do pliku tekstowego?");
                 Console.WriteLine("\t 1)Tak");
@@ -152,39 +181,6 @@ namespace PhonebookConverter.UI
             Console.WriteLine("5) Aby zakończyć program");
             var choise = Console.ReadLine();
             return choise;
-        }
-        public T ExceptionsLoop<T>(Func<T> method)
-        {
-            while (true)
-            {
-                try
-                {
-                    T result = method.Invoke();
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    Console.Clear();
-                    CatchError(ex);
-                    continue;
-                }
-            }
-        }
-        public void CatchError(Exception ex)
-        {
-
-            string separator = "///////////////////////////////////////////////////////////////////////////////";
-            string exceptionHeader = "Wystąpił wyjątek: " + DateTime.Now;
-            Console.WriteLine(separator);
-            Console.WriteLine(exceptionHeader);
-            Console.WriteLine($"\t{ex.Message}");
-            Console.WriteLine(separator);
-            using (var writer = File.AppendText("ErrorLog.txt"))
-            {
-                writer.Write(separator);
-                writer.Write(exceptionHeader);
-                writer.Write(ex.Message);
-            }
         }
     }
 }
