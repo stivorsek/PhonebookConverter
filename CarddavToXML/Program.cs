@@ -15,6 +15,7 @@ services.AddSingleton<IChoise, UserIntarface>();
 services.AddSingleton<ICsvReader, CsvReader>();
 services.AddSingleton<IXmlWriter, XmlWriter>();
 services.AddSingleton<IXmlReader, XmlReader>();
+services.AddSingleton<IValidation, Validation>();
 services.AddSingleton<IDataFromUser, DataFromUser>();
 services.AddSingleton<IDbOperations, DbOperations>();
 services.AddSingleton<IExceptions, Exceptions>();

@@ -10,125 +10,79 @@ namespace PhonebookConverter.UI
 {
     public class DataFromUser : IDataFromUser
     {
-        private IExceptions _exceptions;
-        private PhonebookDbContext _phonebookDbContext;
+        private readonly IExceptions _exceptions;
+        private readonly PhonebookDbContext _phonebookDbContext;
+        private readonly IValidation _validation;
 
-        public DataFromUser(IExceptions exceptions,PhonebookDbContext phonebookDbContext) 
+        public DataFromUser(IExceptions exceptions, PhonebookDbContext phonebookDbContext, IValidation validation)
         {
-            _exceptions= exceptions;
-            _phonebookDbContext= phonebookDbContext;
+            _exceptions = exceptions;
+            _phonebookDbContext = phonebookDbContext;
+            _validation = validation;
         }
         public string ExportToXmlGetFolder()
         {
             return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Wybierz folder do którego chcesz exportować lub 1 aby wrócić do główneg menu");
-                var pathXml = Console.ReadLine();
-                if (!Directory.Exists(pathXml) && pathXml != "1")
-                {
-                    throw new ArgumentException("Podany folder nie istnieje");
-                }
+                var pathXml = _validation.ExportToXmlGetFolder(Console.ReadLine());
                 Console.Clear();
                 return pathXml;
             });
         }
         public string ExportToXmlGetType()
         {
-            Console.Clear();
             return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Wybierz rodzaj pliku XML do którego chcesz exportować pliki");
-                Console.WriteLine("\t 1)Aby wrócić do poprzedniego menu");
-                Console.WriteLine("\t 2)Yealink Local Phonnebook");
-                Console.WriteLine("\t 3)Yealink Remote Phonebook");
-                Console.WriteLine("\t 4)Fanvil Local and Remote Phonebook");
-                string choiseType = Console.ReadLine();
-                if (choiseType != "1" && choiseType != "2" && choiseType != "3" && choiseType != "4")
-                {
-                    throw new ArgumentException("Podano nieprawidłowy rodzaj pliku XML");
-                }
+                Console.WriteLine("\t 0)Aby wrócić do poprzedniego menu");
+                Console.WriteLine("\t 1)Yealink Local Phonnebook");
+                Console.WriteLine("\t 2)Yealink Remote Phonebook");
+                Console.WriteLine("\t 3)Fanvil Local and Remote Phonebook");
+                string choiseType = _validation.ExportToXmlGetType(Console.ReadLine());
                 Console.Clear();
-                return choiseType;
-            });
-
+                return choiseType
+                });
         }
         public bool ExportToXmlGetLoopState()
         {
-            Console.Clear();
             return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Czy chcesz wykonywać taki sam cykliczny export?");
                 Console.WriteLine("1) Tak");
                 Console.WriteLine("2) Nie");
-                var choiseLoop = Console.ReadLine();
-                if (choiseLoop != "1" && choiseLoop != "2")
-                {
-                    throw new ArgumentException("Podano nieprawidłowy wybór!!!");
-                }
-                bool loopState = false;
-                if (choiseLoop == "1")
-                {
-                    loopState = true;
-                }
+                bool loopState = _validation.ExportToXmlGetLoopState(Console.ReadLine());
                 Console.Clear();
                 return loopState;
             });
         }
         public int ExportToXmlGetLoopTime()
         {
-            Console.Clear();
             return _exceptions.ExceptionsLoop(() =>
             {
+                Console.Clear();
                 Console.WriteLine("Proszę podać co jaki interwał czasu ma byc wykonywany expert w sekundach");
-                int loopTime;
-                var userTime = int.TryParse(Console.ReadLine(), out loopTime);
+                var loopTime = _validation.ExportToXmlGetLoopTime(Console.ReadLine());
                 return loopTime * 1000;
             });
         }
         public string ImportGetPathCsv()
         {
-            Console.Clear();
             return _exceptions.ExceptionsLoop(() =>
             {
+                Console.Clear();
                 Console.WriteLine("Podaj ścierzkę pliku lub wybierz 1 aby cofnąć do poprzedniego menu");
-                string path = Console.ReadLine();
-                if (path == "1")
-                {
-                    Console.Clear();
-                    return path;
-                }
-                if (!path.Contains(".csv"))
-                {
-                    throw new ArgumentException("To nie jest plik csv!!!");
-                }
-                if (!File.Exists(path))
-                {
-                    throw new ArgumentException("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
-                }
+                string path = _validation.ImportGetPathCsv(Console.ReadLine());
                 Console.Clear();
                 return path;
             });
         }
-        public string ImportGetPathXml()            
+        public string ImportGetPathXml()
         {
-            
             return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Podaj ścierzkę pliku lub wybierz 1 aby cofnąć do poprzedniego menu");
-                string path = Console.ReadLine();
-                if (path == "1")
-                {
-                    Console.Clear();
-                    return path;
-                }
-                if (!path.Contains(".xml"))
-                {
-                    throw new ArgumentException("To nie jest plik xml");
-                }
-                if (!File.Exists(path))
-                {
-                    throw new ArgumentException("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
-                }
+                string path = _validation.ImportGetPathXml(Console.ReadLine());
                 Console.Clear();
                 return path;
             });
@@ -137,17 +91,9 @@ namespace PhonebookConverter.UI
         {
             return _exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Podaj ID lub 0 aby wrócić do poprzedniego menu");               
-                int? id = int.Parse(Console.ReadLine());
-                if (id == 0)
-                {
-                    return null;
-                }    
-                var contactFromDb = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);
-                if (contactFromDb == null)
-                {
-                    throw new ArgumentException("Podane ID nie istnieje w bazie danych!!!");
-                }
+                Console.WriteLine("Podaj ID lub 0 aby wrócić do poprzedniego menu");
+                int? id = _validation.DatabaseOperationsGetID(Console.ReadLine());
+                var contactFromDb = _validation.DatabaseOperationsGetID(_phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id));
                 Console.Clear();
                 return id;
             });
@@ -156,16 +102,12 @@ namespace PhonebookConverter.UI
         {
             return _exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("1) Aby cofnąć do poprzedniego menu");
-                Console.WriteLine("2) Usunąć wpis po ID");
-                Console.WriteLine("3) Edytować wpis po ID");
-                Console.WriteLine("4) Dodać wpis ręcznie");
-                Console.WriteLine("5) Wyświetlić wszystkie dane");
-                var choise = Console.ReadLine();
-                if (choise != "1" && choise != "2" && choise != "3" && choise != "4" && choise != "5")
-                {
-                    throw new ArgumentException("Podano nieprawidłowy wybór!!!");
-                }
+                Console.WriteLine("0) Aby cofnąć do poprzedniego menu");
+                Console.WriteLine("1) Usunąć wpis po ID");
+                Console.WriteLine("2) Edytować wpis po ID");
+                Console.WriteLine("3) Dodać wpis ręcznie");
+                Console.WriteLine("4) Wyświetlić wszystkie dane");
+                var choise = _validation.DatabaseOperationsGetType(Console.ReadLine());                
                 Console.Clear();
                 return choise;
             });
@@ -177,11 +119,7 @@ namespace PhonebookConverter.UI
                 Console.WriteLine("Czy chcesz zapisać plik do pliku tekstowego?");
                 Console.WriteLine("\t 1)Tak");
                 Console.WriteLine("\t 2)Nie");
-                var choise = Console.ReadLine();
-                if (choise != "1" && choise != "2")
-                {
-                    throw new ArgumentException("Podano nieprawidłowy wybór!!!");
-                }
+                var choise = _validation.DatabaseOperationsExportToTxt(Console.ReadLine());                
                 Console.Clear();
                 return choise;
             });

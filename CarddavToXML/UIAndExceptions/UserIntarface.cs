@@ -127,23 +127,27 @@ namespace CarddavToXML.UI
             do
             {
                 string choiseType = _dataFromUser.ExportToXmlGetType();
-                if (choiseType == "1") break;
+                if (choiseType == "0") break;
                 string pathXml = _dataFromUser.ExportToXmlGetFolder();
-                if (pathXml == "1") break;                
+                if (pathXml == "0") break;
                 bool loopState = _dataFromUser.ExportToXmlGetLoopState();
-                if (loopState == false) break;                
-                int loopTime = _dataFromUser.ExportToXmlGetLoopTime();
-                if (loopTime == 0) break;
+                int loopTime = 0;
+                if (loopState == true)
+                {
+                     loopTime = _dataFromUser.ExportToXmlGetLoopTime();
+                    if (loopTime == 0) break;
+                }
                 var tuple = (choiseType, loopState);
+                Console.Clear();
                 switch (tuple)
                 {
+                    case ("1", false):
+                        _xmlWriter.ExportToXmlYealinkLocal(pathXml);                        
+                        break;
                     case ("2", false):
                         _xmlWriter.ExportToXmlYealinkRemote(pathXml);
                         break;
                     case ("3", false):
-                        _xmlWriter.ExportToXmlYealinkLocal(pathXml);
-                        break;
-                    case ("4", false):
                         _xmlWriter.ExportToXmlFanvilRemoteAndLocal(pathXml);
                         break;
                     default:
@@ -163,28 +167,27 @@ namespace CarddavToXML.UI
             if (choise != "1")
             {
                 int? id = null;
+                Console.Clear();
                 switch (choise)
                 {
-                    case "1":
+                    case "0":
                         break;
-                    case "2":
-                        Console.Clear();
+                    case "1":
                         id = _dataFromUser.DatabaseOperationsGetID();
                         if (id == null)
                             break;
                         _dbOperations.DeleteFromDbByID(id);
                         break;
-                    case "3":
-                        Console.Clear();
+                    case "2":                        
                         id = _dataFromUser.DatabaseOperationsGetID();
                         if (id == null)                                
                                 break;                        
                         _dbOperations.EditFromDbByID(id);
                         break;
-                    case "4":
+                    case "3":
                         _dbOperations.AddNewDbEntry();
                         break;
-                    case "5":
+                    case "4":
                         _dbOperations.ReadAllContactsFromDb();
                         string choiseExport = _dataFromUser.DatabaseOperationsExportToTxt();
                         if (choiseExport == "2")
