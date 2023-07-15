@@ -5,7 +5,7 @@ namespace PhonebookConverter.Components.Database
     public interface IDbOperations
     {
         void AddNewDbEntry();
-        void EditFromDbByID(int? id);
+        void EditByID(int? id);
         void DeleteFromDbByID(int? id);
         void ReadAllContactsFromDb();
         void SaveDataFromDbToTxt();

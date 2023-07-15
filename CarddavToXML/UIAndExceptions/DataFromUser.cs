@@ -1,4 +1,6 @@
 ﻿using CarddavToXML.Data;
+using CarddavToXML.Data.Entities;
+using PhonebookConverter.Data.Entities;
 using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
 using System;
 using System.Collections.Generic;
@@ -40,8 +42,11 @@ namespace PhonebookConverter.UI
                 Console.WriteLine("\t 2)Yealink Remote Phonebook");
                 Console.WriteLine("\t 3)Fanvil Local and Remote Phonebook");
                 string choiseType = _validation.ExportToXmlGetType(Console.ReadLine());
+                if(choiseType == "1") choiseType = "Yealink_Local_Phonebook";
+                if(choiseType == "2") choiseType = "Yealink_Remote_Phonebook";
+                if(choiseType == "3") choiseType = "Fanvil_Local_and_Remote_Phonebook";
                 Console.Clear();
-                return choiseType
+                return choiseType;
                 });
         }
         public bool ExportToXmlGetLoopState()
@@ -123,6 +128,23 @@ namespace PhonebookConverter.UI
                 Console.Clear();
                 return choise;
             });
+        }
+        public string DatabaseOperationsEditByIDGetChoise(ContactInDb contactFromDb)
+        {
+            Console.WriteLine($"\t1) Name : {contactFromDb.Name}");
+            Console.WriteLine($"\t2) Phone1 : {contactFromDb.Phone1}");
+            Console.WriteLine($"\t3) Phone2 : {contactFromDb.Phone2}");
+            Console.WriteLine($"\t4) Phone3 : {contactFromDb.Phone3}");
+            Console.WriteLine("");
+            Console.WriteLine("Który parametr chcesz zmienić lub wybierz 0 aby cofnąć?");
+            var choise = Console.ReadLine();
+            return choise;
+        }
+        public string DatabaseOperationsEditByIdGetParameter()
+        {
+            Console.WriteLine("Podaj na co chcesz zmienić parametr");
+            var parameter = Console.ReadLine();
+            return parameter;
         }
         public string FirstUIChoise()
         {

@@ -3,6 +3,7 @@ using CarddavToXML.Data.Entities;
 using PhonebookConverter.Components.Database;
 using PhonebookConverter.Components.Export;
 using PhonebookConverter.Components.Import;
+using PhonebookConverter.Data.Entities;
 using PhonebookConverter.UI;
 using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
 using System;
@@ -27,6 +28,9 @@ namespace CarddavToXML.UI
             , IExceptions exceptions
             , IDbOperations dbOperations)
         {
+            string exportPath;
+            string exportType;
+            int exportInterval;
             _exceptions = exceptions;
             _csvReader = csvReader;
             _phonebookDbContext = phonebookDbContext;
@@ -38,7 +42,32 @@ namespace CarddavToXML.UI
         }
         public void FirstUIChoise()
         {
-
+            var exportDataPath = "ExportData.txt";
+            if (File.Exists(exportDataPath))
+            {
+                Console.WriteLine("Znaleziono dane z ustawionego exportu");                
+                string [] lines = File.ReadAllLines(exportDataPath);
+                foreach(var line in lines )
+                {
+                    Console.WriteLine($"{line}");
+                }
+                Console.WriteLine("Czy chcesz przywrócić ten export?");
+                Console.WriteLine("1) Tak");
+                Console.WriteLine("2) Nie (Dane exportu zostaną usunięte!!!)");
+                var choise = Console.ReadLine();
+                Console.Clear();
+                if (choise == "1")
+                {
+                var exporData = new ExportPeriodData
+                {
+                    Path = lines[2],
+                    Interval = int.Parse(lines[4]),
+                    Type = lines[6]
+                };
+                _xmlWriter.SetPeriodicExport(exporData);                    
+                }
+                if (choise == "2") File.Delete(exportDataPath);
+            }
             bool endProgram = false;
             do
             {
@@ -77,7 +106,8 @@ namespace CarddavToXML.UI
                             EndOperation();
                             break;
                         default:
-                            throw new Exception("Podałeś nieprawidłowy wybór");
+                            Console.Clear ();
+                            break;
                     }
                 });                
             } while (endProgram == false);
@@ -126,33 +156,39 @@ namespace CarddavToXML.UI
         {
             do
             {
+                Console.Clear();
                 string choiseType = _dataFromUser.ExportToXmlGetType();
                 if (choiseType == "0") break;
                 string pathXml = _dataFromUser.ExportToXmlGetFolder();
                 if (pathXml == "0") break;
-                bool loopState = _dataFromUser.ExportToXmlGetLoopState();
+                bool loopState = _dataFromUser.ExportToXmlGetLoopState();                
+                var exportData = new ExportPeriodData
+                {
+                    Path = pathXml,
+                    Type = choiseType,
+                };
                 int loopTime = 0;
                 if (loopState == true)
                 {
-                     loopTime = _dataFromUser.ExportToXmlGetLoopTime();
+                    loopTime = _dataFromUser.ExportToXmlGetLoopTime();
                     if (loopTime == 0) break;
+                    exportData.Interval = loopTime;
                 }
                 var tuple = (choiseType, loopState);
                 Console.Clear();
                 switch (tuple)
                 {
-                    case ("1", false):
-                        _xmlWriter.ExportToXmlYealinkLocal(pathXml);                        
+                    case ("Yealink_Local_Phonebook", false):
+                        _xmlWriter.ExportToXmlYealinkLocal(pathXml); 
                         break;
-                    case ("2", false):
+                    case ("Yealink_Remote_Phonebook", false):
                         _xmlWriter.ExportToXmlYealinkRemote(pathXml);
                         break;
-                    case ("3", false):
+                    case ("Fanvil_Local_and_Remote_Phonebook", false):
                         _xmlWriter.ExportToXmlFanvilRemoteAndLocal(pathXml);
                         break;
                     default:
-                        _xmlWriter.SetPeriodicExport(pathXml, choiseType, loopTime);
-                        Console.Clear();
+                        _xmlWriter.SetPeriodicExport(exportData);                        
                         break;                        
                 }
                 break;
@@ -164,14 +200,12 @@ namespace CarddavToXML.UI
             Console.Clear();
             string choise = _dataFromUser.DatabaseOperationsGetType();
             UISeparator();
-            if (choise != "1")
+            if (choise != "0")
             {
                 int? id = null;
                 Console.Clear();
                 switch (choise)
                 {
-                    case "0":
-                        break;
                     case "1":
                         id = _dataFromUser.DatabaseOperationsGetID();
                         if (id == null)
@@ -182,7 +216,7 @@ namespace CarddavToXML.UI
                         id = _dataFromUser.DatabaseOperationsGetID();
                         if (id == null)                                
                                 break;                        
-                        _dbOperations.EditFromDbByID(id);
+                        _dbOperations.EditByID(id);
                         break;
                     case "3":
                         _dbOperations.AddNewDbEntry();

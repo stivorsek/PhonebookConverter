@@ -12,7 +12,9 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         string ImportGetPathCsv(string path);
         int? DatabaseOperationsGetID(string id);
         object DatabaseOperationsGetID(ContactInDb? contactInDb);
+        string DatabaseOperationsEditByIdChoseParameter(string choise);
         string DatabaseOperationsExportToTxt(string choise);
         string DatabaseOperationsGetType(string choise);
+        int? IntParseValidation(string data);        
     }
 }

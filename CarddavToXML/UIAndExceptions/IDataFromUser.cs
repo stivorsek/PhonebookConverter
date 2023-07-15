@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CarddavToXML.Data.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,12 +12,14 @@ namespace PhonebookConverter.UI
         string ExportToXmlGetFolder();
         string ExportToXmlGetType();
         bool ExportToXmlGetLoopState();
+        int ExportToXmlGetLoopTime();
         string ImportGetPathCsv();
         string ImportGetPathXml();
         int? DatabaseOperationsGetID();
         string DatabaseOperationsGetType();
-        int ExportToXmlGetLoopTime();
-        string FirstUIChoise();
         string DatabaseOperationsExportToTxt();
+        string DatabaseOperationsEditByIDGetChoise(ContactInDb contactFromDb);
+        string FirstUIChoise();
+        string DatabaseOperationsEditByIdGetParameter();
     }
 }
