@@ -22,7 +22,7 @@ namespace PhonebookConverter.UI
             _phonebookDbContext = phonebookDbContext;
             _validation = validation;
         }
-        public string ExportToXmlGetFolder()
+        public string ExportGetFolder()
         {
             return _exceptions.ExceptionsLoop(() =>
             {
@@ -32,7 +32,7 @@ namespace PhonebookConverter.UI
                 return pathXml;
             });
         }
-        public string ExportToXmlGetType()
+        public string ExportGetType()
         {
             return _exceptions.ExceptionsLoop(() =>
             {
@@ -49,7 +49,7 @@ namespace PhonebookConverter.UI
                 return choiseType;
                 });
         }
-        public bool ExportToXmlGetLoopState()
+        public bool ExportGetLoopState()
         {
             return _exceptions.ExceptionsLoop(() =>
             {
@@ -61,7 +61,7 @@ namespace PhonebookConverter.UI
                 return loopState;
             });
         }
-        public int ExportToXmlGetLoopTime()
+        public int ExportGetLoopTime()
         {
             return _exceptions.ExceptionsLoop(() =>
             {

@@ -9,10 +9,10 @@ namespace PhonebookConverter.UI
 {
     public interface IDataFromUser
     {
-        string ExportToXmlGetFolder();
-        string ExportToXmlGetType();
-        bool ExportToXmlGetLoopState();
-        int ExportToXmlGetLoopTime();
+        string ExportGetFolder();
+        string ExportGetType();
+        bool ExportGetLoopState();
+        int ExportGetLoopTime();
         string ImportGetPathCsv();
         string ImportGetPathXml();
         int? DatabaseOperationsGetID();
