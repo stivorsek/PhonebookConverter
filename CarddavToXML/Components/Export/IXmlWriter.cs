@@ -8,6 +8,5 @@ namespace PhonebookConverter.Components.Export
         void ExportToXmlYealinkLocal(string filepath);
         void ExportToXmlYealinkRemote(string filepath);
         void ExportToXmlFanvilRemoteAndLocal(string filepath);
-        void SetPeriodicExport(ExportPeriodData exportPeriodData);        
     }
 }

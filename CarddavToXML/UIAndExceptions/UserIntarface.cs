@@ -14,60 +14,38 @@ namespace CarddavToXML.UI
     {
         private readonly IExceptions _exceptions;
         private readonly ICsvReader _csvReader;
+        private readonly ICsvWriter _csvWriter;
         private readonly PhonebookDbContext _phonebookDbContext;
         private readonly IXmlWriter _xmlWriter;
         private readonly IXmlReader _xmlReader;
         private readonly IDataFromUser _dataFromUser;
         private readonly IDbOperations _dbOperations;
+        private readonly IExportLoopSettings _exportLoopSettings;
 
         public UserIntarface(ICsvReader csvReader
             , IXmlWriter xmlWriter
             , PhonebookDbContext phonebookDbContext
             , IXmlReader xmlReader
             , IDataFromUser dataFromUser
+            , IExportLoopSettings exportLoopSettings
+            , ICsvWriter csvWriter
             , IExceptions exceptions
             , IDbOperations dbOperations)
         {
-            string exportPath;
-            string exportType;
-            int exportInterval;
             _exceptions = exceptions;
             _csvReader = csvReader;
+            _csvWriter = csvWriter;
             _phonebookDbContext = phonebookDbContext;
             _phonebookDbContext.Database.EnsureCreated();
             _xmlWriter = xmlWriter;
             _xmlReader = xmlReader;
             _dataFromUser = dataFromUser;
             _dbOperations = dbOperations;
+            _exportLoopSettings = exportLoopSettings;
         }
         public void FirstUIChoise()
         {
-            var exportDataPath = "ExportData.txt";
-            if (File.Exists(exportDataPath))
-            {
-                Console.WriteLine("Znaleziono dane z ustawionego exportu");                
-                string [] lines = File.ReadAllLines(exportDataPath);
-                foreach(var line in lines )
-                {
-                    Console.WriteLine($"{line}");
-                }
-                Console.WriteLine("Czy chcesz przywrócić ten export?");
-                Console.WriteLine("1) Tak");
-                Console.WriteLine("2) Nie (Dane exportu zostaną usunięte!!!)");
-                var choise = Console.ReadLine();
-                Console.Clear();
-                if (choise == "1")
-                {
-                var exporData = new ExportPeriodData
-                {
-                    Path = lines[2],
-                    Interval = int.Parse(lines[4]),
-                    Type = lines[6]
-                };
-                _xmlWriter.SetPeriodicExport(exporData);                    
-                }
-                if (choise == "2") File.Delete(exportDataPath);
-            }
+            _exportLoopSettings.CheckExportLoopSettingsExist();
             bool endProgram = false;
             do
             {
@@ -87,31 +65,37 @@ namespace CarddavToXML.UI
                             break;
                         case "3":
                             UISeparator();
-                            ExportToXML();
+                            ExportToXML("xml");
                             Console.Clear();
                             EndOperation();
                             break;
                         case "4":
                             UISeparator();
-                            ChoseDatabaseOperations();
+                            ExportToCsv("xml");
                             Console.Clear();
                             EndOperation();
                             break;
                         case "5":
-                            endProgram = true;
+                            UISeparator();
+                            ChoseDatabaseOperations();
+                            Console.Clear();
+                            EndOperation();
                             break;
                         case "6":
+                            endProgram = true;
                             break;
                         case "7":
+                            break;
+                        case "8":
                             EndOperation();
                             break;
                         default:
-                            Console.Clear ();
+                            Console.Clear();
                             break;
                     }
-                });                
+                });
             } while (endProgram == false);
-        }
+        }   
         private void ImportDataFromCsv()
         {
             string path = _dataFromUser.ImportGetPathCsv();
@@ -152,25 +136,26 @@ namespace CarddavToXML.UI
                 EndOperation();
             }
         }
-        private void ExportToXML()
+        private void ExportToXML(string format)
         {
             do
             {
                 Console.Clear();
-                string choiseType = _dataFromUser.ExportToXmlGetType();
+                string choiseType = _dataFromUser.ExportGetType();
                 if (choiseType == "0") break;
-                string pathXml = _dataFromUser.ExportToXmlGetFolder();
+                string pathXml = _dataFromUser.ExportGetFolder();
                 if (pathXml == "0") break;
-                bool loopState = _dataFromUser.ExportToXmlGetLoopState();                
+                bool loopState = _dataFromUser.ExportGetLoopState();                
                 var exportData = new ExportPeriodData
                 {
                     Path = pathXml,
                     Type = choiseType,
+                    Format = format
                 };
                 int loopTime = 0;
                 if (loopState == true)
                 {
-                    loopTime = _dataFromUser.ExportToXmlGetLoopTime();
+                    loopTime = _dataFromUser.ExportGetLoopTime();
                     if (loopTime == 0) break;
                     exportData.Interval = loopTime;
                 }
@@ -188,8 +173,52 @@ namespace CarddavToXML.UI
                         _xmlWriter.ExportToXmlFanvilRemoteAndLocal(pathXml);
                         break;
                     default:
-                        _xmlWriter.SetPeriodicExport(exportData);                        
+                        _exportLoopSettings.SetPeriodicExport(exportData);                        
                         break;                        
+                }
+                break;
+            }
+            while (true);
+        }
+        private void ExportToCsv(string format)
+        {
+            do
+            {
+                Console.Clear();
+                string choiseType = _dataFromUser.ExportGetType();
+                if (choiseType == "0") break;
+                string pathXml = _dataFromUser.ExportGetFolder();
+                if (pathXml == "0") break;
+                bool loopState = _dataFromUser.ExportGetLoopState();
+                var exportData = new ExportPeriodData
+                {
+                    Path = pathXml,
+                    Type = choiseType,
+                    Format = format
+                };
+                int loopTime = 0;
+                if (loopState == true)
+                {
+                    loopTime = _dataFromUser.ExportGetLoopTime();
+                    if (loopTime == 0) break;
+                    exportData.Interval = loopTime;
+                }
+                var tuple = (choiseType, loopState);
+                Console.Clear();
+                switch (tuple)
+                {
+                    case ("Yealink_Local_Phonebook", false):
+                        _csvWriter.ExportToCsvYealinkLocal(pathXml);
+                        break;
+                    case ("Fanvil_Local_Phonebook", false):
+                        _csvWriter.ExportToCsvFanvilLocal(pathXml);
+                        break;
+                    case ("Yeastar_P_Series_Phonebook", false):
+                        _csvWriter.ExportToCsvYeastarPSeries(pathXml);
+                        break;
+                    default:
+                        _exportLoopSettings.SetPeriodicExport(exportData);
+                        break;
                 }
                 break;
             }
@@ -231,7 +260,7 @@ namespace CarddavToXML.UI
                 }
             }
         }
-        public void UISeparator()
+        private void UISeparator()
         {
             Console.WriteLine("");
             Console.WriteLine("///////////////////////////////////////////////////////////////////////////////");

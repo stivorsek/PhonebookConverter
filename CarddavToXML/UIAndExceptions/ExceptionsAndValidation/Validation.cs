@@ -122,5 +122,13 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
             int? result = string.IsNullOrEmpty(data) ? null : int.Parse(data);
             return result;
         }
+        public string CheckExportSettingsExist(string choise)
+        {
+            if (choise != "1" && choise != "2")
+            {
+                throw new ArgumentException("Podano nieprawidłowy wybór!!!");
+            }
+            return choise;
+        }
     }
 }

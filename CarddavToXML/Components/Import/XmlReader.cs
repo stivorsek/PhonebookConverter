@@ -1,4 +1,5 @@
 ﻿using CarddavToXML.Data.Entities;
+using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
 using System.Xml.Linq;
 using static Grpc.Core.Metadata;
 
@@ -6,6 +7,12 @@ namespace PhonebookConverter.Components.Import
 {
     public class XmlReader : IXmlReader
     {
+        private readonly IValidation _validation;
+
+        public XmlReader(IValidation validation)
+        {
+            _validation = validation;
+        }
         public List<ContactInDb> ImportFromXmlYealinkRemote(string path)
         {
             XElement document = XElement.Load(path);
@@ -17,9 +24,9 @@ namespace PhonebookConverter.Components.Import
                     {
 
                         Name = entry.Attribute("Name").Value,
-                        Phone1 = IntParseValidation(entry.Attribute("Phone1").Value),
-                        Phone2 = IntParseValidation(entry.Attribute("Phone2").Value),
-                        Phone3 = IntParseValidation(entry.Attribute("Phone3").Value)
+                        Phone1 = _validation.IntParseValidation(entry.Attribute("Phone1").Value),
+                        Phone2 = _validation.IntParseValidation(entry.Attribute("Phone2").Value),
+                        Phone3 = _validation.IntParseValidation(entry.Attribute("Phone3").Value)
                     };
                 })
                 .ToList();
@@ -35,9 +42,9 @@ namespace PhonebookConverter.Components.Import
                     return new ContactInDb()
                     {
                         Name = entry.Attribute("display_name").Value,
-                        Phone1 = IntParseValidation(entry.Attribute("mobile_number").Value),
-                        Phone2 = IntParseValidation(entry.Attribute("office_number").Value),
-                        Phone3 = IntParseValidation(entry.Attribute("other_number").Value),
+                        Phone1 = _validation.IntParseValidation(entry.Attribute("mobile_number").Value),
+                        Phone2 = _validation.IntParseValidation(entry.Attribute("office_number").Value),
+                        Phone3 = _validation.IntParseValidation(entry.Attribute("other_number").Value),
                     };
                 })
                 .ToList();
@@ -53,9 +60,9 @@ namespace PhonebookConverter.Components.Import
                     return new ContactInDb()
                     {
                         Name = entry.Element("Name").Value,
-                        Phone1 = IntParseValidation(entry.Element("Telephone").Value),
-                        Phone2 = IntParseValidation(entry.Element("Mobile").Value),
-                        Phone3 = IntParseValidation(entry.Element("Other").Value),
+                        Phone1 = _validation.IntParseValidation(entry.Element("Telephone").Value),
+                        Phone2 = _validation.IntParseValidation(entry.Element("Mobile").Value),
+                        Phone3 = _validation.IntParseValidation(entry.Element("Other").Value),
                     };
                 })
                 .ToList();
@@ -75,11 +82,6 @@ namespace PhonebookConverter.Components.Import
                 default:
                     throw new Exception("Podany typ pliku xml nie jest obsługiwany");
             }
-        }
-        public int? IntParseValidation(string data)
-        {
-            int? result = string.IsNullOrEmpty(data) ? null : int.Parse(data);
-            return result;
-        }
+        } 
     }
 }

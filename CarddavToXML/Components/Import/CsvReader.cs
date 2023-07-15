@@ -1,9 +1,16 @@
 ﻿using CarddavToXML.Data.Entities;
+using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
 
 namespace PhonebookConverter.Components.Import
 {
     public class CsvReader : ICsvReader
     {
+        private readonly IValidation _validation;
+
+        public CsvReader(IValidation validation) 
+        {
+            _validation = validation;
+        }
         public List<ContactInDb> ImportFromCsvYealinkLocal(string filePath)
         {
             var contactRecords =
@@ -16,9 +23,9 @@ namespace PhonebookConverter.Components.Import
                     return new ContactInDb()
                     {
                         Name = columns[0] + " " + columns[1],
-                        Phone1 = IntParseValidation(columns[3]),
-                        Phone2 = IntParseValidation(columns[4]),
-                        Phone3 = IntParseValidation(columns[5])
+                        Phone1 = _validation.IntParseValidation(columns[3]),
+                        Phone2 = _validation.IntParseValidation(columns[4]),
+                        Phone3 = _validation.IntParseValidation(columns[5])
                     };
                 });
             return contactRecords.ToList();
@@ -35,9 +42,9 @@ namespace PhonebookConverter.Components.Import
                     return new ContactInDb()
                     {
                         Name = columns[1],
-                        Phone1 = IntParseValidation(columns[3]),
-                        Phone2 = int.Parse(columns[5]),
-                        Phone3 = IntParseValidation(columns[7])
+                        Phone1 = _validation.IntParseValidation(columns[3]),
+                        Phone2 = _validation.IntParseValidation(columns[5]),
+                        Phone3 = _validation.IntParseValidation(columns[7])
                     };
                 });
             return contactRecords.ToList();
@@ -55,9 +62,9 @@ namespace PhonebookConverter.Components.Import
                     return new ContactInDb()
                     {
                         Name = columns[0] + " " + columns[1],
-                        Phone1 = IntParseValidation(columns[4]),
-                        Phone2 = int.Parse(columns[7]),
-                        Phone3 = IntParseValidation(columns[9])
+                        Phone1 = _validation.IntParseValidation(columns[4]),
+                        Phone2 = _validation.IntParseValidation(columns[7]),
+                        Phone3 = _validation.IntParseValidation(columns[9])
                     };
                 });
             return contactRecords.ToList();
@@ -77,11 +84,7 @@ namespace PhonebookConverter.Components.Import
                     throw new ArgumentException("Ten format pliku csv nie jest osługiwany");
             }
         }
-        public int? IntParseValidation(string data)
-        {
-            int? result = string.IsNullOrEmpty(data) ? null : int.Parse(data);
-            return result;
-        }
+        
     }
 }
 

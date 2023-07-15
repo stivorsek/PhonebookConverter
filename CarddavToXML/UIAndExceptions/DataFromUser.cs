@@ -166,6 +166,15 @@ namespace PhonebookConverter.UI
             int? result = string.IsNullOrEmpty(data) ? null : int.Parse(data);
             return result;
         }
+        public string CheckExportSettingsExist()
+        {
+            Console.WriteLine("Czy chcesz przywrócić ten export?");
+            Console.WriteLine("1) Tak");
+            Console.WriteLine("2) Nie (Dane exportu zostaną usunięte!!!)");
+            var choise = _validation.CheckExportSettingsExist(Console.ReadLine());
+            Console.Clear();
+            return choise;
+        }
 
     }
 }

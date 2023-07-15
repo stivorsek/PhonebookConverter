@@ -21,5 +21,6 @@ namespace PhonebookConverter.UI
         string DatabaseOperationsEditByIDGetChoise(ContactInDb contactFromDb);
         string FirstUIChoise();
         string DatabaseOperationsEditByIdGetParameter();
+        string CheckExportSettingsExist();
     }
 }

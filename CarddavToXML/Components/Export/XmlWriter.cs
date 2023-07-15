@@ -70,64 +70,6 @@ namespace PhonebookConverter.Components.Export
             document.Add(contacts);
             document.Save(filePath);
         }
-        public void SetPeriodicExport(ExportPeriodData exportPeriodData)
-        {
-            switch (exportPeriodData.Type)
-            {
-                case "Yealink_Local_Phonebook":
-                    ExportToXmlYealinkRemote(exportPeriodData.Path);
-                    break;
-                case "Yealink_Remote_Phonebook":
-                    ExportToXmlYealinkLocal(exportPeriodData.Path);
-                    break;
-                case "Fanvil_Local_and_Remote_Phonebook":
-                    ExportToXmlFanvilRemoteAndLocal(exportPeriodData.Path);
-                    break;
-                default:
-                    break;
-            }
-            Console.WriteLine("====================");
-            Console.WriteLine($"\tWykonano export pliku {exportPeriodData.Type} o godzinie: {DateTime.Now}");
-            Console.WriteLine("====================");
-            System.Timers.Timer timer = new System.Timers.Timer(30000);
-            timer.Elapsed += (sender, e) =>
-            {
-                switch (exportPeriodData.Type)
-                {
-                    case "Yealink_Local_Phonebook":
-                        ExportToXmlYealinkRemote(exportPeriodData.Path);
-                        break;
-                    case "Yealink_Remote_Phonebook":
-                        ExportToXmlYealinkLocal(exportPeriodData.Path);
-                        break;
-                    case "Fanvil_Local_and_Remote_Phonebook":
-                        ExportToXmlFanvilRemoteAndLocal(exportPeriodData.Path);
-                        break;
-                    default:
-                        break;
-                }
-                Console.WriteLine("====================");
-                Console.WriteLine($"\tyWykonano export pliku {exportPeriodData.Type} o godzinie: { DateTime.Now}");
-                Console.WriteLine("====================");
-            };
-            timer.Start();
-            if (!(File.Exists("ExportData.txt")))
-            {
-                using (var writer = File.AppendText("ExportData.txt"))
-                {
-                    writer.WriteLine($"Export został ustawiony: {DateTime.Now}");
-                    writer.WriteLine("\tPath:");
-                    writer.WriteLine($"{exportPeriodData.Path}");
-                    writer.WriteLine("\tInterval w sekundach:");
-                    writer.WriteLine($"{exportPeriodData.Interval/1000}");
-                    writer.WriteLine("\tType:");
-                    writer.WriteLine($"{exportPeriodData.Type}");
-                    writer.WriteLine("");
-                    writer.WriteLine("=========================");
-
-                }
-            }
-        }
     }
 }
 

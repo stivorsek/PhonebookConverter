@@ -15,6 +15,7 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         string DatabaseOperationsEditByIdChoseParameter(string choise);
         string DatabaseOperationsExportToTxt(string choise);
         string DatabaseOperationsGetType(string choise);
-        int? IntParseValidation(string data);        
+        int? IntParseValidation(string data);
+        string CheckExportSettingsExist(string choise);
     }
 }
