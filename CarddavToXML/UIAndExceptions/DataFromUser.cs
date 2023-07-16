@@ -1,12 +1,6 @@
-﻿using CarddavToXML.Data;
-using CarddavToXML.Data.Entities;
-using PhonebookConverter.Data.Entities;
+﻿using PhonebookConverterL.Data;
+using PhonebookConverterL.Data.Entities;
 using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhonebookConverter.UI
 {
@@ -63,9 +57,9 @@ namespace PhonebookConverter.UI
         }
         public int ExportGetLoopTime()
         {
+            Console.Clear();
             return _exceptions.ExceptionsLoop(() =>
-            {
-                Console.Clear();
+            {                
                 Console.WriteLine("Proszę podać co jaki interwał czasu ma byc wykonywany expert w sekundach");
                 var loopTime = _validation.ExportToXmlGetLoopTime(Console.ReadLine());
                 return loopTime * 1000;

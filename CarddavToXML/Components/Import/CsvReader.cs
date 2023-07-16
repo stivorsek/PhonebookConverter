@@ -1,4 +1,4 @@
-﻿using CarddavToXML.Data.Entities;
+﻿using PhonebookConverterL.Data.Entities;
 using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
 
 namespace PhonebookConverter.Components.Import

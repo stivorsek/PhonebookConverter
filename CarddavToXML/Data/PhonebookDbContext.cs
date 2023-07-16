@@ -1,7 +1,7 @@
-﻿using CarddavToXML.Data.Entities;
+﻿using PhonebookConverterL.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace CarddavToXML.Data
+namespace PhonebookConverterL.Data
 {
     public class PhonebookDbContext : DbContext
     {

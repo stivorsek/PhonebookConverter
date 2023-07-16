@@ -1,5 +1,6 @@
 ﻿using PhonebookConverter.Data.Entities;
 using PhonebookConverter.UI;
+
 namespace PhonebookConverter.Components.Export
 {
     public class ExportLoopSettings : IExportLoopSettings

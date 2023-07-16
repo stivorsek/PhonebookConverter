@@ -1,7 +1,6 @@
-﻿using CarddavToXML.Data.Entities;
+﻿using PhonebookConverterL.Data.Entities;
 using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
 using System.Xml.Linq;
-using static Grpc.Core.Metadata;
 
 namespace PhonebookConverter.Components.Import
 {

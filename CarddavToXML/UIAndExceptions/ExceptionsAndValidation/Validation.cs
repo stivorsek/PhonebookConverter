@@ -1,6 +1,4 @@
-﻿using CarddavToXML.Data.Entities;
-using System;
-using System.IO;
+﻿using PhonebookConverterL.Data.Entities;
 
 namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
 {
@@ -13,7 +11,7 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         }
         public string ExportToXmlGetFolder(string pathXml)
         {
-            if (!Directory.Exists(pathXml) && pathXml != "0") throw new ArgumentException("Podany folder nie istnieje");
+            if (!Directory.Exists(pathXml) && pathXml != "0") throw new Exception("Podany folder nie istnieje");
             return pathXml;
 
         }
@@ -21,13 +19,13 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         {
             if (choiseType != "1" && choiseType != "2" && choiseType != "3" && choiseType != "4")
             {
-                throw new ArgumentException("Podano nieprawidłowy rodzaj pliku XML");
+                throw new Exception("Podano nieprawidłowy rodzaj pliku XML");
             }
             return choiseType;
         }
         public bool ExportToXmlGetLoopState(string choiseLoop)
         {
-            if (choiseLoop != "1" && choiseLoop != "2") throw new ArgumentException("Podano nieprawidłowy wybór!!!");
+            if (choiseLoop != "1" && choiseLoop != "2") throw new Exception("Podano nieprawidłowy wybór!!!");
             bool loopState = false;
             if (choiseLoop == "1") loopState = true;
             return loopState;
@@ -36,7 +34,7 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         {
             int loopTime;
             var userTime = int.TryParse(timer, out loopTime);
-            if (loopTime == 0) throw new Exception("Czas pętli nie może być równy 0");
+            if (loopTime == 0) throw new Exception("Został podany nieprawidłowy czas pętli");
             return loopTime;
         }
         public string ImportGetPathXml(string path)
@@ -68,7 +66,7 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
             }
             if (!File.Exists(path))
             {
-                throw new ArgumentException("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
+                throw new Exception("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
             }
             return path;
         }
@@ -84,11 +82,7 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         }
         public object DatabaseOperationsGetID(ContactInDb contactInDb)
         {
-            if (contactInDb == default)
-            {
-                throw new ArgumentException("Podane ID nie istnieje w bazie danych!!!");
-            }
-            return contactInDb;
+            return contactInDb == default ? throw new Exception("Podane ID nie istnieje w bazie danych!!!") : (object)contactInDb;
         }
         public string DatabaseOperationsEditByIdChoseParameter(string choise)
         {
@@ -98,14 +92,14 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
             }
             else
             {
-                throw new ArgumentException("Nie ma takiego parametru!!!");
+                throw new Exception("Nie ma takiego parametru!!!");
             }
         }
         public string DatabaseOperationsExportToTxt(string choise)
         {
             if (choise != "1" && choise != "2")
             {
-                throw new ArgumentException("Podano nieprawidłowy wybór!!!");
+                throw new Exception("Podano nieprawidłowy wybór!!!");
             }
             return choise;
         }
@@ -113,7 +107,7 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         {
             if (choise != "1" && choise != "2" && choise != "3" && choise != "4" && choise != "5")
             {
-                throw new ArgumentException("Podano nieprawidłowy wybór!!!");
+                throw new Exception("Podano nieprawidłowy wybór!!!");
             }
             return choise;
         }
@@ -126,7 +120,7 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         {
             if (choise != "1" && choise != "2")
             {
-                throw new ArgumentException("Podano nieprawidłowy wybór!!!");
+                throw new Exception("Podano nieprawidłowy wybór!!!");
             }
             return choise;
         }

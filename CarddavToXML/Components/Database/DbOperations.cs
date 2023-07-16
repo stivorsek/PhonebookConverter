@@ -1,5 +1,5 @@
-﻿using CarddavToXML.Data.Entities;
-using CarddavToXML.Data;
+﻿using PhonebookConverterL.Data.Entities;
+using PhonebookConverterL.Data;
 using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
 using PhonebookConverter.UI;
 

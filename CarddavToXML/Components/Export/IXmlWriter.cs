@@ -1,7 +1,4 @@
-﻿using CarddavToXML.Data.Entities;
-using PhonebookConverter.Data.Entities;
-
-namespace PhonebookConverter.Components.Export
+﻿namespace PhonebookConverter.Components.Export
 {
     public interface IXmlWriter
     {

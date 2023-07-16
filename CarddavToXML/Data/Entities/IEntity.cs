@@ -1,4 +1,4 @@
-﻿namespace CarddavToXML.Data.Entities
+﻿namespace PhonebookConverterL.Data.Entities
 {
     public interface IEntity
     {

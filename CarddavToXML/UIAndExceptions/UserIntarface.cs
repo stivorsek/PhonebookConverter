@@ -1,16 +1,15 @@
-﻿using CarddavToXML.Data;
-using CarddavToXML.Data.Entities;
+﻿using PhonebookConverterL.Data;
+using PhonebookConverterL.Data.Entities;
 using PhonebookConverter.Components.Database;
 using PhonebookConverter.Components.Export;
 using PhonebookConverter.Components.Import;
 using PhonebookConverter.Data.Entities;
 using PhonebookConverter.UI;
 using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
-using System;
 
-namespace CarddavToXML.UI
+namespace PhonebookConverterL.UI
 {
-    public class UserIntarface : IChoise
+    public class UserIntarface : IUserIntarface
     {
         private readonly IExceptions _exceptions;
         private readonly ICsvReader _csvReader;

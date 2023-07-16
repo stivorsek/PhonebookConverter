@@ -1,10 +1,10 @@
-﻿using CarddavToXML.Data.Entities;
+﻿using PhonebookConverterL.Data.Entities;
 
 namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
 {
     public interface IValidation
     {
-        string ExportToXmlGetFolder(string pathXml);
+        string ExportToXmlGetFolder(string pathml);
         bool ExportToXmlGetLoopState(string choiseLoop);
         int ExportToXmlGetLoopTime(string userTime);
         string ExportToXmlGetType(string choiseType);
