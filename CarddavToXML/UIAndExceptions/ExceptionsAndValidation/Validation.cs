@@ -45,11 +45,11 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
             }
             if (!path.Contains(".xml"))
             {
-                throw new ArgumentException("To nie jest plik xml");
+                throw new Exception("To nie jest plik xml");
             }
             if (!File.Exists(path))
             {
-                throw new ArgumentException("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
+                throw new Exception("Ten plik nie istnieje lub ścieżka jest niepoprawna!!!");
             }
             return path;
         }
@@ -62,7 +62,7 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
             }
             if (!path.Contains(".csv"))
             {
-                throw new ArgumentException("To nie jest plik csv!!!");
+                throw new Exception("To nie jest plik csv!!!");
             }
             if (!File.Exists(path))
             {
@@ -88,12 +88,10 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         {
             if (choise != "1" && choise != "2" && choise != "3" && choise != "4")
             {
-                return choise;
-            }
-            else
-            {
                 throw new Exception("Nie ma takiego parametru!!!");
+                
             }
+            return choise;
         }
         public string DatabaseOperationsExportToTxt(string choise)
         {
@@ -111,11 +109,6 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
             }
             return choise;
         }
-        public int? IntParseValidation(string data)
-        {
-            int? result = string.IsNullOrEmpty(data) ? null : int.Parse(data);
-            return result;
-        }
         public string CheckExportSettingsExist(string choise)
         {
             if (choise != "1" && choise != "2")
@@ -123,6 +116,11 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
                 throw new Exception("Podano nieprawidłowy wybór!!!");
             }
             return choise;
+        }
+        public int? IntParseValidation(string data)
+        {
+            int? result = string.IsNullOrEmpty(data) ? null : int.Parse(data);
+            return result;
         }
     }
 }

@@ -125,6 +125,131 @@ public class UnitTest1
         // Act & Assert
         var result = _validation.ExportToXmlGetLoopTime(loopTime);
         // Sprawdü, czy metoda rzuci≥a oczekiwany wyjπtek dla wartoúci domyúlnej
-        Assert.AreEqual(int.Parse(loopTime),result);
+        Assert.AreEqual(int.Parse(loopTime), result);
     }
+    [Test]
+    public void ImportGetPathXml_ThrowException()
+    {
+        // Arrange
+        string pathXml = ".csv";
+
+        // Act & Assert
+
+        // Sprawdü, czy metoda rzuci≥a oczekiwany wyjπtek dla wartoúci domyúlnej
+        Assert.Throws<Exception>(() => _validation.ImportGetPathXml(pathXml));
+    }
+    [Test]
+    public void ImportGetPathXml_ReturnPathCsv()
+    {
+        // Arrange
+        string pathXml = "C:\\Users\\Admin\\Downloads\\1.xml";
+
+        // Act & Assert
+        string result = _validation.ImportGetPathXml(pathXml);
+        // Sprawdü, czy metoda rzuci≥a oczekiwany wyjπtek dla wartoúci domyúlnej
+        Assert.AreEqual(pathXml, result);
+    }
+    [Test]
+    public void ImportGetPathCsv_ThrowException()
+    {
+        // Arrange
+        string pathXml = ".xml";
+
+        // Act & Assert
+
+        // Sprawdü, czy metoda rzuci≥a oczekiwany wyjπtek dla wartoúci domyúlnej
+        Assert.Throws<Exception>(() => _validation.ImportGetPathCsv(pathXml));
+    }
+    [Test]
+    public void ImportGetPathCsv_ReturnPathCsv()
+    {
+        // Arrange
+        string pathXml = "C:\\Users\\Admin\\Downloads\\2.csv";
+
+        // Act & Assert
+        string result = _validation.ImportGetPathCsv(pathXml);
+        // Sprawdü, czy metoda rzuci≥a oczekiwany wyjπtek dla wartoúci domyúlnej
+        Assert.AreEqual(pathXml, result);
+    }
+    [Test]
+    public void DatabaseOperationsGetID_ThrowException()
+    {
+        string idFromUser = "gsfdsf";
+        
+        Assert.Throws<FormatException>(() => _validation.DatabaseOperationsGetID(idFromUser));
+    }
+    [Test]
+    public void DatabaseOperationsGetID_ReturnID()
+    {
+        string idFromUser = "2";
+
+        var result = _validation.DatabaseOperationsGetID(idFromUser);
+
+        Assert.AreEqual(int.Parse(idFromUser), result);
+    }
+    [Test]
+    public void DatabaseOperationsEditByIdChoseParameter_ThrowException()
+    {
+        string idFromUser = "gsfdsf";
+
+        Assert.Throws<Exception>(() => _validation.DatabaseOperationsEditByIdChoseParameter(idFromUser));
+    }
+    [Test]
+    public void DatabaseOperationsEditByIdChoseParameter_ReturnID()
+    {
+        string idFromUser = "2";
+
+        var result = _validation.DatabaseOperationsEditByIdChoseParameter(idFromUser);
+
+        Assert.AreEqual(idFromUser, result);
+    }
+    [Test]
+    public void DatabaseOperationsExportToTxt_ThrowException()
+    {
+        string idFromUser = "gsfdsf";
+
+        Assert.Throws<Exception>(() => _validation.DatabaseOperationsExportToTxt(idFromUser));
+    }
+    [Test]
+    public void DatabaseOperationsExportToTxt_ReturnID()
+    {
+        string idFromUser = "2";
+
+        var result = _validation.DatabaseOperationsExportToTxt(idFromUser);
+
+        Assert.AreEqual(idFromUser, result);
+    }
+    [Test]
+    public void DatabaseOperationsGetType_ThrowException()
+    {
+        string idFromUser = "gsfdsf";
+
+        Assert.Throws<Exception>(() => _validation.DatabaseOperationsGetType(idFromUser));
+    }
+    [Test]
+    public void DatabaseOperationsGetType_ReturnID()
+    {
+        string idFromUser = "5";
+
+        var result = _validation.DatabaseOperationsGetType(idFromUser);
+
+        Assert.AreEqual(idFromUser, result);
+    }
+    [Test]
+    public void CheckExportSettingsExist_ThrowException()
+    {
+        string idFromUser = "gsfdsf";
+
+        Assert.Throws<Exception>(() => _validation.CheckExportSettingsExist(idFromUser));
+    }
+    [Test]
+    public void CheckExportSettingsExist_ReturnID()
+    {
+        string idFromUser = "2";
+
+        var result = _validation.CheckExportSettingsExist(idFromUser);
+
+        Assert.AreEqual(idFromUser, result);
+    }
+
 }

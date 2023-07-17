@@ -41,10 +41,10 @@ namespace PhonebookConverter.Components.Import
                     var columns = x.Split('"');
                     return new ContactInDb()
                     {
-                        Name = columns[1],
-                        Phone1 = _validation.IntParseValidation(columns[3]),
-                        Phone2 = _validation.IntParseValidation(columns[5]),
-                        Phone3 = _validation.IntParseValidation(columns[7])
+                        Name = columns[0],
+                        Phone1 = _validation.IntParseValidation(columns[1]),
+                        Phone2 = _validation.IntParseValidation(columns[3]),
+                        Phone3 = _validation.IntParseValidation(columns[6])
                     };
                 });
             return contactRecords.ToList();

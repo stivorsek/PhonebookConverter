@@ -150,8 +150,9 @@ namespace PhonebookConverter.UI
             Console.WriteLine("1) Załaduj Dane do bazy danych z pliku CSV");
             Console.WriteLine("2) Załaduj Dane do bazy danych z pliku XML");
             Console.WriteLine("3) Exportuj dane do XML");
-            Console.WriteLine("4) Aby wybrać operacje na bazie danych");
-            Console.WriteLine("5) Aby zakończyć program");
+            Console.WriteLine("4) Exportuj dane do CSV");
+            Console.WriteLine("5) Aby wybrać operacje na bazie danych");
+            Console.WriteLine("6) Aby zakończyć program");
             var choise = Console.ReadLine();
             return choise;
         }
