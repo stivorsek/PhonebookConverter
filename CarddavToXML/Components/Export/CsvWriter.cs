@@ -29,10 +29,10 @@ namespace PhonebookConverter.Components.Export
             var contactsFromDb = _phonebookDbContext.Phonebook.ToList();
             using (var writer = File.AppendText(filePath))            
             {
-                writer.Write("\"name\",\"work\",\"mobile\",\"other\",\"ring\",\"groups\"\r\n");
+                writer.Write("\"name\",\"work\",\"mobile\",\"other\",\"ring\",\"groups\"");
                 foreach (var contact in contactsFromDb)
                 {
-                    writer.Write($"\"{contact.Name}\",,\"{contact.Phone1},,\"{contact.Phone2}\",,\"{contact.Phone3}\"");
+                    writer.Write($"\"{contact.Name}\",\"\",\"{contact.Phone1},\"\",\"{contact.Phone2}\",\"\",\"{contact.Phone3}\"");
                 }
             }
         }

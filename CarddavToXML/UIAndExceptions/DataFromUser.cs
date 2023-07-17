@@ -91,7 +91,9 @@ namespace PhonebookConverter.UI
             return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Podaj ID lub 0 aby wrócić do poprzedniego menu");
-                int? id = _validation.DatabaseOperationsGetID(Console.ReadLine());
+                string choise= Console.ReadLine();
+                if (choise == "0") return int.Parse(choise);
+                int? id = _validation.DatabaseOperationsGetID(choise);
                 var contactFromDb = _validation.DatabaseOperationsGetID(_phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id));
                 Console.Clear();
                 return id;
@@ -125,20 +127,47 @@ namespace PhonebookConverter.UI
         }
         public string DatabaseOperationsEditByIDGetChoise(ContactInDb contactFromDb)
         {
-            Console.WriteLine($"\t1) Name : {contactFromDb.Name}");
-            Console.WriteLine($"\t2) Phone1 : {contactFromDb.Phone1}");
-            Console.WriteLine($"\t3) Phone2 : {contactFromDb.Phone2}");
-            Console.WriteLine($"\t4) Phone3 : {contactFromDb.Phone3}");
-            Console.WriteLine("");
-            Console.WriteLine("Który parametr chcesz zmienić lub wybierz 0 aby cofnąć?");
-            var choise = Console.ReadLine();
-            return choise;
+            return _exceptions.ExceptionsLoop(() =>
+            {
+                Console.WriteLine($"\t1) Name : {contactFromDb.Name}");
+                Console.WriteLine($"\t2) Phone1 : {contactFromDb.Phone1}");
+                Console.WriteLine($"\t3) Phone2 : {contactFromDb.Phone2}");
+                Console.WriteLine($"\t4) Phone3 : {contactFromDb.Phone3}");
+                Console.WriteLine("");
+                Console.WriteLine("Który parametr chcesz zmienić lub wybierz 0 wrócić do głównego menu");
+                var choise = _validation.DatabaseOperationsEditByIdChoseParameter(Console.ReadLine());                
+                return choise;
+            });
         }
         public string DatabaseOperationsEditByIdGetParameter()
         {
             Console.WriteLine("Podaj na co chcesz zmienić parametr");
             var parameter = Console.ReadLine();
             return parameter;
+        }
+        public ContactInDb DatabaseOperationsAddNewEntryGetData()
+        {
+            Console.Clear();
+            return _exceptions.ExceptionsLoop(() =>
+            {
+                Console.WriteLine("Podaj Nazwę");
+                var Name = Console.ReadLine();
+                Console.WriteLine("Podaj pierwszy numer telefonu");
+                var Phone1 = _validation.IntParseValidation(Console.ReadLine());
+                Console.WriteLine("Podaj drugi numer telefonu");
+                var Phone2 = _validation.IntParseValidation(Console.ReadLine());
+                Console.WriteLine("Podaj trzeci numer telefonu");
+                var Phone3 = _validation.IntParseValidation(Console.ReadLine());
+                var contact = new ContactInDb()
+                {
+                    Name = Name,
+                    Phone1 = Phone1,
+                    Phone2 = Phone2,
+                    Phone3 = Phone3
+                };
+                Console.Clear();
+                return contact;
+            });
         }
         public string FirstUIChoise()
         {

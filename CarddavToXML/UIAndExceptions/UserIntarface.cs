@@ -6,6 +6,7 @@ using PhonebookConverter.Components.Import;
 using PhonebookConverter.Data.Entities;
 using PhonebookConverter.UI;
 using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
+using PhonebookConverter.Components.DataTxt;
 
 namespace PhonebookConverterL.UI
 {
@@ -19,6 +20,7 @@ namespace PhonebookConverterL.UI
         private readonly IXmlReader _xmlReader;
         private readonly IDataFromUser _dataFromUser;
         private readonly IDbOperations _dbOperations;
+        private readonly IDataInFileTxt _dataInFileTxt;
         private readonly IExportLoopSettings _exportLoopSettings;
 
         public UserIntarface(ICsvReader csvReader
@@ -29,6 +31,7 @@ namespace PhonebookConverterL.UI
             , IExportLoopSettings exportLoopSettings
             , ICsvWriter csvWriter
             , IExceptions exceptions
+            , IDataInFileTxt dataInFileTxt
             , IDbOperations dbOperations)
         {
             _exceptions = exceptions;
@@ -40,6 +43,7 @@ namespace PhonebookConverterL.UI
             _xmlReader = xmlReader;
             _dataFromUser = dataFromUser;
             _dbOperations = dbOperations;
+            _dataInFileTxt = dataInFileTxt;
             _exportLoopSettings = exportLoopSettings;
         }
         public void FirstUIChoise()
@@ -76,7 +80,7 @@ namespace PhonebookConverterL.UI
                             break;
                         case "5":
                             UISeparator();
-                            ChoseDatabaseOperations();
+                            ChoseDatabaseOperations("MSSQL");
                             Console.Clear();
                             EndOperation();
                             break;
@@ -84,6 +88,7 @@ namespace PhonebookConverterL.UI
                             endProgram = true;
                             break;
                         case "7":
+                            var data = _dataInFileTxt.ReadDataFromCSV();
                             break;
                         case "8":
                             EndOperation();
@@ -223,7 +228,7 @@ namespace PhonebookConverterL.UI
             }
             while (true);
         }
-        private void ChoseDatabaseOperations()
+        private void ChoseDatabaseOperations(string dataStorage)
         {
             Console.Clear();
             string choise = _dataFromUser.DatabaseOperationsGetType();
@@ -232,29 +237,35 @@ namespace PhonebookConverterL.UI
             {
                 int? id = null;
                 Console.Clear();
-                switch (choise)
+                var tuple = (choise, dataStorage);
+                switch (tuple)
                 {
-                    case "1":
-                        id = _dataFromUser.DatabaseOperationsGetID();
-                        if (id == null)
-                            break;
+                    case ("1","MSSQL"):
+                        id = _dataFromUser.DatabaseOperationsGetID(dataStorage);
+                        if (id == 0) break;
                         _dbOperations.DeleteFromDbByID(id);
                         break;
-                    case "2":                        
-                        id = _dataFromUser.DatabaseOperationsGetID();
-                        if (id == null)                                
-                                break;                        
+                    case ("2","MSSQL"):
+                        id = _dataFromUser.DatabaseOperationsGetID(dataStorage);
+                        if (id == 0) break;
                         _dbOperations.EditByID(id);
                         break;
-                    case "3":
+                    case ("3", "MSSQL"):
                         _dbOperations.AddNewDbEntry();
                         break;
-                    case "4":
+                    case ("4", "MSSQL"):
                         _dbOperations.ReadAllContactsFromDb();
                         string choiseExport = _dataFromUser.DatabaseOperationsExportToTxt();
-                        if (choiseExport == "2")
-                        { break;}
+                        if (choiseExport == "2") break;
                         _dbOperations.SaveDataFromDbToTxt();
+                        break;
+                    case ("1", "FILE"):
+                        break;
+                    case ("2", "FILE"):
+                        break;
+                    case ("3", "FILE"):
+                        break;
+                    case ("4", "FILE"):
                         break;
                 }
             }

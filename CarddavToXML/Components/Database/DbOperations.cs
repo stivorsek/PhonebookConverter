@@ -21,28 +21,9 @@ namespace PhonebookConverter.Components.Database
         }
         public void AddNewDbEntry()
         {
-            Console.Clear();
-            _exceptions.ExceptionsLoop(() =>
-            {
-                Console.WriteLine("Podaj Nazwę");
-                var Name = Console.ReadLine();
-                Console.WriteLine("Podaj pierwszy numer telefonu");
-                var Phone1 = _validation.IntParseValidation(Console.ReadLine());
-                Console.WriteLine("Podaj drugi numer telefonu");
-                var Phone2 = _validation.IntParseValidation(Console.ReadLine());
-                Console.WriteLine("Podaj trzeci numer telefonu");
-                var Phone3 = _validation.IntParseValidation(Console.ReadLine());
-                _phonebookDbContext.Add(new ContactInDb()
-                {
-                    Name = Name,
-                    Phone1 = Phone1,
-                    Phone2 = Phone2,
-                    Phone3 = Phone3
-                });
-                _phonebookDbContext.SaveChanges();
-                Console.Clear();
-            });
-
+            var contact = _dataFromUser.DatabaseOperationsAddNewEntryGetData();
+            _phonebookDbContext.Add(contact);
+            _phonebookDbContext.SaveChanges();
         }
         public void EditByID(int? id)
         {
@@ -50,8 +31,7 @@ namespace PhonebookConverter.Components.Database
             {
                 do
                 {
-                    var contactFromDb = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);
-                    contactFromDb = (ContactInDb)_validation.DatabaseOperationsGetID(contactFromDb);
+                    var contactFromDb = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);                    
                     var choise = _dataFromUser.DatabaseOperationsEditByIDGetChoise(contactFromDb);
                     if (choise == "0") break;
                     choise = _validation.DatabaseOperationsEditByIdChoseParameter(choise);

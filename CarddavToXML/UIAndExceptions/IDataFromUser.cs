@@ -10,12 +10,13 @@ namespace PhonebookConverter.UI
         int ExportGetLoopTime();
         string ImportGetPathCsv();
         string ImportGetPathXml();
-        int? DatabaseOperationsGetID();
         string DatabaseOperationsGetType();
         string DatabaseOperationsExportToTxt();
         string DatabaseOperationsEditByIDGetChoise(ContactInDb contactFromDb);
         string FirstUIChoise();
         string DatabaseOperationsEditByIdGetParameter();
         string CheckExportSettingsExist();
+        ContactInDb DatabaseOperationsAddNewEntryGetData();
+        int? DatabaseOperationsGetID(string dataCenter);
     }
 }

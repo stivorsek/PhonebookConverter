@@ -109,6 +109,14 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
             }
             return choise;
         }
+        public string DatabaseOperationsEditByIDGetChoise (string choise)
+        {
+            if (choise != "0" && choise != "1" && choise != "2" && choise != "3" && choise != "4")
+            {
+                throw new Exception("Podano nieprawidłowy wybór!!!");
+            }
+            return choise;
+        }
         public string CheckExportSettingsExist(string choise)
         {
             if (choise != "1" && choise != "2")
