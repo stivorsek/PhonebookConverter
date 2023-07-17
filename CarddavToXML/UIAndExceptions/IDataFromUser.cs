@@ -1,6 +1,6 @@
 ﻿using PhonebookConverterL.Data.Entities;
 
-namespace PhonebookConverter.UI
+namespace PhonebookConverter.UIAndExceptions
 {
     public interface IDataFromUser
     {
@@ -10,13 +10,14 @@ namespace PhonebookConverter.UI
         int ExportGetLoopTime();
         string ImportGetPathCsv();
         string ImportGetPathXml();
-        string DatabaseOperationsGetType();
-        string DatabaseOperationsExportToTxt();
-        string DatabaseOperationsEditByIDGetChoise(ContactInDb contactFromDb);
+        string DataOperationsGetType();
+        string DataOperationsExportToTxt();
+        string DataOperationsEditByIDGetChoise(ContactInDb contactFromDb);
+        int? DataOperationsGetID(string dataCenter);
         string FirstUIChoise();
-        string DatabaseOperationsEditByIdGetParameter();
+        string DataOperationsEditByIdGetParameter();
         string CheckExportSettingsExist();
-        ContactInDb DatabaseOperationsAddNewEntryGetData();
-        int? DatabaseOperationsGetID(string dataCenter);
+        ContactInDb DataOperationsAddNewEntryGetData();
+        
     }
 }

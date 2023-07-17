@@ -3,7 +3,11 @@
 namespace PhonebookConverter.Components.DataTxt
 {
     public interface IDataInFileTxt
-    {
-        List<ContactInDb> ReadDataFromCSV();
+    {        
+        void EditByID(int? id);
+        void ShowAllContacts();
+        void AddNewEntry();
+        void DeleteByID(int? id);
+        void SaveDataFromFileToTxt();
     }
 }

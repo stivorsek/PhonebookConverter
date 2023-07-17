@@ -1,20 +1,24 @@
 ﻿using PhonebookConverterL.Data;
 using PhonebookConverterL.Data.Entities;
 using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
+using PhonebookConverter.Components.DataTxt;
+using PhonebookConverter.Data;
 
-namespace PhonebookConverter.UI
+namespace PhonebookConverter.UIAndExceptions
 {
     public class DataFromUser : IDataFromUser
     {
         private readonly IExceptions _exceptions;
-        private readonly PhonebookDbContext _phonebookDbContext;
+        private readonly PhonebookDbContext _phonebookDbContext;        
         private readonly IValidation _validation;
+        private readonly FileContext _fileContext;
 
-        public DataFromUser(IExceptions exceptions, PhonebookDbContext phonebookDbContext, IValidation validation)
+        public DataFromUser(IExceptions exceptions, PhonebookDbContext phonebookDbContext, IValidation validation, FileContext fileContext)
         {
             _exceptions = exceptions;
-            _phonebookDbContext = phonebookDbContext;
+            _phonebookDbContext = phonebookDbContext;            
             _validation = validation;
+            _fileContext = fileContext;
         }
         public string ExportGetFolder()
         {
@@ -36,12 +40,12 @@ namespace PhonebookConverter.UI
                 Console.WriteLine("\t 2)Yealink Remote Phonebook");
                 Console.WriteLine("\t 3)Fanvil Local and Remote Phonebook");
                 string choiseType = _validation.ExportToXmlGetType(Console.ReadLine());
-                if(choiseType == "1") choiseType = "Yealink_Local_Phonebook";
-                if(choiseType == "2") choiseType = "Yealink_Remote_Phonebook";
-                if(choiseType == "3") choiseType = "Fanvil_Local_and_Remote_Phonebook";
+                if (choiseType == "1") choiseType = "Yealink_Local_Phonebook";
+                if (choiseType == "2") choiseType = "Yealink_Remote_Phonebook";
+                if (choiseType == "3") choiseType = "Fanvil_Local_and_Remote_Phonebook";
                 Console.Clear();
                 return choiseType;
-                });
+            });
         }
         public bool ExportGetLoopState()
         {
@@ -59,7 +63,7 @@ namespace PhonebookConverter.UI
         {
             Console.Clear();
             return _exceptions.ExceptionsLoop(() =>
-            {                
+            {
                 Console.WriteLine("Proszę podać co jaki interwał czasu ma byc wykonywany expert w sekundach");
                 var loopTime = _validation.ExportToXmlGetLoopTime(Console.ReadLine());
                 return loopTime * 1000;
@@ -86,20 +90,27 @@ namespace PhonebookConverter.UI
                 return path;
             });
         }
-        public int? DatabaseOperationsGetID()
+        public int? DataOperationsGetID(string dataCenter)
         {
             return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Podaj ID lub 0 aby wrócić do poprzedniego menu");
-                string choise= Console.ReadLine();
+                string choise = Console.ReadLine();
                 if (choise == "0") return int.Parse(choise);
-                int? id = _validation.DatabaseOperationsGetID(choise);
-                var contactFromDb = _validation.DatabaseOperationsGetID(_phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id));
+                int? id = _validation.DataOperationsGetID(choise);
+                if (dataCenter == "MSSQL")
+                {
+                    var contactFromDb = _validation.DataOperationsGetID(_phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id));
+                }
+                if (dataCenter == "FILE")
+                {
+                    var contacts = _validation.DataOperationsGetID(_fileContext.ReadAllContactsFromFile().FirstOrDefault(c => c.Id == id));
+                }
                 Console.Clear();
                 return id;
             });
         }
-        public string DatabaseOperationsGetType()
+        public string DataOperationsGetType()
         {
             return _exceptions.ExceptionsLoop(() =>
             {
@@ -108,24 +119,24 @@ namespace PhonebookConverter.UI
                 Console.WriteLine("2) Edytować wpis po ID");
                 Console.WriteLine("3) Dodać wpis ręcznie");
                 Console.WriteLine("4) Wyświetlić wszystkie dane");
-                var choise = _validation.DatabaseOperationsGetType(Console.ReadLine());                
+                var choise = _validation.DataOperationsGetType(Console.ReadLine());
                 Console.Clear();
                 return choise;
             });
         }
-        public string DatabaseOperationsExportToTxt()
+        public string DataOperationsExportToTxt()
         {
             return _exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Czy chcesz zapisać plik do pliku tekstowego?");
                 Console.WriteLine("\t 1)Tak");
                 Console.WriteLine("\t 2)Nie");
-                var choise = _validation.DatabaseOperationsExportToTxt(Console.ReadLine());                
+                var choise = _validation.DataOperationsExportToTxt(Console.ReadLine());
                 Console.Clear();
                 return choise;
             });
         }
-        public string DatabaseOperationsEditByIDGetChoise(ContactInDb contactFromDb)
+        public string DataOperationsEditByIDGetChoise(ContactInDb contactFromDb)
         {
             return _exceptions.ExceptionsLoop(() =>
             {
@@ -135,17 +146,17 @@ namespace PhonebookConverter.UI
                 Console.WriteLine($"\t4) Phone3 : {contactFromDb.Phone3}");
                 Console.WriteLine("");
                 Console.WriteLine("Który parametr chcesz zmienić lub wybierz 0 wrócić do głównego menu");
-                var choise = _validation.DatabaseOperationsEditByIdChoseParameter(Console.ReadLine());                
+                var choise = _validation.DataOperationsEditByIdChoseParameter(Console.ReadLine());
                 return choise;
             });
         }
-        public string DatabaseOperationsEditByIdGetParameter()
+        public string DataOperationsEditByIdGetParameter()
         {
             Console.WriteLine("Podaj na co chcesz zmienić parametr");
             var parameter = Console.ReadLine();
             return parameter;
         }
-        public ContactInDb DatabaseOperationsAddNewEntryGetData()
+        public ContactInDb DataOperationsAddNewEntryGetData()
         {
             Console.Clear();
             return _exceptions.ExceptionsLoop(() =>
@@ -181,7 +192,8 @@ namespace PhonebookConverter.UI
             Console.WriteLine("3) Exportuj dane do XML");
             Console.WriteLine("4) Exportuj dane do CSV");
             Console.WriteLine("5) Aby wybrać operacje na bazie danych");
-            Console.WriteLine("6) Aby zakończyć program");
+            Console.WriteLine("6) Aby wybrać operacje na plikach");
+            Console.WriteLine("7) Aby zakończyć program");
             var choise = Console.ReadLine();
             return choise;
         }
@@ -192,12 +204,15 @@ namespace PhonebookConverter.UI
         }
         public string CheckExportSettingsExist()
         {
-            Console.WriteLine("Czy chcesz przywrócić ten export?");
-            Console.WriteLine("1) Tak");
-            Console.WriteLine("2) Nie (Dane exportu zostaną usunięte!!!)");
-            var choise = _validation.CheckExportSettingsExist(Console.ReadLine());
-            Console.Clear();
-            return choise;
+            return _exceptions.ExceptionsLoop(() =>
+            {
+                Console.WriteLine("Czy chcesz przywrócić ten export?");
+                Console.WriteLine("1) Tak");
+                Console.WriteLine("2) Nie (Dane exportu zostaną usunięte!!!)");
+                var choise = _validation.CheckExportSettingsExist(Console.ReadLine());
+                Console.Clear();
+                return choise;
+            });
         }
 
     }

@@ -22,7 +22,7 @@ public class UnitTest1
         ContactInDb contact = new ContactInDb();
 
         // Act
-        object result = _validation.DatabaseOperationsGetID(contact);
+        object result = _validation.DataOperationsGetID(contact);
 
         // Assert
         // SprawdŸ, czy zwrócona wartoœæ jest taka sama jak obiekt contact
@@ -37,7 +37,7 @@ public class UnitTest1
 
         // Act & Assert
         // SprawdŸ, czy metoda rzuci³a oczekiwany wyj¹tek dla wartoœci domyœlnej
-        Assert.Throws<Exception>(() => _validation.DatabaseOperationsGetID(contact));
+        Assert.Throws<Exception>(() => _validation.DataOperationsGetID(contact));
     }
     [Test]
     public void ExportToXmlGetFolder_ReturnExistPath()
@@ -176,14 +176,14 @@ public class UnitTest1
     {
         string idFromUser = "gsfdsf";
         
-        Assert.Throws<FormatException>(() => _validation.DatabaseOperationsGetID(idFromUser));
+        Assert.Throws<FormatException>(() => _validation.DataOperationsGetID(idFromUser));
     }
     [Test]
     public void DatabaseOperationsGetID_ReturnID()
     {
         string idFromUser = "2";
 
-        var result = _validation.DatabaseOperationsGetID(idFromUser);
+        var result = _validation.DataOperationsGetID(idFromUser);
 
         Assert.AreEqual(int.Parse(idFromUser), result);
     }
@@ -192,14 +192,14 @@ public class UnitTest1
     {
         string idFromUser = "gsfdsf";
 
-        Assert.Throws<Exception>(() => _validation.DatabaseOperationsEditByIdChoseParameter(idFromUser));
+        Assert.Throws<Exception>(() => _validation.DataOperationsEditByIdChoseParameter(idFromUser));
     }
     [Test]
     public void DatabaseOperationsEditByIdChoseParameter_ReturnID()
     {
         string idFromUser = "2";
 
-        var result = _validation.DatabaseOperationsEditByIdChoseParameter(idFromUser);
+        var result = _validation.DataOperationsEditByIdChoseParameter(idFromUser);
 
         Assert.AreEqual(idFromUser, result);
     }
@@ -208,14 +208,14 @@ public class UnitTest1
     {
         string idFromUser = "gsfdsf";
 
-        Assert.Throws<Exception>(() => _validation.DatabaseOperationsExportToTxt(idFromUser));
+        Assert.Throws<Exception>(() => _validation.DataOperationsExportToTxt(idFromUser));
     }
     [Test]
     public void DatabaseOperationsExportToTxt_ReturnID()
     {
         string idFromUser = "2";
 
-        var result = _validation.DatabaseOperationsExportToTxt(idFromUser);
+        var result = _validation.DataOperationsExportToTxt(idFromUser);
 
         Assert.AreEqual(idFromUser, result);
     }
@@ -224,14 +224,14 @@ public class UnitTest1
     {
         string idFromUser = "gsfdsf";
 
-        Assert.Throws<Exception>(() => _validation.DatabaseOperationsGetType(idFromUser));
+        Assert.Throws<Exception>(() => _validation.DataOperationsGetType(idFromUser));
     }
     [Test]
     public void DatabaseOperationsGetType_ReturnID()
     {
-        string idFromUser = "5";
+        string idFromUser = "4";
 
-        var result = _validation.DatabaseOperationsGetType(idFromUser);
+        var result = _validation.DataOperationsGetType(idFromUser);
 
         Assert.AreEqual(idFromUser, result);
     }

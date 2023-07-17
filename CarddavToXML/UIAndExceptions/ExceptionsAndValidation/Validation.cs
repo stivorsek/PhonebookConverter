@@ -70,7 +70,7 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
             }
             return path;
         }
-        public int? DatabaseOperationsGetID(string idFromUser)
+        public int? DataOperationsGetID(string idFromUser)
         {
             int? id = int.Parse(idFromUser);
             if (id == 0)
@@ -80,11 +80,11 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
             return id;
 
         }
-        public object DatabaseOperationsGetID(ContactInDb contactInDb)
+        public object DataOperationsGetID(ContactInDb contactInDb)
         {
             return contactInDb == default ? throw new Exception("Podane ID nie istnieje w bazie danych!!!") : (object)contactInDb;
         }
-        public string DatabaseOperationsEditByIdChoseParameter(string choise)
+        public string DataOperationsEditByIdChoseParameter(string choise)
         {
             if (choise != "1" && choise != "2" && choise != "3" && choise != "4")
             {
@@ -93,7 +93,7 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
             }
             return choise;
         }
-        public string DatabaseOperationsExportToTxt(string choise)
+        public string DataOperationsExportToTxt(string choise)
         {
             if (choise != "1" && choise != "2")
             {
@@ -101,21 +101,24 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
             }
             return choise;
         }
-        public string DatabaseOperationsGetType(string choise)
-        {
-            if (choise != "1" && choise != "2" && choise != "3" && choise != "4" && choise != "5")
-            {
-                throw new Exception("Podano nieprawidłowy wybór!!!");
-            }
-            return choise;
-        }
-        public string DatabaseOperationsEditByIDGetChoise (string choise)
+        public string DataOperationsGetType(string choise)
         {
             if (choise != "0" && choise != "1" && choise != "2" && choise != "3" && choise != "4")
             {
                 throw new Exception("Podano nieprawidłowy wybór!!!");
             }
             return choise;
+        }
+        public string DataOperationsEditByIDGetChoise (string choise)
+        {
+            if (choise != "0" && choise != "1" && choise != "2" && choise != "3" && choise != "4") 
+            throw new Exception("Podano nieprawidłowy wybór!!!");
+            return choise;
+        }
+        public string DataOperationsExportToTxtDirectoryExist(string path)
+        {
+            if (Directory.Exists(path)) return path;
+            throw new Exception("Podana ścierzka pliku nie istnieje!!!");
         }
         public string CheckExportSettingsExist(string choise)
         {

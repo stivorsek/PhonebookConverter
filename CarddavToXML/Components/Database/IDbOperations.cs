@@ -4,10 +4,10 @@ namespace PhonebookConverter.Components.Database
 {
     public interface IDbOperations
     {
-        void AddNewDbEntry();
+        void AddNewEntry();
         void EditByID(int? id);
-        void DeleteFromDbByID(int? id);
-        void ReadAllContactsFromDb();
+        void DeleteByID(int? id);
+        void ShowAllContacts();
         void SaveDataFromDbToTxt();
     }
 }

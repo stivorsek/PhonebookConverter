@@ -4,9 +4,9 @@ using PhonebookConverter.Components.Database;
 using PhonebookConverter.Components.Export;
 using PhonebookConverter.Components.Import;
 using PhonebookConverter.Data.Entities;
-using PhonebookConverter.UI;
 using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
 using PhonebookConverter.Components.DataTxt;
+using PhonebookConverter.UIAndExceptions;
 
 namespace PhonebookConverterL.UI
 {
@@ -74,7 +74,7 @@ namespace PhonebookConverterL.UI
                             break;
                         case "4":
                             UISeparator();
-                            ExportToCsv("xml");
+                            ExportToCsv("csv");
                             Console.Clear();
                             EndOperation();
                             break;
@@ -85,10 +85,13 @@ namespace PhonebookConverterL.UI
                             EndOperation();
                             break;
                         case "6":
-                            endProgram = true;
+                            UISeparator();
+                            ChoseDatabaseOperations("FILE");
+                            Console.Clear();
+                            EndOperation();
                             break;
                         case "7":
-                            var data = _dataInFileTxt.ReadDataFromCSV();
+                            endProgram = true;
                             break;
                         case "8":
                             EndOperation();
@@ -231,7 +234,7 @@ namespace PhonebookConverterL.UI
         private void ChoseDatabaseOperations(string dataStorage)
         {
             Console.Clear();
-            string choise = _dataFromUser.DatabaseOperationsGetType();
+            string choise = _dataFromUser.DataOperationsGetType();
             UISeparator();
             if (choise != "0")
             {
@@ -241,31 +244,42 @@ namespace PhonebookConverterL.UI
                 switch (tuple)
                 {
                     case ("1","MSSQL"):
-                        id = _dataFromUser.DatabaseOperationsGetID(dataStorage);
+                        id = _dataFromUser.DataOperationsGetID(dataStorage);
                         if (id == 0) break;
-                        _dbOperations.DeleteFromDbByID(id);
+                        _dbOperations.DeleteByID(id);
                         break;
-                    case ("2","MSSQL"):
-                        id = _dataFromUser.DatabaseOperationsGetID(dataStorage);
+                    case ("2", "MSSQL"):
+                        id = _dataFromUser.DataOperationsGetID(dataStorage);
                         if (id == 0) break;
                         _dbOperations.EditByID(id);
                         break;
                     case ("3", "MSSQL"):
-                        _dbOperations.AddNewDbEntry();
+                        _dbOperations.AddNewEntry();
                         break;
                     case ("4", "MSSQL"):
-                        _dbOperations.ReadAllContactsFromDb();
-                        string choiseExport = _dataFromUser.DatabaseOperationsExportToTxt();
-                        if (choiseExport == "2") break;
+                        _dbOperations.ShowAllContacts();
+                        string choiseExportMSSQL = _dataFromUser.DataOperationsExportToTxt();
+                        if (choiseExportMSSQL == "2") break;
                         _dbOperations.SaveDataFromDbToTxt();
                         break;
                     case ("1", "FILE"):
+                        id = _dataFromUser.DataOperationsGetID(dataStorage);
+                        if (id == 0) break;
+                        _dataInFileTxt.DeleteByID(id);
                         break;
                     case ("2", "FILE"):
+                        id = _dataFromUser.DataOperationsGetID(dataStorage);
+                        if (id == 0) break;
+                        _dataInFileTxt.EditByID(id);
                         break;
                     case ("3", "FILE"):
+                        _dataInFileTxt.AddNewEntry();
                         break;
                     case ("4", "FILE"):
+                        _dataInFileTxt.ShowAllContacts();
+                        string choiseExportFile = _dataFromUser.DataOperationsExportToTxt();
+                        if (choiseExportFile == "2") break;
+                        _dataInFileTxt.SaveDataFromFileToTxt();
                         break;
                 }
             }
