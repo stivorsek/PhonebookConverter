@@ -80,14 +80,11 @@ namespace PhonebookConverterL.UI
                             break;
                         case "5":
                             UISeparator();
-                            ChoseDatabaseOperations("MSSQL");
-                            Console.Clear();
-                            EndOperation();
+                            ChoseDatabaseOperations("MSSQL");                            
                             break;
                         case "6":
                             UISeparator();
-                            ChoseDatabaseOperations("FILE");
-                            Console.Clear();
+                            ChoseDatabaseOperations("FILE");                            
                             EndOperation();
                             break;
                         case "7":
@@ -292,10 +289,9 @@ namespace PhonebookConverterL.UI
         }
         private void EndOperation()
         {
-            Console.Clear();
+            
             UISeparator();
-            Console.WriteLine("\tPomyślnie wykonano operacje");
-            UISeparator();
+            
         }
 
     }

@@ -24,7 +24,7 @@ services.AddSingleton<IExceptions, Exceptions>();
 services.AddSingleton<IExportLoopSettings, ExportLoopSettings>();
 services.AddSingleton<FileContext>();
 services.AddDbContext<PhonebookDbContext>(options => options
-    .UseSqlServer("Data Source=DESKTOP-CNU0I9Q\\SQLEXPRESS;Initial Catalog=\"New Database\";Integrated Security=True; Trust Server Certificate = Truesdfgsdfgdsfg"));
+    .UseSqlServer("Data Source=DESKTOP-CNU0I9Q\\SQLEXPRESS;Initial Catalog=\"New Database\";Integrated Security=True; Trust Server Certificate = True"));
 
 var serviceProvider = services.BuildServiceProvider();
 var app = serviceProvider.GetService<IUserIntarface>()!;

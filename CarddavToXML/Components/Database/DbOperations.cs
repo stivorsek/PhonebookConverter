@@ -7,15 +7,13 @@ namespace PhonebookConverter.Components.Database
 {
     public class DbOperations : IDbOperations
     {
-        private readonly PhonebookDbContext _phonebookDbContext;
-        private readonly IExceptions _exceptions;
+        private readonly PhonebookDbContext _phonebookDbContext;        
         private readonly IValidation _validation;
         private readonly IDataFromUser _dataFromUser;
 
-        public DbOperations(PhonebookDbContext phonebookDbContext, IExceptions exceptions, IValidation validation, IDataFromUser dataFromUser)
+        public DbOperations(PhonebookDbContext phonebookDbContext, IValidation validation, IDataFromUser dataFromUser)
         {
-            _phonebookDbContext = phonebookDbContext;
-            _exceptions = exceptions;
+            _phonebookDbContext = phonebookDbContext;           
             _validation = validation;
             _dataFromUser = dataFromUser;
         }
@@ -52,8 +50,6 @@ namespace PhonebookConverter.Components.Database
                         contactFromDb.Phone3 = _validation.IntParseValidation(parameter);
                         _phonebookDbContext.SaveChanges();
                         break;
-                    default:
-                        throw new ArgumentException("Nie ma takiego parametru!!!");
                 }
                 break;
 

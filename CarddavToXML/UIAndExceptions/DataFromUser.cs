@@ -133,6 +133,7 @@ namespace PhonebookConverter.UIAndExceptions
                 Console.WriteLine("\t 2)Nie");
                 var choise = _validation.DataOperationsExportToTxt(Console.ReadLine());
                 Console.Clear();
+                Console.WriteLine("\t Dane nie zostały zapisane do pliku txt");
                 return choise;
             });
         }
@@ -181,7 +182,9 @@ namespace PhonebookConverter.UIAndExceptions
             });
         }
         public string FirstUIChoise()
-        {
+        {            
+            Console.WriteLine("///////////////////////////////////////////////////////////////////////////////");
+            Console.WriteLine("");
             Console.WriteLine("\tWitam w programie do zarządzania plikami książek telefonicznych");
             Console.WriteLine("");
             Console.WriteLine("///////////////////////////////////////////////////////////////////////////////");

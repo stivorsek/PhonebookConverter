@@ -100,6 +100,7 @@ namespace PhonebookConverter.Components.DataTxt
         }
         public void SaveDataFromFileToTxt()
         {
+            Console.Clear();
             var contactsFromDb = _fileContext.ReadAllContactsFromFile().ToList();
             Console.WriteLine("Proszę podać lokalizację nowego pliku");
             string fileName = _validation.DataOperationsExportToTxtDirectoryExist(Console.ReadLine());
