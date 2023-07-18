@@ -7,20 +7,20 @@ namespace PhonebookConverter.Components.Export
     {
         private readonly IDataFromUser dataFromUser;
         private readonly IXmlWriter xmlWriter;
-        private readonly ICsvWriter csvWriter;
+        private readonly ICsvWriter _csvWriter;
 
         public ExportLoopSettings(IDataFromUser dataFromUser, IXmlWriter xmlWriter, ICsvWriter csvWriter)
         {
             this.dataFromUser = dataFromUser;
             this.xmlWriter = xmlWriter;
-            this.csvWriter = csvWriter;
+            _csvWriter = csvWriter;
         }
         public void CheckExportLoopSettingsExist()
         {
             var exportDataPath = "ExportData.txt";
             if (File.Exists(exportDataPath))
             {
-                Console.WriteLine("Znaleziono dane z ustawionego exportu");
+                Console.WriteLine("Data form seted export found!!!");
                 string[] lines = File.ReadAllLines(exportDataPath);
                 foreach (var line in lines)
                 {
@@ -57,10 +57,10 @@ namespace PhonebookConverter.Components.Export
             {
                 using (var writer = File.AppendText("ExportData.txt"))
                 {
-                    writer.WriteLine($"Export został ustawiony: {DateTime.Now}");
+                    writer.WriteLine($"Export was seted : {DateTime.Now}");
                     writer.WriteLine("\tPath:");
                     writer.WriteLine($"{exportPeriodData.Path}");
-                    writer.WriteLine("\tInterval w sekundach:");
+                    writer.WriteLine("\tInterval in seconds:");
                     writer.WriteLine($"{exportPeriodData.Interval / 1000}");
                     writer.WriteLine("\tType:");
                     writer.WriteLine($"{exportPeriodData.Type}");
@@ -78,31 +78,29 @@ namespace PhonebookConverter.Components.Export
             switch (tuple)
             {
                 case ("Yealink_Local_Phonebook", "xml"):
-                    xmlWriter.YealinkRemote(exportPeriodData.Path);
+                    xmlWriter.YealinkRemote(exportPeriodData.Path, exportPeriodData.DataType);
                     break;
                 case ("Yealink_Remote_Phonebook", "xml"):
-                    xmlWriter.YealinkLocal(exportPeriodData.Path);
+                    xmlWriter.YealinkLocal(exportPeriodData.Path, exportPeriodData.DataType);
                     break;
                 case ("Fanvil_Local_and_Remote_Phonebook", "xml"):
-                    xmlWriter.FanvilRemoteAndLocal(exportPeriodData.Path);
+                    xmlWriter.FanvilRemoteAndLocal(exportPeriodData.Path, exportPeriodData.DataType);
                     break;
                 case ("Yealink_Local_Phonebook", "csv"):
-                    csvWriter.YealinkLocal(exportPeriodData.Path);
+                    _csvWriter.YealinkLocal(exportPeriodData.Path, exportPeriodData.DataType);
                     break;
                 case ("Fanvil_Local_Phonebook", "csv"):
-                    csvWriter.FanvilLocal(exportPeriodData.Path);
+                    _csvWriter.FanvilLocal(exportPeriodData.Path, exportPeriodData.DataType);
                     break;
                 case ("Yeastar_P_Series_Phonebook", "csv"):
-                    csvWriter.YeastarPSeries(exportPeriodData.Path);
-                    break;
-                default:
-                    break;
+                    _csvWriter.YeastarPSeries(exportPeriodData.Path, exportPeriodData.DataType);
+                    break;                
             }
         }
         public void ShowTypeAndTimeOfExport(ExportPeriodData exportPeriodData)
         {
             Console.WriteLine("====================");
-            Console.WriteLine($"\tWykonano export pliku {exportPeriodData.Type} o godzinie: {DateTime.Now}");
+            Console.WriteLine($"\tThe file {exportPeriodData.Type} has been expoted: {DateTime.Now}");
             Console.WriteLine("====================");
         }
     }

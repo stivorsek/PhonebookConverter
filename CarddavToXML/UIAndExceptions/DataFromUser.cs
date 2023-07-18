@@ -23,7 +23,7 @@ namespace PhonebookConverter.UIAndExceptions
         {
             return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Chosse Folder to export or 1 to back to the main menu");
+                Console.WriteLine("Please enter the folder path or 1 to back to the main menu");
                 var pathXml = validation.ExportToXmlGetFolder(Console.ReadLine());
                 Console.Clear();
                 return pathXml;
@@ -33,7 +33,7 @@ namespace PhonebookConverter.UIAndExceptions
         {
             return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Chosse Type of XML Type");
+                Console.WriteLine("Chosse Type of XML File");
                 Console.WriteLine("\t 0)Back to the main Menu");
                 Console.WriteLine("\t 1)Yealink Local Phonnebook");
                 Console.WriteLine("\t 2)Yealink Remote Phonebook");
@@ -50,7 +50,7 @@ namespace PhonebookConverter.UIAndExceptions
         {
             return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Do you wanna make loop export");
+                Console.WriteLine("Do you want make cyclical export");
                 Console.WriteLine("1) Yes");
                 Console.WriteLine("2) No");
                 bool loopState = validation.ExportToXmlGetLoopState(Console.ReadLine());
@@ -63,7 +63,7 @@ namespace PhonebookConverter.UIAndExceptions
             Console.Clear();
             return exceptions.ExceptionsLoop(() =>
             {                
-                Console.WriteLine("Please give us interval time in seconds");
+                Console.WriteLine("Please enter an interval time in seconds");
                 var loopTime = validation.ExportToXmlGetLoopTime(Console.ReadLine());
                 return loopTime * 1000;
             });
@@ -73,7 +73,7 @@ namespace PhonebookConverter.UIAndExceptions
             return exceptions.ExceptionsLoop(() =>
             {
                 Console.Clear();
-                Console.WriteLine("Please give us directory or chosee 0 to go back to the main menu");
+                Console.WriteLine("Please enter path or chosee 0 to go back to the main menu");
                 string path = validation.ImportGetPathCsv(Console.ReadLine());
                 Console.Clear();
                 return path;
@@ -83,7 +83,7 @@ namespace PhonebookConverter.UIAndExceptions
         {
             return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Please give us directory or chosee 0 to go back to the main menu");
+                Console.WriteLine("Please enter path or chosee 0 to go back to the main menu");
                 string path = validation.ImportGetPathXml(Console.ReadLine());
                 Console.Clear();
                 return path;
@@ -93,7 +93,7 @@ namespace PhonebookConverter.UIAndExceptions
         {
             return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Give us ID or chosee 0 to go back to the main menu");
+                Console.WriteLine("Please enter ID or chosee 0 to go back to the main menu");
                 string choise = Console.ReadLine();
                 if (choise == "0") return int.Parse(choise);
                 int? id = validation.DataOperationsGetID(choise);
@@ -113,7 +113,7 @@ namespace PhonebookConverter.UIAndExceptions
         {
             return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("0) To go back to the Main Menu");
+                Console.WriteLine("0) Back to the Main Menu");
                 Console.WriteLine("1) Delete record by ID");
                 Console.WriteLine("2) Edit record by ID");
                 Console.WriteLine("3) Manual add record");
@@ -145,14 +145,14 @@ namespace PhonebookConverter.UIAndExceptions
                 Console.WriteLine($"\t3) Phone2 : {contactFromDb.Phone2}");
                 Console.WriteLine($"\t4) Phone3 : {contactFromDb.Phone3}");
                 Console.WriteLine("");
-                Console.WriteLine("Chose parameter to edit or 0 to go back to the Main Menu");
+                Console.WriteLine("Chose parameter you wanna edit or 0 to go back to the Main Menu");
                 var choise = validation.DataOperationsEditByIdChoseParameter(Console.ReadLine());
                 return choise;
             });
         }
         public string DataOperationsEditByIdGetParameter()
         {
-            Console.WriteLine("Give us parameter");
+            Console.WriteLine("Please enter parameter");
             var parameter = Console.ReadLine();
             return parameter;
         }
@@ -161,13 +161,13 @@ namespace PhonebookConverter.UIAndExceptions
             Console.Clear();
             return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Give us Name");
+                Console.WriteLine("Please enter Name");
                 var Name = Console.ReadLine();
-                Console.WriteLine("Give us First Phone Number");
+                Console.WriteLine("Please enter First Phone Number");
                 var Phone1 = validation.IntParseValidation(Console.ReadLine());
-                Console.WriteLine("Give us Second Phone Number");
+                Console.WriteLine("Please enter Second Phone Number");
                 var Phone2 = validation.IntParseValidation(Console.ReadLine());
-                Console.WriteLine("Give us Third Phone Number");
+                Console.WriteLine("Please enter Third Phone Number");
                 var Phone3 = validation.IntParseValidation(Console.ReadLine());
                 var contact = new ContactInDb()
                 {
@@ -191,11 +191,10 @@ namespace PhonebookConverter.UIAndExceptions
             Console.WriteLine("\tPlease choose the operation");
             Console.WriteLine("1) Import data from CSV");
             Console.WriteLine("2) Import data from XML");
-            Console.WriteLine("3) Exportuj data to XML");
-            Console.WriteLine("4) Exportuj data to CSV");
-            Console.WriteLine("5) Operations on database");
-            Console.WriteLine("6) Operations on data in file");
-            Console.WriteLine("7) To close the program");
+            Console.WriteLine("3) Export data to XML");
+            Console.WriteLine("4) Export data to CSV");
+            Console.WriteLine("5) Operations on data");
+            Console.WriteLine("6) To close the program");
             var choise = Console.ReadLine();
             return choise;
         }

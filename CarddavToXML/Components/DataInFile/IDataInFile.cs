@@ -1,6 +1,6 @@
 ﻿namespace PhonebookConverter.Components.DataTxt
 {
-    public interface IDataInFileTxt
+    public interface IDataInFile
     {        
         void EditByID(int? id);
         void ShowAllContacts();

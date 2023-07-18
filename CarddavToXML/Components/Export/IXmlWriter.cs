@@ -2,8 +2,8 @@
 {
     public interface IXmlWriter 
     {
-        void YealinkLocal(string filepath);
-        void YealinkRemote(string filepath);
-        void FanvilRemoteAndLocal(string filepath);
+        void YealinkLocal(string filepath, string dataType);
+        void YealinkRemote(string filepath, string dataType);
+        void FanvilRemoteAndLocal(string filepath, string dataType);
     }
 }

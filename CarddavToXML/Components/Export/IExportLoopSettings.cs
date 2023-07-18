@@ -5,6 +5,6 @@ namespace PhonebookConverter.Components.Export
     public interface IExportLoopSettings
     {
         void CheckExportLoopSettingsExist();
-        void SetPeriodicExport(ExportPeriodData exportPeriodData);
+        void SetPeriodicExport(ExportPeriodData exportPeriodData);        
     }
 }

@@ -5,13 +5,13 @@ using PhonebookConverter.UIAndExceptions;
 
 namespace PhonebookConverter.Components.Database
 {
-    public class DbOperations : IDbOperations
+    public class MSSQLDb : IMSSQLDb
     {
         private readonly PhonebookDbContext phonebookDbContext;        
         private readonly IValidation validation;
         private readonly IDataFromUser dataFromUser;
 
-        public DbOperations(PhonebookDbContext phonebookDbContext, IValidation validation, IDataFromUser dataFromUser)
+        public MSSQLDb(PhonebookDbContext phonebookDbContext, IValidation validation, IDataFromUser dataFromUser)
         {
             this.phonebookDbContext = phonebookDbContext;           
             this.validation = validation;
@@ -23,7 +23,7 @@ namespace PhonebookConverter.Components.Database
             phonebookDbContext.Add(contact);
             phonebookDbContext.SaveChanges();
             
-            Console.WriteLine("Dane zostały dodane do pliku Bazy Danych");
+            Console.WriteLine("Data has been added to the database");
             Console.WriteLine("");
         }
         public void EditByID(int? id)
@@ -58,7 +58,7 @@ namespace PhonebookConverter.Components.Database
 
             } while (true);
             Console.Clear();
-            Console.WriteLine("Dane zostały zaktualizowane w bazie danych");
+            Console.WriteLine("Data has been updated to the database");
             Console.WriteLine("");
         }
         public void DeleteByID(int? id)
@@ -68,7 +68,7 @@ namespace PhonebookConverter.Components.Database
             phonebookDbContext.Phonebook.Remove(toRemove);
             phonebookDbContext.SaveChanges();
             Console.Clear();
-            Console.WriteLine("Dane zostały usunięte z bazy danych");
+            Console.WriteLine("Data has been deleted to the database");
             Console.WriteLine();
         }
         public void ShowAllContacts()
@@ -89,9 +89,9 @@ namespace PhonebookConverter.Components.Database
         {
             Console.Clear();
             var contactsFromDb = phonebookDbContext.Phonebook.ToList();
-            Console.WriteLine("Proszę podać lokalizację nowego pliku");
+            Console.WriteLine("Please enter the directory location");
             string fileName = validation.DataOperationsExportToTxtDirectoryExist(Console.ReadLine());
-            fileName = fileName + "\\DaneZBazyDanych.txt";
+            fileName = fileName + "\\DataFromDb.txt";
             using (var writer = File.AppendText(fileName))
             {
                 foreach (var contact in contactsFromDb)
@@ -105,7 +105,7 @@ namespace PhonebookConverter.Components.Database
                 }
             }
             Console.Clear();
-            Console.WriteLine($"Dane zostały exportowane do: {fileName}");
+            Console.WriteLine($"Data has been saved in txt file : {fileName}");
             Console.WriteLine();
         }
     }

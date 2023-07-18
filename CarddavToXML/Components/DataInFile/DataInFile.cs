@@ -6,14 +6,14 @@ using System.Text;
 
 namespace PhonebookConverter.Components.DataTxt
 {
-    public class DataInFileTxt : IDataInFileTxt
+    public class DataInFile : IDataInFile
     {
         private readonly string filePath;
         private readonly IValidation validation;
         private readonly IDataFromUser dataFromUser;
         private readonly FileContext fileContext;
 
-        public DataInFileTxt(IValidation validation ,IDataFromUser dataFromUser, FileContext fileContext )
+        public DataInFile(IValidation validation ,IDataFromUser dataFromUser, FileContext fileContext )
         {
             filePath = "DataInCsv.csv";
             this.validation = validation;
@@ -38,7 +38,7 @@ namespace PhonebookConverter.Components.DataTxt
                 string data = $"{contact.Id},{contact.Name},{contact.Phone1},{contact.Phone2},{contact.Phone3}";
                 writer.WriteLine(data);
             }
-            Console.WriteLine("Dane zostały dodane do pliku CSV.");
+            Console.WriteLine("Data has been added to the file");
             Console.WriteLine("");
         }
         public void EditByID(int? id)
@@ -65,7 +65,7 @@ namespace PhonebookConverter.Components.DataTxt
                 break;
             } while (true);
             Console.Clear();
-            Console.WriteLine("Dane zostały zaktualizowane w pliku CSV.");
+            Console.WriteLine("Data has been updated in the file");
             Console.WriteLine("");
         }        
         public void DeleteByID(int? id)
@@ -87,8 +87,8 @@ namespace PhonebookConverter.Components.DataTxt
             }
             File.WriteAllLines(filePath, lines, Encoding.UTF8);
             Console.Clear();
-            Console.WriteLine("Dane zostały usunięte z pliku CSV.");
-            Console.WriteLine();
+            Console.WriteLine("Data has been deleted in the file");
+            Console.WriteLine("");
         }
         public void ShowAllContacts()
         {
@@ -108,9 +108,9 @@ namespace PhonebookConverter.Components.DataTxt
         {
             Console.Clear();
             var contactsFromDb = fileContext.ReadAllContactsFromFile().ToList();
-            Console.WriteLine("Proszę podać lokalizację nowego pliku");
+            Console.WriteLine("Please enter the directory location");
             string fileName = validation.DataOperationsExportToTxtDirectoryExist(Console.ReadLine());
-            fileName = fileName + "\\DaneZBazyDanych.txt";
+            fileName = fileName + "\\DataFromFile.txt";
             using (var writer = File.AppendText(fileName))
             {
                 foreach (var contact in contactsFromDb)
@@ -124,7 +124,7 @@ namespace PhonebookConverter.Components.DataTxt
                 }
             }
             Console.Clear();
-            Console.WriteLine($"Dane zostały exportowane do: {fileName}");
+            Console.WriteLine($"Data has been saved in txt file : {fileName}");
             Console.WriteLine();
         }
 

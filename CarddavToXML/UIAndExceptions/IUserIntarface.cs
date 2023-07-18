@@ -2,6 +2,6 @@
 {
     public interface IUserIntarface
     {
-         void FirstUIChoise();
+         void FirstUIChoise(string dataType);
     }
 }

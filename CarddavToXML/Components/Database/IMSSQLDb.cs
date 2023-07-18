@@ -2,7 +2,7 @@
 
 namespace PhonebookConverter.Components.Database
 {
-    public interface IDbOperations
+    public interface IMSSQLDb
     {
         void AddNewEntry();
         void EditByID(int? id);

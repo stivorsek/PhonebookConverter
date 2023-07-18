@@ -2,8 +2,8 @@
 {
     public interface ICsvWriter 
     {
-        void YealinkLocal(string filePath);
-        void YeastarPSeries(string filePath);
-        void FanvilLocal(string filePath);
+        void YealinkLocal(string filePath, string dataType);
+        void FanvilLocal(string filePath, string dataType);
+        void YeastarPSeries(string filePath, string dataType);
     }
 }
