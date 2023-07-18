@@ -18,5 +18,6 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         int? IntParseValidation(string data);
         string CheckExportSettingsExist(string choise);
         string DataOperationsExportToTxtDirectoryExist(string path);
+        string DataOperationsEditByIDGetChoise(string choise);
     }
 }

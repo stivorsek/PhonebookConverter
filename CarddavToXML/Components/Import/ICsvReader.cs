@@ -1,9 +1,6 @@
-﻿using PhonebookConverterL.Data.Entities;
-
-namespace PhonebookConverter.Components.Import
+﻿namespace PhonebookConverter.Components.Import
 {
-    public interface ICsvReader
-    {
-        List<ContactInDb> CsvTypeChecker(string filepath);
+    public interface ICsvReader :BaseReader
+    {        
     }
 }

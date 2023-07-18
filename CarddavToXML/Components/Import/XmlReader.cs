@@ -12,7 +12,7 @@ namespace PhonebookConverter.Components.Import
         {
             _validation = validation;
         }
-        public List<ContactInDb> ImportFromXmlYealinkRemote(string path)
+        public List<ContactInDb> YealinkRemote(string path)
         {
             XElement document = XElement.Load(path);
             var attributes = document
@@ -31,7 +31,7 @@ namespace PhonebookConverter.Components.Import
                 .ToList();
             return attributes;
         }
-        public List<ContactInDb> ImportFromXmlYealinkLocal(string path)
+        public List<ContactInDb> YealinkLocal(string path)
         {
             XElement document = XElement.Load(path);
             var attributes = document
@@ -49,7 +49,7 @@ namespace PhonebookConverter.Components.Import
                 .ToList();
             return attributes;
         }
-        public List<ContactInDb> ImportFromXmlFanvilRemoteAndLocal(string path)
+        public List<ContactInDb> FanvilRemoteAndLocal(string path)
         {
             XElement document = XElement.Load(path);
             var attributes = document
@@ -67,17 +67,17 @@ namespace PhonebookConverter.Components.Import
                 .ToList();
             return attributes;
         }
-        public List<ContactInDb> XmlTypeChecker(string filePath)
+        public List<ContactInDb> TypeChecker(string filePath)
         {
             XElement document = XElement.Load(filePath);
             switch (document.Name.LocalName)
             {
                 case var name when name == "YealinkIPPhoneBook":
-                    return ImportFromXmlYealinkRemote(filePath);
+                    return YealinkRemote(filePath);
                 case var name when name == "vp_contact":
-                    return ImportFromXmlYealinkLocal(filePath);
+                    return YealinkLocal(filePath);
                 case var name when name == "PhoneBook":
-                    return ImportFromXmlFanvilRemoteAndLocal(filePath);
+                    return FanvilRemoteAndLocal(filePath);
                 default:
                     throw new Exception("Podany typ pliku xml nie jest obsługiwany");
             }

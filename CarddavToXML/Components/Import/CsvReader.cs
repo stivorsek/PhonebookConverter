@@ -11,7 +11,7 @@ namespace PhonebookConverter.Components.Import
         {
             _validation = validation;
         }
-        public List<ContactInDb> ImportFromCsvYealinkLocal(string filePath)
+        public List<ContactInDb> YealinkLocal(string filePath)
         {
             var contactRecords =
                 File.ReadAllLines(filePath)
@@ -30,7 +30,7 @@ namespace PhonebookConverter.Components.Import
                 });
             return contactRecords.ToList();
         }
-        public List<ContactInDb> ImportFromCsvFanvilLocal(string filePath)
+        public List<ContactInDb> FanvilLocal(string filePath)
         {
             var contactRecords =
                 File.ReadAllLines(filePath)
@@ -49,7 +49,7 @@ namespace PhonebookConverter.Components.Import
                 });
             return contactRecords.ToList();
         }
-        private List<ContactInDb> ImportFromCsvYeastarPSeries(string filePath)
+        private List<ContactInDb> YeastarPSeries(string filePath)
         {
 
             var contactRecords =
@@ -69,17 +69,17 @@ namespace PhonebookConverter.Components.Import
                 });
             return contactRecords.ToList();
         }
-        public List<ContactInDb> CsvTypeChecker(string filePath)
+        public List<ContactInDb> TypeChecker(string filePath)
         {
             string firstLine = File.ReadLines(filePath).FirstOrDefault();
             switch (firstLine)
             {
                 case "Name,Surname,Company,PhoneNumber,MobileNumber,MainNumber":
-                    return ImportFromCsvYealinkLocal(filePath);
+                    return YealinkLocal(filePath);
                 case "\"name\",\"work\",\"mobile\",\"other\",\"ring\",\"groups\"":
-                    return ImportFromCsvFanvilLocal(filePath);
+                    return FanvilLocal(filePath);
                 case "First Name,Last Name,Company Name,Email,Business Number,Business Number 2,Business Fax,Mobile,Mobile 2,Home,Home 2,Home Fax,Other,ZIP Code,Street,City,State,Country,Remark,Phonebook":
-                    return ImportFromCsvYeastarPSeries(filePath);
+                    return YeastarPSeries(filePath);
                 default:
                     throw new ArgumentException("Ten format pliku csv nie jest osługiwany");
             }

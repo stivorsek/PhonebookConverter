@@ -3,12 +3,7 @@
 namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
 {
     public class Validation : IValidation
-    {
-        private readonly IExceptions _exceptions;
-        public Validation(IExceptions exceptions)
-        {
-            _exceptions = exceptions;
-        }
+    {        
         public string ExportToXmlGetFolder(string pathXml)
         {
             if (!Directory.Exists(pathXml) && pathXml != "0") throw new Exception("Podany folder nie istnieje");
@@ -39,7 +34,7 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         }
         public string ImportGetPathXml(string path)
         {
-            if (path == "1")
+            if (path == "0")
             {
                 return path;
             }
@@ -55,7 +50,7 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         }
         public string ImportGetPathCsv(string path)
         {
-            if (path == "1")
+            if (path == "0")
             {
                 Console.Clear();
                 return path;
@@ -109,7 +104,7 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
             }
             return choise;
         }
-        public string DataOperationsEditByIDGetChoise (string choise)
+        public string DataOperationsEditByIDGetChoise(string choise)
         {
             if (choise != "0" && choise != "1" && choise != "2" && choise != "3" && choise != "4") 
             throw new Exception("Podano nieprawidłowy wybór!!!");

@@ -1,9 +1,9 @@
 ﻿namespace PhonebookConverter.Components.Export
 {
-    public interface IXmlWriter
+    public interface IXmlWriter 
     {
-        void ExportToXmlYealinkLocal(string filepath);
-        void ExportToXmlYealinkRemote(string filepath);
-        void ExportToXmlFanvilRemoteAndLocal(string filepath);
+        void YealinkLocal(string filepath);
+        void YealinkRemote(string filepath);
+        void FanvilRemoteAndLocal(string filepath);
     }
 }

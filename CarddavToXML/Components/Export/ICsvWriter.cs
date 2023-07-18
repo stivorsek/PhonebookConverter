@@ -1,9 +1,9 @@
 ﻿namespace PhonebookConverter.Components.Export
 {
-    public interface ICsvWriter
+    public interface ICsvWriter 
     {
-        void ExportToCsvYealinkLocal(string filePath);
-        void ExportToCsvYeastarPSeries(string filePath);
-        void ExportToCsvFanvilLocal(string filePath);
+        void YealinkLocal(string filePath);
+        void YeastarPSeries(string filePath);
+        void FanvilLocal(string filePath);
     }
 }

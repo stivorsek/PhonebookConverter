@@ -5,15 +5,15 @@ namespace PhonebookConverter.Components.Export
 {
     public class ExportLoopSettings : IExportLoopSettings
     {
-        private readonly IDataFromUser _dataFromUser;
-        private readonly IXmlWriter _xmlWriter;
-        private readonly ICsvWriter _csvWriter;
+        private readonly IDataFromUser dataFromUser;
+        private readonly IXmlWriter xmlWriter;
+        private readonly ICsvWriter csvWriter;
 
         public ExportLoopSettings(IDataFromUser dataFromUser, IXmlWriter xmlWriter, ICsvWriter csvWriter)
         {
-            _dataFromUser = dataFromUser;
-            _xmlWriter = xmlWriter;
-            _csvWriter = csvWriter;
+            this.dataFromUser = dataFromUser;
+            this.xmlWriter = xmlWriter;
+            this.csvWriter = csvWriter;
         }
         public void CheckExportLoopSettingsExist()
         {
@@ -26,7 +26,7 @@ namespace PhonebookConverter.Components.Export
                 {
                     Console.WriteLine($"{line}");
                 }
-                var choise = _dataFromUser.CheckExportSettingsExist();
+                var choise = dataFromUser.CheckExportSettingsExist();
                 Console.Clear();
                 if (choise == "1")
                 {
@@ -78,22 +78,22 @@ namespace PhonebookConverter.Components.Export
             switch (tuple)
             {
                 case ("Yealink_Local_Phonebook", "xml"):
-                    _xmlWriter.ExportToXmlYealinkRemote(exportPeriodData.Path);
+                    xmlWriter.YealinkRemote(exportPeriodData.Path);
                     break;
                 case ("Yealink_Remote_Phonebook", "xml"):
-                    _xmlWriter.ExportToXmlYealinkLocal(exportPeriodData.Path);
+                    xmlWriter.YealinkLocal(exportPeriodData.Path);
                     break;
                 case ("Fanvil_Local_and_Remote_Phonebook", "xml"):
-                    _xmlWriter.ExportToXmlFanvilRemoteAndLocal(exportPeriodData.Path);
+                    xmlWriter.FanvilRemoteAndLocal(exportPeriodData.Path);
                     break;
                 case ("Yealink_Local_Phonebook", "csv"):
-                    _csvWriter.ExportToCsvYealinkLocal(exportPeriodData.Path);
+                    csvWriter.YealinkLocal(exportPeriodData.Path);
                     break;
                 case ("Fanvil_Local_Phonebook", "csv"):
-                    _csvWriter.ExportToCsvFanvilLocal(exportPeriodData.Path);
+                    csvWriter.FanvilLocal(exportPeriodData.Path);
                     break;
                 case ("Yeastar_P_Series_Phonebook", "csv"):
-                    _csvWriter.ExportToCsvYeastarPSeries(exportPeriodData.Path);
+                    csvWriter.YeastarPSeries(exportPeriodData.Path);
                     break;
                 default:
                     break;

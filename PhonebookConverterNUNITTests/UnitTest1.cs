@@ -10,9 +10,8 @@ public class UnitTest1
     private IValidation _validation;
     [SetUp]
     public void SetUp()
-    {
-        IExceptions exceptions = new Exceptions();
-        _validation = new Validation(exceptions);
+    {        
+        _validation = new Validation();
     }
 
     [Test]
@@ -140,35 +139,27 @@ public class UnitTest1
     }
     [Test]
     public void ImportGetPathXml_ReturnPathCsv()
-    {
-        // Arrange
+    {     
         string pathXml = "C:\\Users\\Admin\\Downloads\\1.xml";
-
-        // Act & Assert
+     
         string result = _validation.ImportGetPathXml(pathXml);
-        // Sprawdü, czy metoda rzuci≥a oczekiwany wyjπtek dla wartoúci domyúlnej
+     
         Assert.AreEqual(pathXml, result);
     }
     [Test]
     public void ImportGetPathCsv_ThrowException()
     {
-        // Arrange
         string pathXml = ".xml";
-
-        // Act & Assert
-
-        // Sprawdü, czy metoda rzuci≥a oczekiwany wyjπtek dla wartoúci domyúlnej
+             
         Assert.Throws<Exception>(() => _validation.ImportGetPathCsv(pathXml));
     }
     [Test]
     public void ImportGetPathCsv_ReturnPathCsv()
     {
-        // Arrange
         string pathXml = "C:\\Users\\Admin\\Downloads\\2.csv";
-
-        // Act & Assert
+        
         string result = _validation.ImportGetPathCsv(pathXml);
-        // Sprawdü, czy metoda rzuci≥a oczekiwany wyjπtek dla wartoúci domyúlnej
+        
         Assert.AreEqual(pathXml, result);
     }
     [Test]
@@ -251,5 +242,36 @@ public class UnitTest1
 
         Assert.AreEqual(idFromUser, result);
     }
+    [Test]
+    public void DataOperationsExportToTxtDirectoryExist_ThrowException()
+    {
+        string directory = "C:\\test";
 
+        Assert.Throws<Exception>(() => _validation.DataOperationsExportToTxtDirectoryExist(directory));
+    }
+    [Test]
+    public void DataOperationsExportToTxtDirectoryExist_ReturnDirectory()
+    {
+        string directory = "C:\\";
+
+        var result = _validation.DataOperationsExportToTxtDirectoryExist(directory);
+
+        Assert.AreEqual(directory, result);
+    }
+    [Test]
+    public void DataOperationsEditByIDGetChoise_ThrowException()
+    {
+        string choise = "12";
+
+        Assert.Throws<Exception>(() => _validation.DataOperationsEditByIDGetChoise(choise));
+    }
+    [Test]
+    public void DataOperationsEditByIDGetChoise_ReturnDirectory()
+    {
+        string choise = "1";
+
+        var result = _validation.DataOperationsEditByIDGetChoise(choise);
+
+        Assert.AreEqual(choise, result);
+    }    
 }

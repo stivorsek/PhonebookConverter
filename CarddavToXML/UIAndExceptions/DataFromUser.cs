@@ -1,45 +1,44 @@
 ﻿using PhonebookConverterL.Data;
 using PhonebookConverterL.Data.Entities;
 using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
-using PhonebookConverter.Components.DataTxt;
 using PhonebookConverter.Data;
 
 namespace PhonebookConverter.UIAndExceptions
 {
     public class DataFromUser : IDataFromUser
     {
-        private readonly IExceptions _exceptions;
-        private readonly PhonebookDbContext _phonebookDbContext;        
-        private readonly IValidation _validation;
-        private readonly FileContext _fileContext;
+        private readonly IExceptions exceptions;
+        private readonly PhonebookDbContext phonebookDbContext;        
+        private readonly IValidation validation;
+        private readonly FileContext fileContext;
 
         public DataFromUser(IExceptions exceptions, PhonebookDbContext phonebookDbContext, IValidation validation, FileContext fileContext)
         {
-            _exceptions = exceptions;
-            _phonebookDbContext = phonebookDbContext;            
-            _validation = validation;
-            _fileContext = fileContext;
+            this.exceptions = exceptions;
+            this.phonebookDbContext = phonebookDbContext;            
+            this.validation = validation;
+            this.fileContext = fileContext;
         }
         public string ExportGetFolder()
         {
-            return _exceptions.ExceptionsLoop(() =>
+            return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Wybierz folder do którego chcesz exportować lub 1 aby wrócić do główneg menu");
-                var pathXml = _validation.ExportToXmlGetFolder(Console.ReadLine());
+                Console.WriteLine("Chosse Folder to export or 1 to back to the main menu");
+                var pathXml = validation.ExportToXmlGetFolder(Console.ReadLine());
                 Console.Clear();
                 return pathXml;
             });
         }
         public string ExportGetType()
         {
-            return _exceptions.ExceptionsLoop(() =>
+            return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Wybierz rodzaj pliku XML do którego chcesz exportować pliki");
-                Console.WriteLine("\t 0)Aby wrócić do poprzedniego menu");
+                Console.WriteLine("Chosse Type of XML Type");
+                Console.WriteLine("\t 0)Back to the main Menu");
                 Console.WriteLine("\t 1)Yealink Local Phonnebook");
                 Console.WriteLine("\t 2)Yealink Remote Phonebook");
                 Console.WriteLine("\t 3)Fanvil Local and Remote Phonebook");
-                string choiseType = _validation.ExportToXmlGetType(Console.ReadLine());
+                string choiseType = validation.ExportToXmlGetType(Console.ReadLine());
                 if (choiseType == "1") choiseType = "Yealink_Local_Phonebook";
                 if (choiseType == "2") choiseType = "Yealink_Remote_Phonebook";
                 if (choiseType == "3") choiseType = "Fanvil_Local_and_Remote_Phonebook";
@@ -49,12 +48,12 @@ namespace PhonebookConverter.UIAndExceptions
         }
         public bool ExportGetLoopState()
         {
-            return _exceptions.ExceptionsLoop(() =>
+            return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Czy chcesz wykonywać taki sam cykliczny export?");
-                Console.WriteLine("1) Tak");
-                Console.WriteLine("2) Nie");
-                bool loopState = _validation.ExportToXmlGetLoopState(Console.ReadLine());
+                Console.WriteLine("Do you wanna make loop export");
+                Console.WriteLine("1) Yes");
+                Console.WriteLine("2) No");
+                bool loopState = validation.ExportToXmlGetLoopState(Console.ReadLine());
                 Console.Clear();
                 return loopState;
             });
@@ -62,49 +61,49 @@ namespace PhonebookConverter.UIAndExceptions
         public int ExportGetLoopTime()
         {
             Console.Clear();
-            return _exceptions.ExceptionsLoop(() =>
-            {
-                Console.WriteLine("Proszę podać co jaki interwał czasu ma byc wykonywany expert w sekundach");
-                var loopTime = _validation.ExportToXmlGetLoopTime(Console.ReadLine());
+            return exceptions.ExceptionsLoop(() =>
+            {                
+                Console.WriteLine("Please give us interval time in seconds");
+                var loopTime = validation.ExportToXmlGetLoopTime(Console.ReadLine());
                 return loopTime * 1000;
             });
         }
         public string ImportGetPathCsv()
         {
-            return _exceptions.ExceptionsLoop(() =>
+            return exceptions.ExceptionsLoop(() =>
             {
                 Console.Clear();
-                Console.WriteLine("Podaj ścierzkę pliku lub wybierz 1 aby cofnąć do poprzedniego menu");
-                string path = _validation.ImportGetPathCsv(Console.ReadLine());
+                Console.WriteLine("Please give us directory or chosee 0 to go back to the main menu");
+                string path = validation.ImportGetPathCsv(Console.ReadLine());
                 Console.Clear();
                 return path;
             });
         }
         public string ImportGetPathXml()
         {
-            return _exceptions.ExceptionsLoop(() =>
+            return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Podaj ścierzkę pliku lub wybierz 1 aby cofnąć do poprzedniego menu");
-                string path = _validation.ImportGetPathXml(Console.ReadLine());
+                Console.WriteLine("Please give us directory or chosee 0 to go back to the main menu");
+                string path = validation.ImportGetPathXml(Console.ReadLine());
                 Console.Clear();
                 return path;
             });
         }
         public int? DataOperationsGetID(string dataCenter)
         {
-            return _exceptions.ExceptionsLoop(() =>
+            return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Podaj ID lub 0 aby wrócić do poprzedniego menu");
+                Console.WriteLine("Give us ID or chosee 0 to go back to the main menu");
                 string choise = Console.ReadLine();
                 if (choise == "0") return int.Parse(choise);
-                int? id = _validation.DataOperationsGetID(choise);
+                int? id = validation.DataOperationsGetID(choise);
                 if (dataCenter == "MSSQL")
                 {
-                    var contactFromDb = _validation.DataOperationsGetID(_phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id));
+                    var contactFromDb = validation.DataOperationsGetID(phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id));
                 }
                 if (dataCenter == "FILE")
                 {
-                    var contacts = _validation.DataOperationsGetID(_fileContext.ReadAllContactsFromFile().FirstOrDefault(c => c.Id == id));
+                    var contacts = validation.DataOperationsGetID(fileContext.ReadAllContactsFromFile().FirstOrDefault(c => c.Id == id));
                 }
                 Console.Clear();
                 return id;
@@ -112,64 +111,64 @@ namespace PhonebookConverter.UIAndExceptions
         }
         public string DataOperationsGetType()
         {
-            return _exceptions.ExceptionsLoop(() =>
+            return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("0) Aby cofnąć do poprzedniego menu");
-                Console.WriteLine("1) Usunąć wpis po ID");
-                Console.WriteLine("2) Edytować wpis po ID");
-                Console.WriteLine("3) Dodać wpis ręcznie");
-                Console.WriteLine("4) Wyświetlić wszystkie dane");
-                var choise = _validation.DataOperationsGetType(Console.ReadLine());
+                Console.WriteLine("0) To go back to the Main Menu");
+                Console.WriteLine("1) Delete record by ID");
+                Console.WriteLine("2) Edit record by ID");
+                Console.WriteLine("3) Manual add record");
+                Console.WriteLine("4) Show all records");
+                var choise = validation.DataOperationsGetType(Console.ReadLine());
                 Console.Clear();
                 return choise;
             });
         }
         public string DataOperationsExportToTxt()
         {
-            return _exceptions.ExceptionsLoop(() =>
+            return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Czy chcesz zapisać plik do pliku tekstowego?");
-                Console.WriteLine("\t 1)Tak");
-                Console.WriteLine("\t 2)Nie");
-                var choise = _validation.DataOperationsExportToTxt(Console.ReadLine());
+                Console.WriteLine("Do you wanna save data in txt file?");
+                Console.WriteLine("\t 1)Yes");
+                Console.WriteLine("\t 2)No");
+                var choise = validation.DataOperationsExportToTxt(Console.ReadLine());
                 Console.Clear();
-                Console.WriteLine("\t Dane nie zostały zapisane do pliku txt");
+                Console.WriteLine("\t Date wasn't saved in txt file");
                 return choise;
             });
         }
         public string DataOperationsEditByIDGetChoise(ContactInDb contactFromDb)
         {
-            return _exceptions.ExceptionsLoop(() =>
+            return exceptions.ExceptionsLoop(() =>
             {
                 Console.WriteLine($"\t1) Name : {contactFromDb.Name}");
                 Console.WriteLine($"\t2) Phone1 : {contactFromDb.Phone1}");
                 Console.WriteLine($"\t3) Phone2 : {contactFromDb.Phone2}");
                 Console.WriteLine($"\t4) Phone3 : {contactFromDb.Phone3}");
                 Console.WriteLine("");
-                Console.WriteLine("Który parametr chcesz zmienić lub wybierz 0 wrócić do głównego menu");
-                var choise = _validation.DataOperationsEditByIdChoseParameter(Console.ReadLine());
+                Console.WriteLine("Chose parameter to edit or 0 to go back to the Main Menu");
+                var choise = validation.DataOperationsEditByIdChoseParameter(Console.ReadLine());
                 return choise;
             });
         }
         public string DataOperationsEditByIdGetParameter()
         {
-            Console.WriteLine("Podaj na co chcesz zmienić parametr");
+            Console.WriteLine("Give us parameter");
             var parameter = Console.ReadLine();
             return parameter;
         }
         public ContactInDb DataOperationsAddNewEntryGetData()
         {
             Console.Clear();
-            return _exceptions.ExceptionsLoop(() =>
+            return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Podaj Nazwę");
+                Console.WriteLine("Give us Name");
                 var Name = Console.ReadLine();
-                Console.WriteLine("Podaj pierwszy numer telefonu");
-                var Phone1 = _validation.IntParseValidation(Console.ReadLine());
-                Console.WriteLine("Podaj drugi numer telefonu");
-                var Phone2 = _validation.IntParseValidation(Console.ReadLine());
-                Console.WriteLine("Podaj trzeci numer telefonu");
-                var Phone3 = _validation.IntParseValidation(Console.ReadLine());
+                Console.WriteLine("Give us First Phone Number");
+                var Phone1 = validation.IntParseValidation(Console.ReadLine());
+                Console.WriteLine("Give us Second Phone Number");
+                var Phone2 = validation.IntParseValidation(Console.ReadLine());
+                Console.WriteLine("Give us Third Phone Number");
+                var Phone3 = validation.IntParseValidation(Console.ReadLine());
                 var contact = new ContactInDb()
                 {
                     Name = Name,
@@ -185,18 +184,18 @@ namespace PhonebookConverter.UIAndExceptions
         {            
             Console.WriteLine("///////////////////////////////////////////////////////////////////////////////");
             Console.WriteLine("");
-            Console.WriteLine("\tWitam w programie do zarządzania plikami książek telefonicznych");
+            Console.WriteLine("\tWellcome in program to menage phonebook files");
             Console.WriteLine("");
             Console.WriteLine("///////////////////////////////////////////////////////////////////////////////");
             Console.WriteLine("");
-            Console.WriteLine("\tProszę wybierz co będziemy dzisiaj robić");
-            Console.WriteLine("1) Załaduj Dane do bazy danych z pliku CSV");
-            Console.WriteLine("2) Załaduj Dane do bazy danych z pliku XML");
-            Console.WriteLine("3) Exportuj dane do XML");
-            Console.WriteLine("4) Exportuj dane do CSV");
-            Console.WriteLine("5) Aby wybrać operacje na bazie danych");
-            Console.WriteLine("6) Aby wybrać operacje na plikach");
-            Console.WriteLine("7) Aby zakończyć program");
+            Console.WriteLine("\tPlease choose the operation");
+            Console.WriteLine("1) Import data from CSV");
+            Console.WriteLine("2) Import data from XML");
+            Console.WriteLine("3) Exportuj data to XML");
+            Console.WriteLine("4) Exportuj data to CSV");
+            Console.WriteLine("5) Operations on database");
+            Console.WriteLine("6) Operations on data in file");
+            Console.WriteLine("7) To close the program");
             var choise = Console.ReadLine();
             return choise;
         }
@@ -207,12 +206,12 @@ namespace PhonebookConverter.UIAndExceptions
         }
         public string CheckExportSettingsExist()
         {
-            return _exceptions.ExceptionsLoop(() =>
+            return exceptions.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Czy chcesz przywrócić ten export?");
-                Console.WriteLine("1) Tak");
-                Console.WriteLine("2) Nie (Dane exportu zostaną usunięte!!!)");
-                var choise = _validation.CheckExportSettingsExist(Console.ReadLine());
+                Console.WriteLine("Do you wanna set back that export loop?");
+                Console.WriteLine("1) Yes");
+                Console.WriteLine("2) No (Export loop data will be deleted!!!)");
+                var choise = validation.CheckExportSettingsExist(Console.ReadLine());
                 Console.Clear();
                 return choise;
             });

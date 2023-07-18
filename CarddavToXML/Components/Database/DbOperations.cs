@@ -7,64 +7,73 @@ namespace PhonebookConverter.Components.Database
 {
     public class DbOperations : IDbOperations
     {
-        private readonly PhonebookDbContext _phonebookDbContext;        
-        private readonly IValidation _validation;
-        private readonly IDataFromUser _dataFromUser;
+        private readonly PhonebookDbContext phonebookDbContext;        
+        private readonly IValidation validation;
+        private readonly IDataFromUser dataFromUser;
 
         public DbOperations(PhonebookDbContext phonebookDbContext, IValidation validation, IDataFromUser dataFromUser)
         {
-            _phonebookDbContext = phonebookDbContext;           
-            _validation = validation;
-            _dataFromUser = dataFromUser;
+            this.phonebookDbContext = phonebookDbContext;           
+            this.validation = validation;
+            this.dataFromUser = dataFromUser;
         }
         public void AddNewEntry()
         {
-            var contact = _dataFromUser.DataOperationsAddNewEntryGetData();
-            _phonebookDbContext.Add(contact);
-            _phonebookDbContext.SaveChanges();
+            var contact = dataFromUser.DataOperationsAddNewEntryGetData();
+            phonebookDbContext.Add(contact);
+            phonebookDbContext.SaveChanges();
+            
+            Console.WriteLine("Dane zostały dodane do pliku Bazy Danych");
+            Console.WriteLine("");
         }
         public void EditByID(int? id)
         {
             do
             {
-                var contactFromDb = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);
-                var choise = _dataFromUser.DataOperationsEditByIDGetChoise(contactFromDb);
+                var contactFromDb = phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);
+                var choise = dataFromUser.DataOperationsEditByIDGetChoise(contactFromDb);
                 if (choise == "0") break;
-                choise = _validation.DataOperationsEditByIdChoseParameter(choise);
-                var parameter = _dataFromUser.DataOperationsEditByIdGetParameter();
+                choise = validation.DataOperationsEditByIdChoseParameter(choise);
+                var parameter = dataFromUser.DataOperationsEditByIdGetParameter();
                 switch (choise)
                 {
                     case "1":
                         contactFromDb.Name = parameter;
-                        _phonebookDbContext.SaveChanges();
+                        phonebookDbContext.SaveChanges();
                         break;
                     case "2":
-                        contactFromDb.Phone1 = _validation.IntParseValidation(parameter);
-                        _phonebookDbContext.SaveChanges();
+                        contactFromDb.Phone1 = validation.IntParseValidation(parameter);
+                        phonebookDbContext.SaveChanges();
                         break;
                     case "3":
-                        contactFromDb.Phone2 = _validation.IntParseValidation(parameter);
-                        _phonebookDbContext.SaveChanges();
+                        contactFromDb.Phone2 = validation.IntParseValidation(parameter);
+                        phonebookDbContext.SaveChanges();
                         break;
                     case "4":
-                        contactFromDb.Phone3 = _validation.IntParseValidation(parameter);
-                        _phonebookDbContext.SaveChanges();
+                        contactFromDb.Phone3 = validation.IntParseValidation(parameter);
+                        phonebookDbContext.SaveChanges();
                         break;
                 }
                 break;
 
             } while (true);
+            Console.Clear();
+            Console.WriteLine("Dane zostały zaktualizowane w bazie danych");
+            Console.WriteLine("");
         }
         public void DeleteByID(int? id)
         {
-            var toRemove = _phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);
-            toRemove = (ContactInDb)_validation.DataOperationsGetID(toRemove);
-            _phonebookDbContext.Phonebook.Remove(toRemove);
-            _phonebookDbContext.SaveChanges();
+            var toRemove = phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);
+            toRemove = (ContactInDb)validation.DataOperationsGetID(toRemove);
+            phonebookDbContext.Phonebook.Remove(toRemove);
+            phonebookDbContext.SaveChanges();
+            Console.Clear();
+            Console.WriteLine("Dane zostały usunięte z bazy danych");
+            Console.WriteLine();
         }
         public void ShowAllContacts()
         {
-            var contactsFromDb = _phonebookDbContext.Phonebook.ToList();
+            var contactsFromDb = phonebookDbContext.Phonebook.ToList();
             Console.WriteLine("===============================");
             foreach (var contactFromDb in contactsFromDb)
             {
@@ -78,9 +87,10 @@ namespace PhonebookConverter.Components.Database
         }
         public void SaveDataFromDbToTxt()
         {
-            var contactsFromDb = _phonebookDbContext.Phonebook.ToList();
+            Console.Clear();
+            var contactsFromDb = phonebookDbContext.Phonebook.ToList();
             Console.WriteLine("Proszę podać lokalizację nowego pliku");
-            string fileName = _validation.DataOperationsExportToTxtDirectoryExist(Console.ReadLine());
+            string fileName = validation.DataOperationsExportToTxtDirectoryExist(Console.ReadLine());
             fileName = fileName + "\\DaneZBazyDanych.txt";
             using (var writer = File.AppendText(fileName))
             {
@@ -94,6 +104,9 @@ namespace PhonebookConverter.Components.Database
                     writer.WriteLine("=========================");
                 }
             }
+            Console.Clear();
+            Console.WriteLine($"Dane zostały exportowane do: {fileName}");
+            Console.WriteLine();
         }
     }
 }

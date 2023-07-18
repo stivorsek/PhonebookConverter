@@ -1,6 +1,4 @@
-﻿using PhonebookConverterL.Data.Entities;
-
-namespace PhonebookConverter.Components.DataTxt
+﻿namespace PhonebookConverter.Components.DataTxt
 {
     public interface IDataInFileTxt
     {        
