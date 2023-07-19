@@ -12,12 +12,14 @@ namespace PhonebookConverter.UIAndValidationm
         string ImportGetPathXml();
         string DataOperationsGetType();
         string DataOperationsExportToTxt();
-        string DataOperationsEditByIDGetChoise(ContactInDb contactFromDb);
+        string DataOperationsEditGetChoise(ContactInDb contactFromDb);
         int? DataOperationsGetID(string dataCenter);
         string MainMenu();
-        string DataOperationsEditByIdGetParameter();
+        string DataOperationsEditGetParameter();
         string CheckExportSettingsExist();
         ContactInDb DataOperationsAddNewEntryGetData();
         List<ContactInDb> CheckDataType(string dataType);
+        string GetDataType();
+        string DataOperationsGetName(string dataCenter);
     }
 }

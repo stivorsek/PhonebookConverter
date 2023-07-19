@@ -1,6 +1,4 @@
-﻿using PhonebookConverterL.Data.Entities;
-
-namespace PhonebookConverter.Components.Database
+﻿namespace PhonebookConverter.Components.MSQSQLDb
 {
     public interface IMSSQLDb
     {
@@ -9,5 +7,6 @@ namespace PhonebookConverter.Components.Database
         void DeleteByID(int? id);
         void ShowAllContacts();
         void SaveDataFromDbToTxt();
+        void EditByName(string name);
     }
 }

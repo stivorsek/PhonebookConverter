@@ -7,13 +7,13 @@ namespace PhonebookConverter.Components.Database
 {
     public class MSSQLDb : IMSSQLDb
     {
-        private readonly PhonebookDbContext phonebookDbContext;        
+        private readonly PhonebookDbContext phonebookDbContext;
         private readonly IValidation validation;
         private readonly IDataFromUser dataFromUser;
 
         public MSSQLDb(PhonebookDbContext phonebookDbContext, IValidation validation, IDataFromUser dataFromUser)
         {
-            this.phonebookDbContext = phonebookDbContext;           
+            this.phonebookDbContext = phonebookDbContext;
             this.validation = validation;
             this.dataFromUser = dataFromUser;
         }
@@ -22,19 +22,28 @@ namespace PhonebookConverter.Components.Database
             var contact = dataFromUser.DataOperationsAddNewEntryGetData();
             phonebookDbContext.Add(contact);
             phonebookDbContext.SaveChanges();
-            
+
             Console.WriteLine("Data has been added to the database");
             Console.WriteLine("");
         }
         public void EditByID(int? id)
         {
+            var contactFromDb = phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);
+            Edit(contactFromDb);
+        }
+        public void EditByName(string name)
+        {
+            var contactFromDb = phonebookDbContext.Phonebook.FirstOrDefault(c => c.Name == name);
+            Edit(contactFromDb);
+        }
+        public void Edit(ContactInDb? contactFromDb)
+        {
             do
             {
-                var contactFromDb = phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);
-                var choise = dataFromUser.DataOperationsEditByIDGetChoise(contactFromDb);
+                var choise = dataFromUser.DataOperationsEditGetChoise(contactFromDb);
                 if (choise == "0") break;
-                choise = validation.DataOperationsEditByIdChoseParameter(choise);
-                var parameter = dataFromUser.DataOperationsEditByIdGetParameter();
+                choise = validation.DataOperationsEditChoseParameter(choise);
+                var parameter = dataFromUser.DataOperationsEditGetParameter();
                 switch (choise)
                 {
                     case "1":
@@ -53,13 +62,12 @@ namespace PhonebookConverter.Components.Database
                         contactFromDb.Phone3 = validation.IntParseValidation(parameter);
                         phonebookDbContext.SaveChanges();
                         break;
-                }
+                }                
+                Console.Clear();
+                Console.WriteLine("Data has been updated to the database");
+                Console.WriteLine("");
                 break;
-
             } while (true);
-            Console.Clear();
-            Console.WriteLine("Data has been updated to the database");
-            Console.WriteLine("");
         }
         public void DeleteByID(int? id)
         {

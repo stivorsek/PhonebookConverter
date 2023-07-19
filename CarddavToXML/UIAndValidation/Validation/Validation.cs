@@ -70,10 +70,16 @@ namespace PhonebookConverter.UIAndValidation.Validation
         public object DataOperationsGetID(ContactInDb contactInDb)
         {
             return contactInDb == default
-                ? throw new Exception("Podane ID nie istnieje w bazie danych!!!")
+                ? throw new Exception("That ID doesn't exist in database")
                 : (object)contactInDb;
         }
-        public string DataOperationsEditByIdChoseParameter(string choise)
+        public object DataOperationsGetName(ContactInDb contactInDb)
+        {
+            return contactInDb == default
+                ? throw new Exception("That Name doesn't exist in database")
+                : (object)contactInDb;
+        }
+        public string DataOperationsEditChoseParameter(string choise)
         {
             return choise == "1" || choise == "2" || choise == "3" || choise == "4"
                 ? choise
@@ -87,11 +93,11 @@ namespace PhonebookConverter.UIAndValidation.Validation
         }
         public string DataOperationsGetType(string choise)
         {
-            return choise == "0" || choise == "1" || choise == "2" || choise == "3" || choise == "4"
+            return choise == "0" || choise == "1" || choise == "2" || choise == "3" || choise == "4" || choise =="5"
                 ? choise
                 : throw new Exception("Wrong choise!!!");
         }
-        public string DataOperationsEditByIDGetChoise(string choise)
+        public string DataOperationsEditGetChoise(string choise)
         {
             return choise == "0" || choise == "1" || choise == "2" || choise == "3" || choise == "4"
                 ? choise

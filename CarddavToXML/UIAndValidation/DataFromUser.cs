@@ -6,13 +6,13 @@ using PhonebookConverter.UIAndValidation.Validation;
 namespace PhonebookConverter.UIAndValidationm
 {
     public class DataFromUser : IDataFromUser
-    {        
-        private readonly PhonebookDbContext phonebookDbContext;        
+    {
+        private readonly PhonebookDbContext phonebookDbContext;
         private readonly IValidation validation;
         private readonly PhonebookFileContext fileContext;
-        public DataFromUser( PhonebookDbContext phonebookDbContext, IValidation validation, PhonebookFileContext fileContext)
-        {            
-            this.phonebookDbContext = phonebookDbContext;            
+        public DataFromUser(PhonebookDbContext phonebookDbContext, IValidation validation, PhonebookFileContext fileContext)
+        {
+            this.phonebookDbContext = phonebookDbContext;
             this.validation = validation;
             this.fileContext = fileContext;
         }
@@ -59,7 +59,7 @@ namespace PhonebookConverter.UIAndValidationm
         {
             Console.Clear();
             return validation.ExceptionsLoop(() =>
-            {                
+            {
                 Console.WriteLine("Please enter an interval time in seconds");
                 var loopTime = validation.ExportToXmlGetLoopTime(Console.ReadLine());
                 return loopTime * 1000;
@@ -92,7 +92,11 @@ namespace PhonebookConverter.UIAndValidationm
             {
                 Console.WriteLine("Please enter ID or chosee 0 to go back to the main menu");
                 string choise = Console.ReadLine();
-                if (choise == "0") return int.Parse(choise);
+                if (choise == "0")
+                {
+                    Console.Clear();
+                    return int.Parse(choise);
+                }
                 int? id = validation.DataOperationsGetID(choise);
                 if (dataCenter == "MSSQL")
                 {
@@ -106,6 +110,29 @@ namespace PhonebookConverter.UIAndValidationm
                 return id;
             });
         }
+        public string DataOperationsGetName(string dataCenter)
+        {
+            return validation.ExceptionsLoop(() =>
+            {
+                Console.WriteLine("Please enter Name or chosee 0 to go back to the main menu");
+                string name = Console.ReadLine();
+                if (name == "0")
+                {
+                    Console.Clear();
+                    return name;
+                }
+                if (dataCenter == "MSSQL")
+                {
+                    var contactFromDb = validation.DataOperationsGetName(phonebookDbContext.Phonebook.FirstOrDefault(c => c.Name == name));
+                }
+                if (dataCenter == "FILE")
+                {
+                    var contacts = validation.DataOperationsGetName(fileContext.ReadAllContactsFromFile().FirstOrDefault(c => c.Name == name));
+                }
+                Console.Clear();
+                return name;
+            });
+        }
         public string DataOperationsGetType()
         {
             return validation.ExceptionsLoop(() =>
@@ -113,8 +140,9 @@ namespace PhonebookConverter.UIAndValidationm
                 Console.WriteLine("0) Back to the Main Menu");
                 Console.WriteLine("1) Delete record by ID");
                 Console.WriteLine("2) Edit record by ID");
-                Console.WriteLine("3) Manual add record");
-                Console.WriteLine("4) Show all records");
+                Console.WriteLine("3) Edit record by Name");
+                Console.WriteLine("4) Manual add record");
+                Console.WriteLine("5) Show all records");
                 var choise = validation.DataOperationsGetType(Console.ReadLine());
                 Console.Clear();
                 return choise;
@@ -133,7 +161,7 @@ namespace PhonebookConverter.UIAndValidationm
                 return choise;
             });
         }
-        public string DataOperationsEditByIDGetChoise(ContactInDb contactFromDb)
+        public string DataOperationsEditGetChoise(ContactInDb contactFromDb)
         {
             return validation.ExceptionsLoop(() =>
             {
@@ -143,11 +171,13 @@ namespace PhonebookConverter.UIAndValidationm
                 Console.WriteLine($"\t4) Phone3 : {contactFromDb.Phone3}");
                 Console.WriteLine("");
                 Console.WriteLine("Chose parameter you wanna edit or 0 to go back to the Main Menu");
-                var choise = validation.DataOperationsEditByIdChoseParameter(Console.ReadLine());
+                var choise = Console.ReadLine();
+                if (choise == "0") return choise;
+                validation.DataOperationsEditChoseParameter(choise);
                 return choise;
             });
         }
-        public string DataOperationsEditByIdGetParameter()
+        public string DataOperationsEditGetParameter()
         {
             Console.WriteLine("Please enter parameter");
             var parameter = Console.ReadLine();
@@ -178,7 +208,7 @@ namespace PhonebookConverter.UIAndValidationm
             });
         }
         public string MainMenu()
-        {            
+        {
             Console.WriteLine("///////////////////////////////////////////////////////////////////////////////");
             Console.WriteLine("");
             Console.WriteLine("\tWellcome in program to menage phonebook files");
@@ -208,7 +238,7 @@ namespace PhonebookConverter.UIAndValidationm
             }
             return null;
         }
-        public string GetDataType ()
+        public string GetDataType()
         {
             return validation.ExceptionsLoop(() =>
             {
@@ -217,13 +247,9 @@ namespace PhonebookConverter.UIAndValidationm
                 Console.WriteLine("1) Files");
                 Console.WriteLine("2) MSSQL");
                 var dataType = validation.GetDataType(Console.ReadLine());
+                Console.Clear();
                 return dataType;
             });
-        }
-        public int? IntParseValidation(string data)
-        {
-            int? result = string.IsNullOrEmpty(data) ? null : int.Parse(data);
-            return result;
         }
         public string CheckExportSettingsExist()
         {

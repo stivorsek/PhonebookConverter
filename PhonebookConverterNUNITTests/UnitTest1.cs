@@ -146,14 +146,14 @@ public class UnitTest1
     {
         string idFromUser = "gsfdsf";
 
-        Assert.Throws<Exception>(() => validation.DataOperationsEditByIdChoseParameter(idFromUser));
+        Assert.Throws<Exception>(() => validation.DataOperationsEditChoseParameter(idFromUser));
     }
     [Test]
     public void DatabaseOperationsEditByIdChoseParameter_ReturnID()
     {
         string idFromUser = "2";
 
-        var result = validation.DataOperationsEditByIdChoseParameter(idFromUser);
+        var result = validation.DataOperationsEditChoseParameter(idFromUser);
 
         Assert.AreEqual(idFromUser, result);
     }
@@ -226,14 +226,14 @@ public class UnitTest1
     {
         string choise = "12";
 
-        Assert.Throws<Exception>(() => validation.DataOperationsEditByIDGetChoise(choise));
+        Assert.Throws<Exception>(() => validation.DataOperationsEditGetChoise(choise));
     }
     [Test]
     public void DataOperationsEditByIDGetChoise_ReturnDirectory()
     {
         string choise = "1";
 
-        var result = validation.DataOperationsEditByIDGetChoise(choise);
+        var result = validation.DataOperationsEditGetChoise(choise);
 
         Assert.AreEqual(choise, result);
     }    

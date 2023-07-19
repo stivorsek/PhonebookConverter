@@ -1,6 +1,6 @@
 ﻿using PhonebookConverterL.Data;
 using PhonebookConverterL.Data.Entities;
-using PhonebookConverter.Components.Database;
+using PhonebookConverter.Components.MSQSQLDb;
 using PhonebookConverter.Components.Export;
 using PhonebookConverter.Components.Import;
 using PhonebookConverter.Data.Entities;
@@ -44,8 +44,9 @@ namespace PhonebookConverter.UIAndValidationm
             this.dataInFileTxt = dataInFileTxt;
             this.exportLoopSettings = exportLoopSettings;
         }
-        public void FirstUIChoise(string dataType)
+        public void MainMenu()
         {
+            var dataType = dataFromUser.GetDataType();
             if (dataType == "MSSQL")
             {
                 phonebookDbContext.Database.EnsureCreated();
@@ -75,9 +76,9 @@ namespace PhonebookConverter.UIAndValidationm
                             DataOperations(dataType);
                             break;
                         case "6":
-                            break;
-                        case "7":
                             endProgram = true;
+                            break;
+                        case "7":                            
                             break;
                         case "8":
                             break;
@@ -228,6 +229,7 @@ namespace PhonebookConverter.UIAndValidationm
             if (choise != "0")
             {
                 int? id = null;
+                string name;
                 Console.Clear();
                 var tuple = (choise, dataStorage);
                 switch (tuple)
@@ -243,9 +245,14 @@ namespace PhonebookConverter.UIAndValidationm
                         MSSQLDb.EditByID(id);
                         break;
                     case ("3", "MSSQL"):
-                        MSSQLDb.AddNewEntry();
+                        name = dataFromUser.DataOperationsGetName(dataStorage);
+                        if (name == "0") break;
+                        MSSQLDb.EditByName(name);
                         break;
                     case ("4", "MSSQL"):
+                        MSSQLDb.AddNewEntry();
+                        break;
+                    case ("5", "MSSQL"):
                         MSSQLDb.ShowAllContacts();
                         string choiseExportMSSQL = dataFromUser.DataOperationsExportToTxt();
                         if (choiseExportMSSQL == "2") break;
@@ -262,9 +269,14 @@ namespace PhonebookConverter.UIAndValidationm
                         dataInFileTxt.EditByID(id);
                         break;
                     case ("3", "FILE"):
-                        dataInFileTxt.AddNewEntry();
+                        name = dataFromUser.DataOperationsGetName(dataStorage);
+                        if (name == "0") break;
+                        MSSQLDb.EditByName(name);
                         break;
                     case ("4", "FILE"):
+                        dataInFileTxt.AddNewEntry();
+                        break;
+                    case ("5", "FILE"):
                         dataInFileTxt.ShowAllContacts();
                         string choiseExportFile = dataFromUser.DataOperationsExportToTxt();
                         if (choiseExportFile == "2") break;

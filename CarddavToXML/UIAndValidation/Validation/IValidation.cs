@@ -12,15 +12,17 @@ namespace PhonebookConverter.UIAndValidation.Validation
         string ImportGetPathCsv(string path);
         int? DataOperationsGetID(string id);
         object DataOperationsGetID(ContactInDb? contactInDb);
-        string DataOperationsEditByIdChoseParameter(string choise);
+        string DataOperationsEditChoseParameter(string choise);
         string DataOperationsExportToTxt(string choise);
         string DataOperationsGetType(string choise);
         int? IntParseValidation(string data);
         string CheckExportSettingsExist(string choise);
         string DataOperationsExportToTxtDirectoryExist(string path);
-        string DataOperationsEditByIDGetChoise(string choise);
+        string DataOperationsEditGetChoise(string choise);
         void CatchError(Exception ex);
         T ExceptionsLoop<T>(Func<T> method);
         void ExceptionsLoop(Action metoda);
+        string GetDataType(string dataType);
+        object DataOperationsGetName(ContactInDb contactInDb);
     }
 }

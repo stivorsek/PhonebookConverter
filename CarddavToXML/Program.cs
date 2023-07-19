@@ -27,13 +27,4 @@ services.AddDbContext<PhonebookDbContext>(options => options
 var serviceProvider = services.BuildServiceProvider();
 var app = serviceProvider.GetService<IUserInterface>()!;
 
-Console.WriteLine("\tPleach chosee data you wanna use");
-Console.WriteLine("1) Files");
-Console.WriteLine("2) MSSQL");
-var dataType = Console.ReadLine();
-if (dataType == "1") dataType = "FILE";
-if (dataType == "2") dataType = "MSSQL";
-if (dataType == "FILE" || dataType == "MSSQL")
-{
-    app.FirstUIChoise(dataType);
-}
+app.MainMenu();

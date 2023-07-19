@@ -51,10 +51,10 @@ namespace PhonebookConverter.Components.DataTxt
             do
             {
                 var contactsFromFile = fileContext.ReadAllContactsFromFile().FirstOrDefault(c => c.Id == id);
-                var choise = dataFromUser.DataOperationsEditByIDGetChoise(contactsFromFile);
+                var choise = dataFromUser.DataOperationsEditGetChoise(contactsFromFile);
                 if (choise == "0") break;
-                choise = validation.DataOperationsEditByIdChoseParameter(choise);
-                var parameter = dataFromUser.DataOperationsEditByIdGetParameter();
+                choise = validation.DataOperationsEditChoseParameter(choise);
+                var parameter = dataFromUser.DataOperationsEditGetParameter();
                 string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);
                 for (int i = 1; i < lines.Length; i++)
                 {
