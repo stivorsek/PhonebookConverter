@@ -4,17 +4,14 @@ using PhonebookConverter.Components.Database;
 using PhonebookConverter.Components.Export;
 using PhonebookConverter.Components.Import;
 using PhonebookConverter.Data.Entities;
-using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
 using PhonebookConverter.Components.DataTxt;
-using PhonebookConverter.UIAndExceptions;
-using PhonebookConverter.Data;
-using System.ComponentModel.DataAnnotations;
+using PhonebookConverter.UIAndValidation.Validation;
 
-namespace PhonebookConverterL.UI
+namespace PhonebookConverter.UIAndValidationm
 {
-    public class UserIntarface : IUserIntarface
+    public class UserInterface : IUserInterface
     {
-        private readonly IExceptions exceptions;
+        private readonly IValidation validation;
         private readonly ICsvReader csvReader;
         private readonly ICsvWriter csvWriter;
         private readonly PhonebookDbContext phonebookDbContext;
@@ -24,41 +21,41 @@ namespace PhonebookConverterL.UI
         private readonly IMSSQLDb MSSQLDb;
         private readonly IDataInFile dataInFileTxt;
         private readonly IExportLoopSettings exportLoopSettings;
-        private readonly FileContext fileContext;
 
-        public UserIntarface(ICsvReader csvReader
+        public UserInterface(ICsvReader csvReader
             , IXmlWriter xmlWriter
             , PhonebookDbContext phonebookDbContext
             , IXmlReader xmlReader
             , IDataFromUser dataFromUser
             , IExportLoopSettings exportLoopSettings
             , ICsvWriter csvWriter
-            , IExceptions exceptions
+            , IValidation validation
             , IDataInFile dataInFileTxt
-            , FileContext fileContext
             , IMSSQLDb MSSQLDb)
         {
-            this.exceptions = exceptions;
+            this.validation = validation;
             this.csvReader = csvReader;
             this.csvWriter = csvWriter;
             this.phonebookDbContext = phonebookDbContext;
-            this.phonebookDbContext.Database.EnsureCreated();
             this.xmlWriter = xmlWriter;
             this.xmlReader = xmlReader;
             this.dataFromUser = dataFromUser;
             this.MSSQLDb = MSSQLDb;
             this.dataInFileTxt = dataInFileTxt;
             this.exportLoopSettings = exportLoopSettings;
-            this.fileContext = fileContext;
         }
         public void FirstUIChoise(string dataType)
         {
+            if (dataType == "MSSQL")
+            {
+                phonebookDbContext.Database.EnsureCreated();
+            }
             exportLoopSettings.CheckExportLoopSettingsExist();
             bool endProgram = false;
             do
             {
-                var choise = dataFromUser.FirstUIChoise();
-                this.exceptions.ExceptionsLoop(() =>
+                var choise = dataFromUser.MainMenu();
+                validation.ExceptionsLoop(() =>
                 {
                     switch (choise)
                     {
@@ -75,7 +72,7 @@ namespace PhonebookConverterL.UI
                             ExportToCsv(dataType);
                             break;
                         case "5":
-                            ChoseDatabaseOperations(dataType);
+                            DataOperations(dataType);
                             break;
                         case "6":
                             break;
@@ -94,73 +91,47 @@ namespace PhonebookConverterL.UI
         private void ImportDataFromCsv(string dataType)
         {
             string path = dataFromUser.ImportGetPathCsv();
-            if (path != "1")
+            if (path != "0")
             {
+
+                var contacts = this.csvReader.TypeChecker(path);
+                foreach (var contact in contacts)
+                {
+                    dataFromUser.CheckDataType(dataType).Add(new ContactInDb()
+                    {
+                        Name = contact.Name,
+                        Phone1 = contact.Phone1,
+                        Phone2 = contact.Phone2,
+                        Phone3 = contact.Phone3,
+                    });
+                }
                 if (dataType == "MSSQL")
                 {
-                    var contacts = this.csvReader.TypeChecker(path);
-                    foreach (var contact in contacts)
-                    {
-                        phonebookDbContext.Phonebook.Add(new ContactInDb()
-                        {
-                            Name = contact.Name,
-                            Phone1 = contact.Phone1,
-                            Phone2 = contact.Phone2,
-                            Phone3 = contact.Phone3,
-                        });
-                    }
                     phonebookDbContext.SaveChanges();
                 }
-                if (dataType == "File")
-                {
-                    var contacts = this.csvReader.TypeChecker(path);
-                    foreach (var contact in contacts)
-                    {
-                        fileContext.ReadAllContactsFromFile().Add(new ContactInDb()
-                        {
-                            Name = contact.Name,
-                            Phone1 = contact.Phone1,
-                            Phone2 = contact.Phone2,
-                            Phone3 = contact.Phone3,
-                        });
-                    }
-                }
             }
+
         }
         private void ImportDataFromXml(string dataType)
         {
             Console.Clear();
             string path = dataFromUser.ImportGetPathXml();
-            if (path != "1")
+            if (path != "0")
             {
+                var contacts = xmlReader.TypeChecker(path);
+                foreach (var contact in contacts)
+                {
+                    dataFromUser.CheckDataType(dataType).Add(new ContactInDb()
+                    {
+                        Name = contact.Name,
+                        Phone1 = contact.Phone1,
+                        Phone2 = contact.Phone2,
+                        Phone3 = contact.Phone3,
+                    });
+                }
                 if (dataType == "MSSQL")
                 {
-                    var contacts = xmlReader.TypeChecker(path);
-                    foreach (var contact in contacts)
-                    {
-                        phonebookDbContext.Phonebook.Add(new ContactInDb()
-                        {
-                            Name = contact.Name,
-                            Phone1 = contact.Phone1,
-                            Phone2 = contact.Phone2,
-                            Phone3 = contact.Phone3,
-                        });
-                    }
                     phonebookDbContext.SaveChanges();
-                }
-                if (dataType == "File")
-                {
-                    var contacts = this.csvReader.TypeChecker(path);
-                    foreach (var contact in contacts)
-                    {
-                        fileContext.ReadAllContactsFromFile().Add(new ContactInDb()
-                        {
-                            Name = contact.Name,
-                            Phone1 = contact.Phone1,
-                            Phone2 = contact.Phone2,
-                            Phone3 = contact.Phone3,
-                        });
-                    }
                 }
             }
         }
@@ -185,18 +156,19 @@ namespace PhonebookConverterL.UI
                     if (loopTime == 0) break;
                     exportData.Interval = loopTime;
                 }
-                var tuple = (choiseType, loopState);
                 Console.Clear();
+                var contacts = dataFromUser.CheckDataType(dataType);
+                var tuple = (choiseType, loopState);
                 switch (tuple)
                 {
                     case ("Yealink_Local_Phonebook", false):
-                        xmlWriter.YealinkLocal(pathXml, dataType);
+                        xmlWriter.YealinkLocal(pathXml, contacts);
                         break;
                     case ("Yealink_Remote_Phonebook", false):
-                        xmlWriter.YealinkRemote(pathXml, dataType);
+                        xmlWriter.YealinkRemote(pathXml, contacts);
                         break;
                     case ("Fanvil_Local_and_Remote_Phonebook", false):
-                        xmlWriter.FanvilRemoteAndLocal(pathXml, dataType);
+                        xmlWriter.FanvilRemoteAndLocal(pathXml, contacts);
                         break;
                     default:
                         exportLoopSettings.SetPeriodicExport(exportData);
@@ -227,18 +199,19 @@ namespace PhonebookConverterL.UI
                     if (loopTime == 0) break;
                     exportData.Interval = loopTime;
                 }
-                var tuple = (choiseType, loopState);
                 Console.Clear();
+                var contacts = dataFromUser.CheckDataType(dataType);
+                var tuple = (choiseType, loopState);
                 switch (tuple)
                 {
                     case ("Yealink_Local_Phonebook", false):
-                        csvWriter.YealinkLocal(pathXml, dataType);
+                        csvWriter.YealinkLocal(pathXml, contacts);
                         break;
                     case ("Fanvil_Local_Phonebook", false):
-                        csvWriter.FanvilLocal(pathXml, dataType);
+                        csvWriter.FanvilLocal(pathXml, contacts);
                         break;
                     case ("Yeastar_P_Series_Phonebook", false):
-                        csvWriter.YeastarPSeries(pathXml, dataType);
+                        csvWriter.YeastarPSeries(pathXml, contacts);
                         break;
                     default:
                         exportLoopSettings.SetPeriodicExport(exportData);
@@ -248,7 +221,7 @@ namespace PhonebookConverterL.UI
             }
             while (true);
         }
-        private void ChoseDatabaseOperations(string dataStorage)
+        private void DataOperations(string dataStorage)
         {
             Console.Clear();
             string choise = dataFromUser.DataOperationsGetType();

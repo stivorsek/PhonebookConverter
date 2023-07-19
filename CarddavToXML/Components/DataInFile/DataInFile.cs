@@ -1,6 +1,6 @@
 ﻿using PhonebookConverter.Data;
-using PhonebookConverter.UIAndExceptions;
-using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
+using PhonebookConverter.UIAndValidation.Validation;
+using PhonebookConverter.UIAndValidationm;
 using PhonebookConverterL.Data.Entities;
 using System.Text;
 
@@ -11,9 +11,10 @@ namespace PhonebookConverter.Components.DataTxt
         private readonly string filePath;
         private readonly IValidation validation;
         private readonly IDataFromUser dataFromUser;
-        private readonly FileContext fileContext;
+        private readonly PhonebookFileContext fileContext;
+        private readonly object fileLock = new object();
 
-        public DataInFile(IValidation validation ,IDataFromUser dataFromUser, FileContext fileContext )
+        public DataInFile(IValidation validation, IDataFromUser dataFromUser, PhonebookFileContext fileContext)
         {
             filePath = "DataInCsv.csv";
             this.validation = validation;
@@ -22,6 +23,7 @@ namespace PhonebookConverter.Components.DataTxt
         }
         public void AddNewEntry()
         {
+
             var contacts = fileContext.ReadAllContactsFromFile();
             var contact = dataFromUser.DataOperationsAddNewEntryGetData();
             contact.Id = contacts[contacts.Count - 1].Id + 1;
@@ -33,10 +35,13 @@ namespace PhonebookConverter.Components.DataTxt
                 Phone2 = contact.Phone2,
                 Phone3 = contact.Phone3
             });
-            using (var writer = File.AppendText(filePath))
+            lock (fileLock)
             {
-                string data = $"{contact.Id},{contact.Name},{contact.Phone1},{contact.Phone2},{contact.Phone3}";
-                writer.WriteLine(data);
+                using (var writer = File.AppendText(filePath))
+                {
+                    string data = $"{contact.Id},{contact.Name},{contact.Phone1},{contact.Phone2},{contact.Phone3}";
+                    writer.WriteLine(data);
+                }
             }
             Console.WriteLine("Data has been added to the file");
             Console.WriteLine("");
@@ -61,13 +66,16 @@ namespace PhonebookConverter.Components.DataTxt
                         break;
                     }
                 }
-                File.WriteAllLines(filePath, lines, Encoding.UTF8);
+                lock (fileLock)
+                {
+                    File.WriteAllLines(filePath, lines, Encoding.UTF8);
+                }
                 break;
             } while (true);
             Console.Clear();
             Console.WriteLine("Data has been updated in the file");
             Console.WriteLine("");
-        }        
+        }
         public void DeleteByID(int? id)
         {
             var toRemove = fileContext.ReadAllContactsFromFile().FirstOrDefault(c => c.Id == id);
@@ -77,7 +85,7 @@ namespace PhonebookConverter.Components.DataTxt
             {
                 string[] values = lines[i].Split(',');
                 if (values[0] == toRemove.Id.ToString()
-                    &&values[1] == toRemove.Name
+                    && values[1] == toRemove.Name
                     && values[2] == toRemove.Phone1.ToString()
                     && values[3] == toRemove.Phone2.ToString()
                     && values[4] == toRemove.Phone3.ToString())
@@ -85,7 +93,10 @@ namespace PhonebookConverter.Components.DataTxt
                     lines[i] = null;
                 }
             }
-            File.WriteAllLines(filePath, lines, Encoding.UTF8);
+            lock (fileLock)
+            {
+                File.WriteAllLines(filePath, lines, Encoding.UTF8);
+            }
             Console.Clear();
             Console.WriteLine("Data has been deleted in the file");
             Console.WriteLine("");

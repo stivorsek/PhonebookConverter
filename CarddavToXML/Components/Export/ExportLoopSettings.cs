@@ -1,5 +1,5 @@
 ﻿using PhonebookConverter.Data.Entities;
-using PhonebookConverter.UIAndExceptions;
+using PhonebookConverter.UIAndValidationm;
 
 namespace PhonebookConverter.Components.Export
 {
@@ -7,13 +7,13 @@ namespace PhonebookConverter.Components.Export
     {
         private readonly IDataFromUser dataFromUser;
         private readonly IXmlWriter xmlWriter;
-        private readonly ICsvWriter _csvWriter;
-
+        private readonly ICsvWriter csvWriter;        
         public ExportLoopSettings(IDataFromUser dataFromUser, IXmlWriter xmlWriter, ICsvWriter csvWriter)
         {
             this.dataFromUser = dataFromUser;
             this.xmlWriter = xmlWriter;
-            _csvWriter = csvWriter;
+            this.csvWriter = csvWriter;
+            this.dataFromUser = dataFromUser;
         }
         public void CheckExportLoopSettingsExist()
         {
@@ -74,27 +74,28 @@ namespace PhonebookConverter.Components.Export
         }
         public void SetPeriodicExportTypeCheck(ExportPeriodData exportPeriodData)
         {
-            var tuple = (exportPeriodData.Type, exportPeriodData.Format);
+            var contacts = dataFromUser.CheckDataType(exportPeriodData.DataType);
+            var tuple = (exportPeriodData.Type, exportPeriodData.Format);            
             switch (tuple)
             {
                 case ("Yealink_Local_Phonebook", "xml"):
-                    xmlWriter.YealinkRemote(exportPeriodData.Path, exportPeriodData.DataType);
+                    xmlWriter.YealinkRemote(exportPeriodData.Path, contacts);
                     break;
                 case ("Yealink_Remote_Phonebook", "xml"):
-                    xmlWriter.YealinkLocal(exportPeriodData.Path, exportPeriodData.DataType);
+                    xmlWriter.YealinkLocal(exportPeriodData.Path, contacts);
                     break;
                 case ("Fanvil_Local_and_Remote_Phonebook", "xml"):
-                    xmlWriter.FanvilRemoteAndLocal(exportPeriodData.Path, exportPeriodData.DataType);
+                    xmlWriter.FanvilRemoteAndLocal(exportPeriodData.Path, contacts);
                     break;
                 case ("Yealink_Local_Phonebook", "csv"):
-                    _csvWriter.YealinkLocal(exportPeriodData.Path, exportPeriodData.DataType);
+                    csvWriter.YealinkLocal(exportPeriodData.Path, contacts);
                     break;
                 case ("Fanvil_Local_Phonebook", "csv"):
-                    _csvWriter.FanvilLocal(exportPeriodData.Path, exportPeriodData.DataType);
+                    csvWriter.FanvilLocal(exportPeriodData.Path, contacts);
                     break;
                 case ("Yeastar_P_Series_Phonebook", "csv"):
-                    _csvWriter.YeastarPSeries(exportPeriodData.Path, exportPeriodData.DataType);
-                    break;                
+                    csvWriter.YeastarPSeries(exportPeriodData.Path, contacts);
+                    break;
             }
         }
         public void ShowTypeAndTimeOfExport(ExportPeriodData exportPeriodData)

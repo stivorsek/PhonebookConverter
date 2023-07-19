@@ -1,7 +1,7 @@
 ﻿using PhonebookConverterL.Data.Entities;
 using PhonebookConverterL.Data;
-using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
-using PhonebookConverter.UIAndExceptions;
+using PhonebookConverter.UIAndValidation.Validation;
+using PhonebookConverter.UIAndValidationm;
 
 namespace PhonebookConverter.Components.Database
 {

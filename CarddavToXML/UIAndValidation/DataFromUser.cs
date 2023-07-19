@@ -1,27 +1,24 @@
 ﻿using PhonebookConverterL.Data;
 using PhonebookConverterL.Data.Entities;
-using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
 using PhonebookConverter.Data;
+using PhonebookConverter.UIAndValidation.Validation;
 
-namespace PhonebookConverter.UIAndExceptions
+namespace PhonebookConverter.UIAndValidationm
 {
     public class DataFromUser : IDataFromUser
-    {
-        private readonly IExceptions exceptions;
+    {        
         private readonly PhonebookDbContext phonebookDbContext;        
         private readonly IValidation validation;
-        private readonly FileContext fileContext;
-
-        public DataFromUser(IExceptions exceptions, PhonebookDbContext phonebookDbContext, IValidation validation, FileContext fileContext)
-        {
-            this.exceptions = exceptions;
+        private readonly PhonebookFileContext fileContext;
+        public DataFromUser( PhonebookDbContext phonebookDbContext, IValidation validation, PhonebookFileContext fileContext)
+        {            
             this.phonebookDbContext = phonebookDbContext;            
             this.validation = validation;
             this.fileContext = fileContext;
         }
         public string ExportGetFolder()
         {
-            return exceptions.ExceptionsLoop(() =>
+            return validation.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Please enter the folder path or 1 to back to the main menu");
                 var pathXml = validation.ExportToXmlGetFolder(Console.ReadLine());
@@ -31,7 +28,7 @@ namespace PhonebookConverter.UIAndExceptions
         }
         public string ExportGetType()
         {
-            return exceptions.ExceptionsLoop(() =>
+            return validation.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Chosse Type of XML File");
                 Console.WriteLine("\t 0)Back to the main Menu");
@@ -48,7 +45,7 @@ namespace PhonebookConverter.UIAndExceptions
         }
         public bool ExportGetLoopState()
         {
-            return exceptions.ExceptionsLoop(() =>
+            return validation.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Do you want make cyclical export");
                 Console.WriteLine("1) Yes");
@@ -61,7 +58,7 @@ namespace PhonebookConverter.UIAndExceptions
         public int ExportGetLoopTime()
         {
             Console.Clear();
-            return exceptions.ExceptionsLoop(() =>
+            return validation.ExceptionsLoop(() =>
             {                
                 Console.WriteLine("Please enter an interval time in seconds");
                 var loopTime = validation.ExportToXmlGetLoopTime(Console.ReadLine());
@@ -70,7 +67,7 @@ namespace PhonebookConverter.UIAndExceptions
         }
         public string ImportGetPathCsv()
         {
-            return exceptions.ExceptionsLoop(() =>
+            return validation.ExceptionsLoop(() =>
             {
                 Console.Clear();
                 Console.WriteLine("Please enter path or chosee 0 to go back to the main menu");
@@ -81,7 +78,7 @@ namespace PhonebookConverter.UIAndExceptions
         }
         public string ImportGetPathXml()
         {
-            return exceptions.ExceptionsLoop(() =>
+            return validation.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Please enter path or chosee 0 to go back to the main menu");
                 string path = validation.ImportGetPathXml(Console.ReadLine());
@@ -91,7 +88,7 @@ namespace PhonebookConverter.UIAndExceptions
         }
         public int? DataOperationsGetID(string dataCenter)
         {
-            return exceptions.ExceptionsLoop(() =>
+            return validation.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Please enter ID or chosee 0 to go back to the main menu");
                 string choise = Console.ReadLine();
@@ -111,7 +108,7 @@ namespace PhonebookConverter.UIAndExceptions
         }
         public string DataOperationsGetType()
         {
-            return exceptions.ExceptionsLoop(() =>
+            return validation.ExceptionsLoop(() =>
             {
                 Console.WriteLine("0) Back to the Main Menu");
                 Console.WriteLine("1) Delete record by ID");
@@ -125,7 +122,7 @@ namespace PhonebookConverter.UIAndExceptions
         }
         public string DataOperationsExportToTxt()
         {
-            return exceptions.ExceptionsLoop(() =>
+            return validation.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Do you wanna save data in txt file?");
                 Console.WriteLine("\t 1)Yes");
@@ -138,7 +135,7 @@ namespace PhonebookConverter.UIAndExceptions
         }
         public string DataOperationsEditByIDGetChoise(ContactInDb contactFromDb)
         {
-            return exceptions.ExceptionsLoop(() =>
+            return validation.ExceptionsLoop(() =>
             {
                 Console.WriteLine($"\t1) Name : {contactFromDb.Name}");
                 Console.WriteLine($"\t2) Phone1 : {contactFromDb.Phone1}");
@@ -159,7 +156,7 @@ namespace PhonebookConverter.UIAndExceptions
         public ContactInDb DataOperationsAddNewEntryGetData()
         {
             Console.Clear();
-            return exceptions.ExceptionsLoop(() =>
+            return validation.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Please enter Name");
                 var Name = Console.ReadLine();
@@ -180,7 +177,7 @@ namespace PhonebookConverter.UIAndExceptions
                 return contact;
             });
         }
-        public string FirstUIChoise()
+        public string MainMenu()
         {            
             Console.WriteLine("///////////////////////////////////////////////////////////////////////////////");
             Console.WriteLine("");
@@ -198,6 +195,31 @@ namespace PhonebookConverter.UIAndExceptions
             var choise = Console.ReadLine();
             return choise;
         }
+        public List<ContactInDb> CheckDataType(string dataType)
+        {
+            List<ContactInDb> contactsFromDb = new List<ContactInDb>();
+            if (dataType == "MSSQL")
+            {
+                return contactsFromDb = phonebookDbContext.Phonebook.ToList();
+            }
+            if (dataType == "FILE")
+            {
+                return contactsFromDb = fileContext.ReadAllContactsFromFile().ToList();
+            }
+            return null;
+        }
+        public string GetDataType ()
+        {
+            return validation.ExceptionsLoop(() =>
+            {
+                Console.WriteLine("\tPleach chosee data you wanna use");
+                Console.WriteLine("0) End program");
+                Console.WriteLine("1) Files");
+                Console.WriteLine("2) MSSQL");
+                var dataType = validation.GetDataType(Console.ReadLine());
+                return dataType;
+            });
+        }
         public int? IntParseValidation(string data)
         {
             int? result = string.IsNullOrEmpty(data) ? null : int.Parse(data);
@@ -205,7 +227,7 @@ namespace PhonebookConverter.UIAndExceptions
         }
         public string CheckExportSettingsExist()
         {
-            return exceptions.ExceptionsLoop(() =>
+            return validation.ExceptionsLoop(() =>
             {
                 Console.WriteLine("Do you wanna set back that export loop?");
                 Console.WriteLine("1) Yes");

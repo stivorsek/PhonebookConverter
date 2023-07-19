@@ -6,21 +6,14 @@ using System.Xml.Linq;
 namespace PhonebookConverter.Components.Export
 {
     public class XmlWriter : IXmlWriter
-    {
-        private PhonebookDbContext phonebookDbContext;
-        private readonly FileContext fileContext;
+    {        
+        private readonly object fileLock;
 
-        public XmlWriter(PhonebookDbContext phonebookDbContext, FileContext fileContext)
+        public void FanvilRemoteAndLocal(string filePath, List <ContactInDb> data)
         {
-            this.phonebookDbContext = phonebookDbContext;
-            this.fileContext = fileContext;
-        }
-        public void FanvilRemoteAndLocal(string filePath, string dataType)
-        {
-            filePath = filePath + "//PhonebookFanvilRemote.xml";
-            var contactsFromDb = CheckDataType(dataType);
+            filePath = filePath + "//PhonebookFanvilRemote.xml";            
             var document = new XDocument();
-            var contacts = new XElement("PhoneBook", contactsFromDb
+            var contacts = new XElement("PhoneBook", data
                     .Select(x =>
                          new XElement("DirectoryEntry",
                              new XElement("Name", x.Name),
@@ -30,17 +23,19 @@ namespace PhonebookConverter.Components.Export
                                      )
                             ));
             document.Add(contacts);
-            document.Save(filePath);
+            lock (fileLock)
+            {
+                document.Save(filePath);
+            }
             ExportToCsvSuccesfull(filePath);
         }
-        public void YealinkLocal(string filePath, string dataType)
+        public void YealinkLocal(string filePath, List<ContactInDb> data)
         {
-            filePath = filePath + "//PhonebookYealinkLocal.xml";
-            var contactsFromDb = CheckDataType(dataType);
+            filePath = filePath + "//PhonebookYealinkLocal.xml";            
             var document = new XDocument();
             var contacts = new XElement("vp_contact",
                 new XElement("root_group", ""),
-                new XElement("root_contact", contactsFromDb
+                new XElement("root_contact", data
             .Select(x =>
                 new XElement("contact",
                     new XAttribute("display_name", x.Name),
@@ -50,17 +45,19 @@ namespace PhonebookConverter.Components.Export
                     )
             )));
             document.Add(contacts);
-            document.Save(filePath);
+            lock (fileLock)
+            {
+                document.Save(filePath);
+            }
             ExportToCsvSuccesfull(filePath);
         }
-        public void YealinkRemote(string filePath, string dataType)
+        public void YealinkRemote(string filePath, List <ContactInDb> data)
         {
-            filePath = filePath + "//PhonebookYealinkRemote.xml";
-            var contactsFromDb = CheckDataType(dataType);
+            filePath = filePath + "//PhonebookYealinkRemote.xml";            
             var document = new XDocument();
             var contacts = new XElement("YealinkIPPhoneBook",
                 new XElement("Title", "Phonebook"),
-                new XElement("Phonebook", contactsFromDb
+                new XElement("Phonebook", data
             .Select(x =>
                 new XElement("Entry",
                     new XAttribute("Name", x.Name),
@@ -70,7 +67,10 @@ namespace PhonebookConverter.Components.Export
                     )
             )));
             document.Add(contacts);
-            document.Save(filePath);
+            lock (fileLock)
+            {
+                document.Save(filePath);
+            }
             ExportToCsvSuccesfull(filePath);
         }
         public void ExportToCsvSuccesfull(string filePath)
@@ -79,19 +79,7 @@ namespace PhonebookConverter.Components.Export
             Console.WriteLine($"Data was successful exported to Xml : {filePath}");
             Console.WriteLine("");
         }
-        public List<ContactInDb> CheckDataType(string dataType)
-        {
-            List<ContactInDb> contactsFromDb = new List<ContactInDb>();
-            if (dataType == "MSSQL")
-            {
-                return contactsFromDb = phonebookDbContext.Phonebook.ToList();
-            }
-            if (dataType == "FILE")
-            {
-                return contactsFromDb = fileContext.ReadAllContactsFromFile().ToList();
-            }
-            return null;
-        }
+     
     }
 }
 

@@ -1,9 +1,11 @@
-﻿namespace PhonebookConverter.Components.Export
+﻿using PhonebookConverterL.Data.Entities;
+
+namespace PhonebookConverter.Components.Export
 {
     public interface IXmlWriter 
     {
-        void YealinkLocal(string filepath, string dataType);
-        void YealinkRemote(string filepath, string dataType);
-        void FanvilRemoteAndLocal(string filepath, string dataType);
+        void YealinkLocal(string pathXml, List<ContactInDb> data);
+        void YealinkRemote(string pathXml, List<ContactInDb> data);
+        void FanvilRemoteAndLocal(string pathXml, List<ContactInDb> data);
     }
 }

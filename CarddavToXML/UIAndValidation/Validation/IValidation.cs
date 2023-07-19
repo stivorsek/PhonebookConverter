@@ -1,6 +1,6 @@
 ﻿using PhonebookConverterL.Data.Entities;
 
-namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
+namespace PhonebookConverter.UIAndValidation.Validation
 {
     public interface IValidation
     {
@@ -19,5 +19,8 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         string CheckExportSettingsExist(string choise);
         string DataOperationsExportToTxtDirectoryExist(string path);
         string DataOperationsEditByIDGetChoise(string choise);
+        void CatchError(Exception ex);
+        T ExceptionsLoop<T>(Func<T> method);
+        void ExceptionsLoop(Action metoda);
     }
 }

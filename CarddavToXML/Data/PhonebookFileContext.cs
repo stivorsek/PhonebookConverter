@@ -1,19 +1,14 @@
-﻿using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
+﻿using PhonebookConverter.UIAndValidation.Validation;
 using PhonebookConverterL.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhonebookConverter.Data
 {
-    public class FileContext
+    public class PhonebookFileContext
     {
         private readonly string filePath;
         private readonly IValidation validation;
 
-        public FileContext(IValidation validation) 
+        public PhonebookFileContext(IValidation validation) 
         { 
             filePath = "DataInCsv.csv"; 
             this.validation = validation;

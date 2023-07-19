@@ -1,5 +1,5 @@
-﻿using PhonebookConverterL.Data.Entities;
-using PhonebookConverter.UIAndExceptions.ExceptionsAndValidation;
+﻿using PhonebookConverter.UIAndValidation.Validation;
+using PhonebookConverterL.Data.Entities;
 
 namespace PhonebookConverter.Components.Import
 {

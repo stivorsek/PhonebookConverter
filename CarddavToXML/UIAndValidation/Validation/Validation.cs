@@ -1,9 +1,9 @@
 ﻿using PhonebookConverterL.Data.Entities;
 
-namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
+namespace PhonebookConverter.UIAndValidation.Validation
 {
     public class Validation : IValidation
-    {        
+    {
         public string ExportToXmlGetFolder(string pathXml)
         {
             return Directory.Exists(pathXml) || pathXml == "0"
@@ -31,8 +31,8 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         {
             int loopTime;
             var userTime = int.TryParse(timer, out loopTime);
-            return loopTime == 0 
-                ? throw new Exception("Incorect time format!!!") 
+            return loopTime == 0
+                ? throw new Exception("Incorect time format!!!")
                 : loopTime;
         }
         public string ImportGetPathXml(string path)
@@ -63,25 +63,25 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         public int? DataOperationsGetID(string idFromUser)
         {
             int? id = int.Parse(idFromUser);
-            return id == 0 
-                ? null 
+            return id == 0
+                ? null
                 : id;
         }
         public object DataOperationsGetID(ContactInDb contactInDb)
         {
-            return contactInDb == default 
-                ? throw new Exception("Podane ID nie istnieje w bazie danych!!!") 
+            return contactInDb == default
+                ? throw new Exception("Podane ID nie istnieje w bazie danych!!!")
                 : (object)contactInDb;
         }
         public string DataOperationsEditByIdChoseParameter(string choise)
         {
-            return choise == "1" || choise == "2" || choise == "3" || choise == "4" 
-                ? choise 
+            return choise == "1" || choise == "2" || choise == "3" || choise == "4"
+                ? choise
                 : throw new Exception("Wrong choise!!!");
         }
         public string DataOperationsExportToTxt(string choise)
         {
-            return choise == "1" || choise== "2" 
+            return choise == "1" || choise == "2"
                 ? choise
                 : throw new Exception("Wrong choise!!!");
         }
@@ -99,8 +99,8 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         }
         public string DataOperationsExportToTxtDirectoryExist(string path)
         {
-            return Directory.Exists(path) 
-                ? path 
+            return Directory.Exists(path)
+                ? path
                 : throw new Exception("File path doesn't exist!!!");
         }
         public string CheckExportSettingsExist(string choise)
@@ -115,6 +115,62 @@ namespace PhonebookConverter.UIAndExceptions.ExceptionsAndValidation
         {
             int? result = string.IsNullOrEmpty(data) ? null : int.Parse(data);
             return result;
+        }
+        public void ExceptionsLoop(Action metoda)
+        {
+            while (true)
+            {
+                try
+                {
+                    metoda.Invoke();
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    CatchError(ex);
+                    continue;
+                }
+            }
+        }
+        public string GetDataType(string dataType)
+        {
+            if (dataType == "1") dataType = "FILE";
+            if (dataType == "2") dataType = "MSSQL";
+            return dataType == "FILE" || dataType == "MSSQL" || dataType == "0"
+                ? dataType
+                : throw new Exception("Wrong choise!!!");
+        }
+        public T ExceptionsLoop<T>(Func<T> method)
+        {
+            while (true)
+            {
+                try
+                {
+                    T result = method.Invoke();
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    CatchError(ex);
+                    continue;
+                }
+            }
+        }
+        public void CatchError(Exception ex)
+        {
+            Console.Clear();
+            string separator = "///////////////////////////////////////////////////////////////////////////////";
+            string exceptionHeader = "Wystąpił wyjątek: " + DateTime.Now;
+            Console.WriteLine(separator);
+            Console.WriteLine(exceptionHeader);
+            Console.WriteLine($"\t{ex.Message}");
+            Console.WriteLine(separator);
+            using (var writer = File.AppendText("ErrorLog.txt"))
+            {
+                writer.Write(separator);
+                writer.Write(exceptionHeader);
+                writer.Write(ex.Message);
+            }
         }
     }
 }
