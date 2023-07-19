@@ -271,7 +271,7 @@ namespace PhonebookConverter.UIAndValidationm
                     case ("3", "FILE"):
                         name = dataFromUser.DataOperationsGetName(dataStorage);
                         if (name == "0") break;
-                        MSSQLDb.EditByName(name);
+                        dataInFileTxt.EditByName(name);
                         break;
                     case ("4", "FILE"):
                         dataInFileTxt.AddNewEntry();

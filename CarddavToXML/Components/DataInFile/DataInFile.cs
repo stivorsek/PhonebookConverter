@@ -48,9 +48,18 @@ namespace PhonebookConverter.Components.DataTxt
         }
         public void EditByID(int? id)
         {
+            var contactsFromFile = fileContext.ReadAllContactsFromFile().FirstOrDefault(c => c.Id == id);
+            Edit(contactsFromFile);
+        }
+        public void EditByName(string name)
+        {
+            var contactsFromFile = fileContext.ReadAllContactsFromFile().FirstOrDefault(c => c.Name == name);
+            Edit(contactsFromFile);
+        }
+        public void Edit(ContactInDb? contactsFromFile)
+        {
             do
             {
-                var contactsFromFile = fileContext.ReadAllContactsFromFile().FirstOrDefault(c => c.Id == id);
                 var choise = dataFromUser.DataOperationsEditGetChoise(contactsFromFile);
                 if (choise == "0") break;
                 choise = validation.DataOperationsEditChoseParameter(choise);
@@ -70,11 +79,11 @@ namespace PhonebookConverter.Components.DataTxt
                 {
                     File.WriteAllLines(filePath, lines, Encoding.UTF8);
                 }
+                Console.Clear();
+                Console.WriteLine("Data has been updated in the file");
+                Console.WriteLine("");
                 break;
             } while (true);
-            Console.Clear();
-            Console.WriteLine("Data has been updated in the file");
-            Console.WriteLine("");
         }
         public void DeleteByID(int? id)
         {

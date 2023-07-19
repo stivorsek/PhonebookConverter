@@ -7,5 +7,6 @@
         void AddNewEntry();
         void DeleteByID(int? id);
         void SaveDataFromFileToTxt();
+        void EditByName(string name);
     }
 }
