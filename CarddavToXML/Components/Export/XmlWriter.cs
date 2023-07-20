@@ -6,12 +6,10 @@ using System.Xml.Linq;
 namespace PhonebookConverter.Components.Export
 {
     public class XmlWriter : IXmlWriter
-    {        
-        private readonly object fileLock;
-
-        public void FanvilRemoteAndLocal(string filePath, List <ContactInDb> data)
+    {    
+        public void FanvilRemoteAndLocal(string filePath, List<ContactInDb> data)
         {
-            filePath = filePath + "//PhonebookFanvilRemote.xml";            
+            filePath = filePath + "//PhonebookFanvilRemote.xml";
             var document = new XDocument();
             var contacts = new XElement("PhoneBook", data
                     .Select(x =>
@@ -23,15 +21,12 @@ namespace PhonebookConverter.Components.Export
                                      )
                             ));
             document.Add(contacts);
-            lock (fileLock)
-            {
-                document.Save(filePath);
-            }
+            document.Save(filePath);
             ExportToCsvSuccesfull(filePath);
         }
         public void YealinkLocal(string filePath, List<ContactInDb> data)
         {
-            filePath = filePath + "//PhonebookYealinkLocal.xml";            
+            filePath = filePath + "//PhonebookYealinkLocal.xml";
             var document = new XDocument();
             var contacts = new XElement("vp_contact",
                 new XElement("root_group", ""),
@@ -45,15 +40,12 @@ namespace PhonebookConverter.Components.Export
                     )
             )));
             document.Add(contacts);
-            lock (fileLock)
-            {
-                document.Save(filePath);
-            }
+            document.Save(filePath);
             ExportToCsvSuccesfull(filePath);
         }
-        public void YealinkRemote(string filePath, List <ContactInDb> data)
+        public void YealinkRemote(string filePath, List<ContactInDb> data)
         {
-            filePath = filePath + "//PhonebookYealinkRemote.xml";            
+            filePath = filePath + "//PhonebookYealinkRemote.xml";
             var document = new XDocument();
             var contacts = new XElement("YealinkIPPhoneBook",
                 new XElement("Title", "Phonebook"),
@@ -67,10 +59,7 @@ namespace PhonebookConverter.Components.Export
                     )
             )));
             document.Add(contacts);
-            lock (fileLock)
-            {
-                document.Save(filePath);
-            }
+            document.Save(filePath);
             ExportToCsvSuccesfull(filePath);
         }
         public void ExportToCsvSuccesfull(string filePath)
@@ -79,7 +68,7 @@ namespace PhonebookConverter.Components.Export
             Console.WriteLine($"Data was successful exported to Xml : {filePath}");
             Console.WriteLine("");
         }
-     
+
     }
 }
 

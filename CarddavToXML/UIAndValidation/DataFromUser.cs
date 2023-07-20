@@ -238,6 +238,17 @@ namespace PhonebookConverter.UIAndValidationm
             }
             return null;
         }
+        public void SaveDataToDatabase(List<ContactInDb> contacts, string dataType)
+        {
+            if (dataType == "MSSQL")
+            {
+                phonebookDbContext.SaveChanges();
+            }
+            if (dataType == "FILE")
+            {
+                fileContext.SaveChanges(contacts);
+            }
+        }
         public string GetDataType()
         {
             return validation.ExceptionsLoop(() =>

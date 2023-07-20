@@ -3,7 +3,7 @@ using PhonebookConverterL.Data;
 using PhonebookConverter.UIAndValidation.Validation;
 using PhonebookConverter.UIAndValidationm;
 
-namespace PhonebookConverter.Components.Database
+namespace PhonebookConverter.Components.MSQSQLDb
 {
     public class MSSQLDb : IMSSQLDb
     {
@@ -42,12 +42,11 @@ namespace PhonebookConverter.Components.Database
             {
                 var choise = dataFromUser.DataOperationsEditGetChoise(contactFromDb);
                 if (choise == "0") break;
-                choise = validation.DataOperationsEditChoseParameter(choise);
-                var parameter = dataFromUser.DataOperationsEditGetParameter();
+                string parameter = null;
                 switch (choise)
                 {
                     case "1":
-                        contactFromDb.Name = parameter;
+                        contactFromDb.Name = dataFromUser.DataOperationsEditGetParameter();
                         phonebookDbContext.SaveChanges();
                         break;
                     case "2":

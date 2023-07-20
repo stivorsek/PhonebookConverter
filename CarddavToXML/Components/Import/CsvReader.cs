@@ -51,7 +51,6 @@ namespace PhonebookConverter.Components.Import
         }
         private List<ContactInDb> YeastarPSeries(string filePath)
         {
-
             var contactRecords =
                 File.ReadAllLines(filePath)
                 .Where(x => x.Length > 1)

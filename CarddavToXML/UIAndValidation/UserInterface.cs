@@ -6,6 +6,7 @@ using PhonebookConverter.Components.Import;
 using PhonebookConverter.Data.Entities;
 using PhonebookConverter.Components.DataTxt;
 using PhonebookConverter.UIAndValidation.Validation;
+using PhonebookConverter.Data;
 
 namespace PhonebookConverter.UIAndValidationm
 {
@@ -14,17 +15,19 @@ namespace PhonebookConverter.UIAndValidationm
         private readonly IValidation validation;
         private readonly ICsvReader csvReader;
         private readonly ICsvWriter csvWriter;
-        private readonly PhonebookDbContext phonebookDbContext;
+        private readonly PhonebookDbContext phonebookDbContext;        
         private readonly IXmlWriter xmlWriter;
         private readonly IXmlReader xmlReader;
         private readonly IDataFromUser dataFromUser;
         private readonly IMSSQLDb MSSQLDb;
         private readonly IDataInFile dataInFileTxt;
         private readonly IExportLoopSettings exportLoopSettings;
+        private object fileLock = new object();
 
         public UserInterface(ICsvReader csvReader
             , IXmlWriter xmlWriter
             , PhonebookDbContext phonebookDbContext
+            , PhonebookFileContext phonebookFileContext
             , IXmlReader xmlReader
             , IDataFromUser dataFromUser
             , IExportLoopSettings exportLoopSettings
@@ -36,7 +39,7 @@ namespace PhonebookConverter.UIAndValidationm
             this.validation = validation;
             this.csvReader = csvReader;
             this.csvWriter = csvWriter;
-            this.phonebookDbContext = phonebookDbContext;
+            this.phonebookDbContext = phonebookDbContext;            
             this.xmlWriter = xmlWriter;
             this.xmlReader = xmlReader;
             this.dataFromUser = dataFromUser;
@@ -94,22 +97,23 @@ namespace PhonebookConverter.UIAndValidationm
             string path = dataFromUser.ImportGetPathCsv();
             if (path != "0")
             {
-
-                var contacts = this.csvReader.TypeChecker(path);
-                foreach (var contact in contacts)
+                var contacts = csvReader.TypeChecker(path);
+                var database = dataFromUser.CheckDataType(dataType);
+                lock (fileLock)
                 {
-                    dataFromUser.CheckDataType(dataType).Add(new ContactInDb()
+                    
+                    foreach (var contact in contacts)
                     {
-                        Name = contact.Name,
-                        Phone1 = contact.Phone1,
-                        Phone2 = contact.Phone2,
-                        Phone3 = contact.Phone3,
-                    });
+                        database.Add(new ContactInDb()
+                        {
+                            Name = contact.Name,
+                            Phone1 = contact.Phone1,
+                            Phone2 = contact.Phone2,
+                            Phone3 = contact.Phone3,
+                        });
+                    }
                 }
-                if (dataType == "MSSQL")
-                {
-                    phonebookDbContext.SaveChanges();
-                }
+                dataFromUser.SaveDataToDatabase(database, dataType);
             }
 
         }
@@ -117,23 +121,24 @@ namespace PhonebookConverter.UIAndValidationm
         {
             Console.Clear();
             string path = dataFromUser.ImportGetPathXml();
+            var database = dataFromUser.CheckDataType(dataType);
             if (path != "0")
             {
                 var contacts = xmlReader.TypeChecker(path);
-                foreach (var contact in contacts)
+                lock (fileLock)
                 {
-                    dataFromUser.CheckDataType(dataType).Add(new ContactInDb()
+                    foreach (var contact in contacts)
                     {
-                        Name = contact.Name,
-                        Phone1 = contact.Phone1,
-                        Phone2 = contact.Phone2,
-                        Phone3 = contact.Phone3,
-                    });
+                        database.Add(new ContactInDb()
+                        {
+                            Name = contact.Name,
+                            Phone1 = contact.Phone1,
+                            Phone2 = contact.Phone2,
+                            Phone3 = contact.Phone3,
+                        });
+                    }
                 }
-                if (dataType == "MSSQL")
-                {
-                    phonebookDbContext.SaveChanges();
-                }
+                dataFromUser.SaveDataToDatabase(database, dataType);
             }
         }
         private void ExportToXML(string dataType)

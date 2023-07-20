@@ -21,5 +21,6 @@ namespace PhonebookConverter.UIAndValidationm
         List<ContactInDb> CheckDataType(string dataType);
         string GetDataType();
         string DataOperationsGetName(string dataCenter);
+        void SaveDataToDatabase(List<ContactInDb> contacts, string dataType);
     }
 }

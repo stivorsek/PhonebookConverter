@@ -1,7 +1,9 @@
-﻿namespace PhonebookConverter.Components.Import
+﻿using PhonebookConverterL.Data.Entities;
+
+namespace PhonebookConverter.Components.Import
 {
-    public interface IXmlReader : BaseReader
+    public interface IXmlReader
     {
-        
+        List<ContactInDb> TypeChecker(string filePath);
     }
 }

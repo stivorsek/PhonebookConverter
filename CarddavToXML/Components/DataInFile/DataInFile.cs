@@ -1,6 +1,7 @@
 ﻿using PhonebookConverter.Data;
 using PhonebookConverter.UIAndValidation.Validation;
 using PhonebookConverter.UIAndValidationm;
+using PhonebookConverterL.Data;
 using PhonebookConverterL.Data.Entities;
 using System.Text;
 
@@ -11,73 +12,67 @@ namespace PhonebookConverter.Components.DataTxt
         private readonly string filePath;
         private readonly IValidation validation;
         private readonly IDataFromUser dataFromUser;
-        private readonly PhonebookFileContext fileContext;
+        private readonly PhonebookFileContext phonebookFileContext;
         private readonly object fileLock = new object();
 
-        public DataInFile(IValidation validation, IDataFromUser dataFromUser, PhonebookFileContext fileContext)
+        public DataInFile(IValidation validation, IDataFromUser dataFromUser, PhonebookFileContext phonebookFileContext)
         {
             filePath = "DataInCsv.csv";
             this.validation = validation;
             this.dataFromUser = dataFromUser;
-            this.fileContext = fileContext;
+            this.phonebookFileContext = phonebookFileContext;
         }
         public void AddNewEntry()
         {
-
-            var contacts = fileContext.ReadAllContactsFromFile();
+            var contacts = phonebookFileContext.ReadAllContactsFromFile();
             var contact = dataFromUser.DataOperationsAddNewEntryGetData();
             contact.Id = contacts[contacts.Count - 1].Id + 1;
-            contacts.Add(new ContactInDb
-            {
-                Id = contact.Id,
-                Name = contact.Name,
-                Phone1 = contact.Phone1,
-                Phone2 = contact.Phone2,
-                Phone3 = contact.Phone3
-            });
-            lock (fileLock)
-            {
-                using (var writer = File.AppendText(filePath))
-                {
-                    string data = $"{contact.Id},{contact.Name},{contact.Phone1},{contact.Phone2},{contact.Phone3}";
-                    writer.WriteLine(data);
-                }
-            }
+            contacts.Add(contact);
+            phonebookFileContext.SaveChanges(contacts);
             Console.WriteLine("Data has been added to the file");
             Console.WriteLine("");
         }
         public void EditByID(int? id)
         {
-            var contactsFromFile = fileContext.ReadAllContactsFromFile().FirstOrDefault(c => c.Id == id);
-            Edit(contactsFromFile);
+            var contacts = phonebookFileContext.ReadAllContactsFromFile();
+            var contactFromFile = contacts.FirstOrDefault(c => c.Id == id);
+            Edit(contactFromFile, contacts);
         }
         public void EditByName(string name)
         {
-            var contactsFromFile = fileContext.ReadAllContactsFromFile().FirstOrDefault(c => c.Name == name);
-            Edit(contactsFromFile);
+            var contacts = phonebookFileContext.ReadAllContactsFromFile();
+            var contactFromFile = contacts.FirstOrDefault(c => c.Name == name);
+            Edit(contactFromFile, contacts);
         }
-        public void Edit(ContactInDb? contactsFromFile)
+        public void Edit(ContactInDb? contactFromFile, List<ContactInDb> contacts)
         {
             do
             {
-                var choise = dataFromUser.DataOperationsEditGetChoise(contactsFromFile);
-                if (choise == "0") break;
-                choise = validation.DataOperationsEditChoseParameter(choise);
-                var parameter = dataFromUser.DataOperationsEditGetParameter();
-                string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);
-                for (int i = 1; i < lines.Length; i++)
+                var choise = dataFromUser.DataOperationsEditGetChoise(contactFromFile);
+                if (choise == "0")
                 {
-                    string[] values = lines[i].Split(',');
-                    if (values[0] == contactsFromFile.Id.ToString())
-                    {
-                        values[int.Parse(choise)] = parameter;
-                        lines[i] = string.Join(",", values);
-                        break;
-                    }
+                    Console.Clear();
+                    break;
                 }
-                lock (fileLock)
+                var parameter = dataFromUser.DataOperationsEditGetParameter();
+                switch (choise)
                 {
-                    File.WriteAllLines(filePath, lines, Encoding.UTF8);
+                    case "1":
+                        contactFromFile.Name = parameter;
+                        phonebookFileContext.SaveChanges(contacts);
+                        break;
+                    case "2":
+                        contactFromFile.Phone1 = validation.IntParseValidation(parameter);
+                        phonebookFileContext.SaveChanges(contacts);
+                        break;
+                    case "3":
+                        contactFromFile.Phone2 = validation.IntParseValidation(parameter);
+                        phonebookFileContext.SaveChanges(contacts);
+                        break;
+                    case "4":
+                        contactFromFile.Phone3 = validation.IntParseValidation(parameter);
+                        phonebookFileContext.SaveChanges(contacts);
+                        break;
                 }
                 Console.Clear();
                 Console.WriteLine("Data has been updated in the file");
@@ -87,32 +82,18 @@ namespace PhonebookConverter.Components.DataTxt
         }
         public void DeleteByID(int? id)
         {
-            var toRemove = fileContext.ReadAllContactsFromFile().FirstOrDefault(c => c.Id == id);
+            var contacts = phonebookFileContext.ReadAllContactsFromFile();
+            var toRemove = contacts.FirstOrDefault(c => c.Id == id);
             toRemove = (ContactInDb)validation.DataOperationsGetID(toRemove);
-            string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);
-            for (int i = 1; i < lines.Length; i++)
-            {
-                string[] values = lines[i].Split(',');
-                if (values[0] == toRemove.Id.ToString()
-                    && values[1] == toRemove.Name
-                    && values[2] == toRemove.Phone1.ToString()
-                    && values[3] == toRemove.Phone2.ToString()
-                    && values[4] == toRemove.Phone3.ToString())
-                {
-                    lines[i] = null;
-                }
-            }
-            lock (fileLock)
-            {
-                File.WriteAllLines(filePath, lines, Encoding.UTF8);
-            }
+            contacts.Remove(toRemove);
+            phonebookFileContext.SaveChanges(contacts);
             Console.Clear();
             Console.WriteLine("Data has been deleted in the file");
             Console.WriteLine("");
         }
         public void ShowAllContacts()
         {
-            var contacts = fileContext.ReadAllContactsFromFile();
+            var contacts = phonebookFileContext.ReadAllContactsFromFile();
             Console.WriteLine("===============================");
             foreach (var contact in contacts)
             {
@@ -127,7 +108,7 @@ namespace PhonebookConverter.Components.DataTxt
         public void SaveDataFromFileToTxt()
         {
             Console.Clear();
-            var contactsFromDb = fileContext.ReadAllContactsFromFile().ToList();
+            var contactsFromDb = phonebookFileContext.ReadAllContactsFromFile().ToList();
             Console.WriteLine("Please enter the directory location");
             string fileName = validation.DataOperationsExportToTxtDirectoryExist(Console.ReadLine());
             fileName = fileName + "\\DataFromFile.txt";
