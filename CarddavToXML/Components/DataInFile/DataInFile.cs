@@ -26,7 +26,7 @@ namespace PhonebookConverter.Components.DataTxt
         public void AddNewEntry()
         {
             var contacts = phonebookFileContext.ReadAllContactsFromFile();
-            var contact = dataFromUser.AddNewEntryGetData();
+            var contact = dataFromUser.AddContactGetData();
             contact.Id = contacts[contacts.Count - 1].Id + 1;
             contacts.Add(contact);
             phonebookFileContext.SaveChanges(contacts);
@@ -44,7 +44,7 @@ namespace PhonebookConverter.Components.DataTxt
                     Console.Clear();
                     break;
                 }
-                var parameter = dataFromUser.EditGetParameter();
+                var parameter = dataFromUser.EditGetParameter(choise);
                 switch (choise)
                 {
                     case "1":

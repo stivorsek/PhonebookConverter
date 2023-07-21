@@ -4,15 +4,15 @@ namespace PhonebookConverter.UIAndValidation.Validation
 {
     public interface IValidation
     {
-        string ExportToXmlGetFolder(string pathml);
+        string GetExportFolder(string pathml);
         bool ExportToXmlGetLoopState(string choiseLoop);
         int ExportToXmlGetLoopTime(string userTime);
-        string ExportToXmlGetType(string choiseType);
+        string GetExportType(string choiseType);
         string ImportGetPathXml(string path);
         string ImportGetPathCsv(string path);
         int? DataOperationsGetID(string id);
         object DataOperationsGetID(ContactInDb? contactInDb);
-        string DataOperationsEditChoseParameter(string choise);
+        string GetTypeOperationChoise(string choise);
         string DataOperationsExportToTxt(string choise);
         string DataOperationsGetType(string choise);
         int? IntParseValidation(string data);
@@ -26,5 +26,7 @@ namespace PhonebookConverter.UIAndValidation.Validation
         object DataOperationsGetName(ContactInDb contactInDb);
         string DataOperationsGetSearchType(string? choise);
         ContactInDb DataOperationsFindConctat(ContactInDb contact);
+        string EditGetParameter(string? parameter, string choise);
+        string GetParameterChoise(string choise);
     }
 }

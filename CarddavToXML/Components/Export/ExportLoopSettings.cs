@@ -30,7 +30,7 @@ namespace PhonebookConverter.Components.Export
                 Console.Clear();
                 if (choise == "1")
                 {
-                    var exporData = new ExportPeriodData
+                    var exporData = new ExportData
                     {
                         Path = lines[2],
                         Interval = int.Parse(lines[4]),
@@ -42,15 +42,13 @@ namespace PhonebookConverter.Components.Export
                 if (choise == "2") File.Delete(exportDataPath);
             }
         }
-        public void SetPeriodicExport(ExportPeriodData exportPeriodData)
+        public void SetPeriodicExport(ExportData exportPeriodData)
         {
             SetPeriodicExportTypeCheck(exportPeriodData);
-            ShowTypeAndTimeOfExport(exportPeriodData);
             System.Timers.Timer timer = new System.Timers.Timer(30000);
             timer.Elapsed += (sender, e) =>
             {
                 SetPeriodicExportTypeCheck(exportPeriodData);
-                ShowTypeAndTimeOfExport(exportPeriodData);
             };
             timer.Start();
             if (!(File.Exists("ExportData.txt")))
@@ -72,7 +70,7 @@ namespace PhonebookConverter.Components.Export
                 }
             }
         }
-        public void SetPeriodicExportTypeCheck(ExportPeriodData exportPeriodData)
+        public void SetPeriodicExportTypeCheck(ExportData exportPeriodData)
         {
             var contacts = dataFromUser.CheckDataType(exportPeriodData.DataType);
             var tuple = (exportPeriodData.Type, exportPeriodData.Format);            
@@ -98,10 +96,10 @@ namespace PhonebookConverter.Components.Export
                     break;
             }
         }
-        public void ShowTypeAndTimeOfExport(ExportPeriodData exportPeriodData)
+        public void ShowTypeAndTimeOfExport(ExportData exportPeriodData)
         {
             Console.WriteLine("====================");
-            Console.WriteLine($"\tThe file {exportPeriodData.Type} has been expoted: {DateTime.Now}");
+            Console.WriteLine($"\tThe file {exportPeriodData.Type} has been exported: {DateTime.Now}");
             Console.WriteLine("====================");
         }
     }

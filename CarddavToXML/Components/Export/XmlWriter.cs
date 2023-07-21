@@ -64,9 +64,9 @@ namespace PhonebookConverter.Components.Export
         }
         public void ExportToCsvSuccesfull(string filePath)
         {
-            Console.Clear();
             Console.WriteLine($"Data was successful exported to Xml : {filePath}");
-            Console.WriteLine("");
+            Console.WriteLine($"\t {DateTime.Now}");
+            Console.WriteLine();
         }
 
     }

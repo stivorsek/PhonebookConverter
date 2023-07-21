@@ -4,7 +4,7 @@ namespace PhonebookConverter.UIAndValidationm
 {
     public interface IDataFromUser
     {
-        string GetFolder();
+        string GetExportFolder();
         string GetExportType();
         bool GetExportLoopState();
         int GetExportLoopTime();
@@ -13,10 +13,10 @@ namespace PhonebookConverter.UIAndValidationm
         string GetType();
         string ExportToTxt();
         string GetParameterChoise(ContactInDb contactFromDb);        
-        string MainMenu();
-        string EditGetParameter();
+        string ShowMainMenu();
+        string EditGetParameter(string choise);
         string CheckExportSettingsExist();
-        ContactInDb AddNewEntryGetData();
+        ContactInDb AddContactGetData();
         List<ContactInDb> CheckDataType(string dataType);
         string GetDataType();        
         void SaveData(List<ContactInDb> contacts, string dataType);

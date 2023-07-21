@@ -1,6 +1,6 @@
 ﻿namespace PhonebookConverter.Data.Entities
 {
-    public class ExportPeriodData
+    public class ExportData
     {
         public string DataType { get; set; }
         public string Path { get; set; }

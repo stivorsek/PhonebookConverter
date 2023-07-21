@@ -7,6 +7,7 @@ using PhonebookConverter.Data.Entities;
 using PhonebookConverter.Components.DataTxt;
 using PhonebookConverter.UIAndValidation.Validation;
 using PhonebookConverter.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace PhonebookConverter.UIAndValidationm
 {
@@ -58,7 +59,7 @@ namespace PhonebookConverter.UIAndValidationm
             bool endProgram = false;
             do
             {
-                var choise = dataFromUser.MainMenu();
+                var choise = dataFromUser.ShowMainMenu();
                 validation.ExceptionsLoop(() =>
                 {
                     switch (choise)
@@ -70,10 +71,10 @@ namespace PhonebookConverter.UIAndValidationm
                             ImportDataFromXml(dataType);
                             break;
                         case "3":
-                            ExportToXML(dataType);
+                            GetExportData(dataType, "xml");
                             break;
                         case "4":
-                            ExportToCsv(dataType);
+                            GetExportData(dataType, "csv");
                             break;
                         case "5":
                             DataOperations(dataType);
@@ -141,40 +142,51 @@ namespace PhonebookConverter.UIAndValidationm
                 dataFromUser.SaveData(database, dataType);
             }
         }
-        private void ExportToXML(string dataType)
+        private void GetExportData(string dataType, string formatType)
         {
-            do
+            try
             {
                 Console.Clear();
                 string choiseType = dataFromUser.GetExportType();
-                if (choiseType == "0") break;
-                string pathXml = dataFromUser.GetFolder();
-                if (pathXml == "0") break;
+                if (choiseType == "0") throw new Exception("Back to main menu");
+                string path = dataFromUser.GetExportFolder();
+                if (path == "0") throw new Exception("Back to main menu");
                 bool loopState = dataFromUser.GetExportLoopState();
-                ExportPeriodData? exportData = new ExportPeriodData();
+                ExportData? exportData = new ExportData
+                {
+                    DataType = dataType,
+                    Path = path,
+                    Type = choiseType,
+                    Format = formatType
+                };
                 int loopTime;
                 if (loopState == true)
                 {
-                    exportData.Path = pathXml;
-                    exportData.Type = choiseType;
-                    exportData.Format = "xml";
                     loopTime = dataFromUser.GetExportLoopTime();
-                    if (loopTime == 0) break;
-                    exportData.Interval = loopTime;
+                    if (loopTime != 0)
+                        exportData.Interval = loopTime;
                 }
                 Console.Clear();
-                var contacts = dataFromUser.CheckDataType(dataType);
+                if (formatType == "csv") ExportToCsv(exportData, choiseType, loopState);
+                if (formatType == "xml") ExportToXML(exportData, choiseType, loopState);
+            } catch {  }
+        }
+        private void ExportToXML(ExportData exportData, string choiseType, bool loopState)
+        {
+            do
+            {
+                var contacts = dataFromUser.CheckDataType(exportData.DataType);
                 var tuple = (choiseType, loopState);
                 switch (tuple)
                 {
                     case ("Yealink_Local_Phonebook", false):
-                        xmlWriter.YealinkLocal(pathXml, contacts);
+                        xmlWriter.YealinkLocal(exportData.Path, contacts);
                         break;
                     case ("Yealink_Remote_Phonebook", false):
-                        xmlWriter.YealinkRemote(pathXml, contacts);
+                        xmlWriter.YealinkRemote(exportData.Path, contacts);
                         break;
                     case ("Fanvil_Local_and_Remote_Phonebook", false):
-                        xmlWriter.FanvilRemoteAndLocal(pathXml, contacts);
+                        xmlWriter.FanvilRemoteAndLocal(exportData.Path, contacts);
                         break;
                     default:
                         exportLoopSettings.SetPeriodicExport(exportData);
@@ -184,40 +196,22 @@ namespace PhonebookConverter.UIAndValidationm
             }
             while (true);
         }
-        private void ExportToCsv(string dataType)
+        private void ExportToCsv(ExportData exportData, string choiseType, bool loopState)
         {
             do
-            {
-                Console.Clear();
-                string choiseType = dataFromUser.GetExportType();
-                if (choiseType == "0") break;
-                string pathXml = dataFromUser.GetFolder();
-                if (pathXml == "0") break;
-                bool loopState = dataFromUser.GetExportLoopState();
-                ExportPeriodData? exportData = new ExportPeriodData();
-                int loopTime;
-                if (loopState == true)
-                {
-                    exportData.Path = pathXml;
-                    exportData.Type = choiseType;
-                    exportData.Format = "csv";
-                    loopTime = dataFromUser.GetExportLoopTime();
-                    if (loopTime == 0) break;
-                    exportData.Interval = loopTime;
-                }
-                Console.Clear();
-                var contacts = dataFromUser.CheckDataType(dataType);
+            {                
+                var contacts = dataFromUser.CheckDataType(exportData.DataType);
                 var tuple = (choiseType, loopState);
                 switch (tuple)
                 {
                     case ("Yealink_Local_Phonebook", false):
-                        csvWriter.YealinkLocal(pathXml, contacts);
+                        csvWriter.YealinkLocal(exportData.Path, contacts);
                         break;
                     case ("Fanvil_Local_Phonebook", false):
-                        csvWriter.FanvilLocal(pathXml, contacts);
+                        csvWriter.FanvilLocal(exportData.Path, contacts);
                         break;
                     case ("Yeastar_P_Series_Phonebook", false):
-                        csvWriter.YeastarPSeries(pathXml, contacts);
+                        csvWriter.YeastarPSeries(exportData.Path, contacts);
                         break;
                     default:
                         exportLoopSettings.SetPeriodicExport(exportData);
@@ -238,10 +232,10 @@ namespace PhonebookConverter.UIAndValidationm
                 switch (tuple)
                 {
                     case ("1", "MSSQL"):
-                        MSSQLDb.FindAndManipulatContactIn(dataStorage);
+                        MSSQLDb.FindAndManipulatContact(dataStorage);
                             break;                                  
                     case ("2", "MSSQL"):
-                        MSSQLDb.AddNewEntry();
+                        MSSQLDb.AddContact();
                         break;
                     case ("3", "MSSQL"):
                         MSSQLDb.ShowAllContacts();                                                

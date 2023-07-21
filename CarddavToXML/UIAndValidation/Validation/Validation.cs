@@ -4,15 +4,15 @@ namespace PhonebookConverter.UIAndValidation.Validation
 {
     public class Validation : IValidation
     {
-        public string ExportToXmlGetFolder(string pathXml)
+        public string GetExportFolder(string pathXml)
         {
             return Directory.Exists(pathXml) || pathXml == "0"
                 ? pathXml
                 : throw new Exception("Podany folder nie istnieje");
         }
-        public string ExportToXmlGetType(string choiseType)
+        public string GetExportType(string choiseType)
         {
-            return choiseType == "1" || choiseType == "2" || choiseType == "3" || choiseType == "4"
+            return choiseType == "0" || choiseType == "1" || choiseType == "2" || choiseType == "3" || choiseType == "4"
                 ? choiseType
                 : throw new Exception("Podano nieprawidłowy rodzaj pliku XML");
         }
@@ -79,9 +79,15 @@ namespace PhonebookConverter.UIAndValidation.Validation
                 ? throw new Exception("That Name doesn't exist in database")
                 : (object)contactInDb;
         }
-        public string DataOperationsEditChoseParameter(string choise)
+        public string GetTypeOperationChoise(string choise)
         {
-            return choise == "1" || choise == "2" || choise == "3" || choise == "4"
+            return choise == "0" || choise == "1" || choise == "2" 
+                ? choise
+                : throw new Exception("Wrong choise!!!");
+        }
+        public string GetParameterChoise(string choise)
+        {
+            return choise == "0" || choise == "1" || choise == "2" || choise == "3" || choise == "4"
                 ? choise
                 : throw new Exception("Wrong choise!!!");
         }
@@ -122,7 +128,7 @@ namespace PhonebookConverter.UIAndValidation.Validation
             return string.IsNullOrEmpty(data)
             ? null
             : int.Parse(data);            
-        }
+        }        
         public void ExceptionsLoop(Action metoda)
         {
             while (true)
@@ -179,7 +185,6 @@ namespace PhonebookConverter.UIAndValidation.Validation
                 writer.Write(ex.Message);
             }
         }
-
         public string DataOperationsGetSearchType(string? choise)
         {
             return choise == "0" || choise == "1" || choise == "2" || choise == "3" 
@@ -191,6 +196,17 @@ namespace PhonebookConverter.UIAndValidation.Validation
             return contact != null
                 ? contact 
                 : throw new Exception("Contact with this parameter doesn't exist");
+        }
+        public string EditGetParameter(string? parameter, string choise)
+        {
+            if (choise != "1")
+            {
+                int.TryParse(parameter, out int phonenumber);
+                return phonenumber == 0 
+                    ? throw new Exception("This is not number!!!") 
+                    : parameter;
+            }
+            return parameter;
         }
     }
 }

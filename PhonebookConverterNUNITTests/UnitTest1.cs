@@ -34,7 +34,7 @@ public class UnitTest1
     {        
         string folderPath = "\\";
      
-        string result = validation.ExportToXmlGetFolder(folderPath);
+        string result = validation.GetExportFolder(folderPath);
 
         Assert.AreEqual(folderPath, result);
     }
@@ -43,21 +43,21 @@ public class UnitTest1
     {       
         string folderPath = "XD";     
         
-        Assert.Throws<Exception>(() => validation.ExportToXmlGetFolder(folderPath));
+        Assert.Throws<Exception>(() => validation.GetExportFolder(folderPath));
     }
     [Test]
     public void ExportToXmlGetType_ThrowException()
     {        
         string type = "4345345";
 
-        Assert.Throws<Exception>(() => validation.ExportToXmlGetType(type));
+        Assert.Throws<Exception>(() => validation.GetExportType(type));
     }
     [Test]
     public void ExportToXmlGetType_ReturnType()
     {        
         string type = "1";
      
-        string result = validation.ExportToXmlGetType(type);
+        string result = validation.GetExportType(type);
 
         Assert.AreEqual(result, type);
     }
@@ -146,14 +146,14 @@ public class UnitTest1
     {
         string idFromUser = "gsfdsf";
 
-        Assert.Throws<Exception>(() => validation.DataOperationsEditChoseParameter(idFromUser));
+        Assert.Throws<Exception>(() => validation.GetTypeOperationChoise(idFromUser));
     }
     [Test]
     public void DatabaseOperationsEditByIdChoseParameter_ReturnID()
     {
         string idFromUser = "2";
 
-        var result = validation.DataOperationsEditChoseParameter(idFromUser);
+        var result = validation.GetTypeOperationChoise(idFromUser);
 
         Assert.AreEqual(idFromUser, result);
     }

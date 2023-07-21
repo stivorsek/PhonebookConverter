@@ -8,7 +8,7 @@ namespace PhonebookConverter.Components.Export
     {
         public void YeastarPSeries(string filePath, List<ContactInDb> contacts)
         {
-            filePath = filePath + "//PhonebookYeastarPSeries.csv";
+            filePath = filePath + "\\PhonebookYeastarPSeries.csv";
             using (var writer = File.AppendText(filePath))
             {
                 writer.Write("First Name,Last Name,Company Name,Email,Business Number,Business Number 2,Business Fax,Mobile,Mobile 2,Home,Home 2,Home Fax,Other,ZIP Code,Street,City,State,Country,Remark,Phonebook");

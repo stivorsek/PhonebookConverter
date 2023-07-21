@@ -17,24 +17,14 @@ namespace PhonebookConverter.Components.MSQSQLDb
             this.validation = validation;
             this.dataFromUser = dataFromUser;
         }
-        public void AddNewEntry()
+        public void AddContact()
         {
-            var contact = dataFromUser.AddNewEntryGetData();
+            var contact = dataFromUser.AddContactGetData();
             phonebookDbContext.Add(contact);
             phonebookDbContext.SaveChanges();
 
             Console.WriteLine("Data has been added to the database");
             Console.WriteLine("");
-        }
-        public void EditByID(int? id)
-        {
-            var contactFromDb = phonebookDbContext.Phonebook.FirstOrDefault(c => c.Id == id);
-            Edit(contactFromDb);
-        }
-        public void EditByName(string name)
-        {
-            var contactFromDb = phonebookDbContext.Phonebook.FirstOrDefault(c => c.Name == name);
-            Edit(contactFromDb);
         }
         public void Edit(ContactInDb? contactFromDb)
         {
@@ -46,23 +36,23 @@ namespace PhonebookConverter.Components.MSQSQLDb
                     Console.Clear();
                     break;
                 }
-                string parameter = dataFromUser.EditGetParameter();
+                string parameter = dataFromUser.EditGetParameter(choise);
                 switch (choise)
                 {
                     case "1":
-                        contactFromDb.Name = dataFromUser.EditGetParameter();
+                        contactFromDb.Name = parameter;
                         phonebookDbContext.SaveChanges();
                         break;
                     case "2":
-                        contactFromDb.Phone1 = validation.IntParseValidation(parameter);
+                        contactFromDb.Phone1 = int.Parse(parameter);
                         phonebookDbContext.SaveChanges();
                         break;
                     case "3":
-                        contactFromDb.Phone2 = validation.IntParseValidation(parameter);
+                        contactFromDb.Phone2 = int.Parse(parameter);
                         phonebookDbContext.SaveChanges();
                         break;
                     case "4":
-                        contactFromDb.Phone3 = validation.IntParseValidation(parameter);
+                        contactFromDb.Phone3 = int.Parse(parameter);
                         phonebookDbContext.SaveChanges();
                         break;
                 }                
@@ -130,16 +120,16 @@ namespace PhonebookConverter.Components.MSQSQLDb
             Console.WriteLine("Data has been deleted to the database");
             Console.WriteLine();
         }
-        public void FindAndManipulatContactIn(string dataStorage)
+        public void FindAndManipulatContact(string dataStorage)
         {
             try
             {
                 var searchType = dataFromUser.SearchType();
-                if (searchType == "0") throw new Exception("Go back to main menu");
+                if (searchType == "0") throw new Exception("Go back to last menu");
                 var contact = dataFromUser.FindContact(dataStorage, searchType);
-                if (contact == null) throw new Exception("Go back to main menu");
+                if (contact == null) throw new Exception("Go back to last menu");
                 var typeOperation = dataFromUser.GetTypeOperationChoise(contact);
-                if (typeOperation == "0") throw new Exception("Go back to main menu");
+                if (typeOperation == "0") throw new Exception("Go back to last menu");
                 if (typeOperation == "1") Delete(contact);
                 if (typeOperation == "2") Edit(contact);
             }

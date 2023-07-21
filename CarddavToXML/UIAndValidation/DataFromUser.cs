@@ -16,7 +16,7 @@ namespace PhonebookConverter.UIAndValidationm
             this.validation = validation;
             this.phonebookFileContext = phonebookFileContext;
         }
-        public string MainMenu()
+        public string ShowMainMenu()
         {
             Console.WriteLine("///////////////////////////////////////////////////////////////////////////////");
             Console.WriteLine("");
@@ -59,12 +59,12 @@ namespace PhonebookConverter.UIAndValidationm
                 return dataType;
             });
         }
-        public string GetFolder()
+        public string GetExportFolder()
         {
             return validation.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Please enter the folder path or 1 to back to the main menu");
-                var pathXml = validation.ExportToXmlGetFolder(Console.ReadLine());
+                Console.WriteLine("Please enter the folder path or 0 to back to the main menu");
+                var pathXml = validation.GetExportFolder(Console.ReadLine());
                 Console.Clear();
                 return pathXml;
             });
@@ -78,7 +78,7 @@ namespace PhonebookConverter.UIAndValidationm
                 Console.WriteLine("\t 1)Yealink Local Phonnebook");
                 Console.WriteLine("\t 2)Yealink Remote Phonebook");
                 Console.WriteLine("\t 3)Fanvil Local and Remote Phonebook");
-                string choiseType = validation.ExportToXmlGetType(Console.ReadLine());
+                string choiseType = validation.GetExportType(Console.ReadLine());
                 if (choiseType == "1") choiseType = "Yealink_Local_Phonebook";
                 if (choiseType == "2") choiseType = "Yealink_Remote_Phonebook";
                 if (choiseType == "3") choiseType = "Fanvil_Local_and_Remote_Phonebook";
@@ -160,7 +160,7 @@ namespace PhonebookConverter.UIAndValidationm
         {
             return validation.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Please enter the type of parameted you wanna search by or enter 0 to back to the main menu");
+                Console.WriteLine("Please enter the type of parameted you wanna search by or enter 0 to back to the last menu");
                 Console.WriteLine("\t1) ID ");
                 Console.WriteLine("\t2) Name");
                 Console.WriteLine("\t3) Phonenumber");
@@ -202,11 +202,15 @@ namespace PhonebookConverter.UIAndValidationm
                 return contact;
             });
         }
-        public string EditGetParameter()
+        public string EditGetParameter(string choise)
         {
-            Console.WriteLine("Please enter parameter");
-            var parameter = Console.ReadLine();
-            return parameter;
+            return validation.ExceptionsLoop(() =>
+            {
+                Console.WriteLine("Please enter parameter");
+                var parameter = Console.ReadLine();
+                validation.EditGetParameter(parameter, choise);                
+                return parameter;
+            });
         }
         public string GetParameterChoise(ContactInDb contactFromDb)
         {
@@ -218,10 +222,10 @@ namespace PhonebookConverter.UIAndValidationm
                 Console.WriteLine($"\t3) Phone2 : {contactFromDb.Phone2}");
                 Console.WriteLine($"\t4) Phone3 : {contactFromDb.Phone3}");
                 Console.WriteLine("");
-                Console.WriteLine("Chose parameter you wanna edit or 0 to go back to the Main Menu");
+                Console.WriteLine("Chose parameter you wanna edit or 0 to go back to the operations Menu");
                 var choise = Console.ReadLine();
                 if (choise == "0") return choise;
-                validation.DataOperationsEditChoseParameter(choise);
+                validation.GetParameterChoise(choise);
                 return choise;
             });
         }
@@ -236,16 +240,16 @@ namespace PhonebookConverter.UIAndValidationm
                 Console.WriteLine($"\t Phone3 : {contactFromDb.Phone3}");
                 Console.WriteLine("");
                 Console.WriteLine("Please enter the operation?");
-                Console.WriteLine("0) Back to the main menu");
+                Console.WriteLine("0) Back to the last menu");
                 Console.WriteLine("1) Delete");
                 Console.WriteLine("2) Edit");
                 var choise = Console.ReadLine();
-                validation.DataOperationsEditChoseParameter(choise);
+                validation.GetTypeOperationChoise(choise);
                 Console.Clear();
                 return choise;
             });
         }
-        public ContactInDb AddNewEntryGetData()
+        public ContactInDb AddContactGetData()
         {
             return validation.ExceptionsLoop(() =>
             {
