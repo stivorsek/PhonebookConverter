@@ -24,5 +24,7 @@ namespace PhonebookConverter.UIAndValidation.Validation
         void ExceptionsLoop(Action metoda);
         string GetDataType(string dataType);
         object DataOperationsGetName(ContactInDb contactInDb);
+        string DataOperationsGetSearchType(string? choise);
+        ContactInDb DataOperationsFindConctat(ContactInDb contact);
     }
 }

@@ -4,23 +4,24 @@ namespace PhonebookConverter.UIAndValidationm
 {
     public interface IDataFromUser
     {
-        string ExportGetFolder();
-        string ExportGetType();
-        bool ExportGetLoopState();
-        int ExportGetLoopTime();
-        string ImportGetPathCsv();
-        string ImportGetPathXml();
-        string DataOperationsGetType();
-        string DataOperationsExportToTxt();
-        string DataOperationsEditGetChoise(ContactInDb contactFromDb);
-        int? DataOperationsGetID(string dataCenter);
+        string GetFolder();
+        string GetExportType();
+        bool GetExportLoopState();
+        int GetExportLoopTime();
+        string GetImportPathCsv();
+        string GetImportPathXml();
+        string GetType();
+        string ExportToTxt();
+        string GetParameterChoise(ContactInDb contactFromDb);        
         string MainMenu();
-        string DataOperationsEditGetParameter();
+        string EditGetParameter();
         string CheckExportSettingsExist();
-        ContactInDb DataOperationsAddNewEntryGetData();
+        ContactInDb AddNewEntryGetData();
         List<ContactInDb> CheckDataType(string dataType);
-        string GetDataType();
-        string DataOperationsGetName(string dataCenter);
-        void SaveDataToDatabase(List<ContactInDb> contacts, string dataType);
+        string GetDataType();        
+        void SaveData(List<ContactInDb> contacts, string dataType);
+        string SearchType();
+        ContactInDb FindContact(string dataCenter, string searchType);
+        string GetTypeOperationChoise(ContactInDb contactFromDb);
     }
 }

@@ -94,7 +94,7 @@ namespace PhonebookConverter.UIAndValidationm
         }
         private void ImportDataFromCsv(string dataType)
         {
-            string path = dataFromUser.ImportGetPathCsv();
+            string path = dataFromUser.GetImportPathCsv();
             if (path != "0")
             {
                 var contacts = csvReader.TypeChecker(path);
@@ -113,14 +113,14 @@ namespace PhonebookConverter.UIAndValidationm
                         });
                     }
                 }
-                dataFromUser.SaveDataToDatabase(database, dataType);
+                dataFromUser.SaveData(database, dataType);
             }
 
         }
         private void ImportDataFromXml(string dataType)
         {
             Console.Clear();
-            string path = dataFromUser.ImportGetPathXml();
+            string path = dataFromUser.GetImportPathXml();
             var database = dataFromUser.CheckDataType(dataType);
             if (path != "0")
             {
@@ -138,7 +138,7 @@ namespace PhonebookConverter.UIAndValidationm
                         });
                     }
                 }
-                dataFromUser.SaveDataToDatabase(database, dataType);
+                dataFromUser.SaveData(database, dataType);
             }
         }
         private void ExportToXML(string dataType)
@@ -146,11 +146,11 @@ namespace PhonebookConverter.UIAndValidationm
             do
             {
                 Console.Clear();
-                string choiseType = dataFromUser.ExportGetType();
+                string choiseType = dataFromUser.GetExportType();
                 if (choiseType == "0") break;
-                string pathXml = dataFromUser.ExportGetFolder();
+                string pathXml = dataFromUser.GetFolder();
                 if (pathXml == "0") break;
-                bool loopState = dataFromUser.ExportGetLoopState();
+                bool loopState = dataFromUser.GetExportLoopState();
                 ExportPeriodData? exportData = new ExportPeriodData();
                 int loopTime;
                 if (loopState == true)
@@ -158,7 +158,7 @@ namespace PhonebookConverter.UIAndValidationm
                     exportData.Path = pathXml;
                     exportData.Type = choiseType;
                     exportData.Format = "xml";
-                    loopTime = dataFromUser.ExportGetLoopTime();
+                    loopTime = dataFromUser.GetExportLoopTime();
                     if (loopTime == 0) break;
                     exportData.Interval = loopTime;
                 }
@@ -189,11 +189,11 @@ namespace PhonebookConverter.UIAndValidationm
             do
             {
                 Console.Clear();
-                string choiseType = dataFromUser.ExportGetType();
+                string choiseType = dataFromUser.GetExportType();
                 if (choiseType == "0") break;
-                string pathXml = dataFromUser.ExportGetFolder();
+                string pathXml = dataFromUser.GetFolder();
                 if (pathXml == "0") break;
-                bool loopState = dataFromUser.ExportGetLoopState();
+                bool loopState = dataFromUser.GetExportLoopState();
                 ExportPeriodData? exportData = new ExportPeriodData();
                 int loopTime;
                 if (loopState == true)
@@ -201,7 +201,7 @@ namespace PhonebookConverter.UIAndValidationm
                     exportData.Path = pathXml;
                     exportData.Type = choiseType;
                     exportData.Format = "csv";
-                    loopTime = dataFromUser.ExportGetLoopTime();
+                    loopTime = dataFromUser.GetExportLoopTime();
                     if (loopTime == 0) break;
                     exportData.Interval = loopTime;
                 }
@@ -226,70 +226,37 @@ namespace PhonebookConverter.UIAndValidationm
                 break;
             }
             while (true);
-        }
+        }        
         private void DataOperations(string dataStorage)
-        {
+        {            
             Console.Clear();
-            string choise = dataFromUser.DataOperationsGetType();
+            string choise = dataFromUser.GetType();
             if (choise != "0")
             {
-                int? id = null;
-                string name;
                 Console.Clear();
                 var tuple = (choise, dataStorage);
                 switch (tuple)
                 {
                     case ("1", "MSSQL"):
-                        id = dataFromUser.DataOperationsGetID(dataStorage);
-                        if (id == 0) break;
-                        MSSQLDb.DeleteByID(id);
-                        break;
+                        MSSQLDb.FindAndManipulatContactIn(dataStorage);
+                            break;                                  
                     case ("2", "MSSQL"):
-                        id = dataFromUser.DataOperationsGetID(dataStorage);
-                        if (id == 0) break;
-                        MSSQLDb.EditByID(id);
-                        break;
-                    case ("3", "MSSQL"):
-                        name = dataFromUser.DataOperationsGetName(dataStorage);
-                        if (name == "0") break;
-                        MSSQLDb.EditByName(name);
-                        break;
-                    case ("4", "MSSQL"):
                         MSSQLDb.AddNewEntry();
                         break;
-                    case ("5", "MSSQL"):
-                        MSSQLDb.ShowAllContacts();
-                        string choiseExportMSSQL = dataFromUser.DataOperationsExportToTxt();
-                        if (choiseExportMSSQL == "2") break;
-                        MSSQLDb.SaveDataFromDbToTxt();
-                        break;
+                    case ("3", "MSSQL"):
+                        MSSQLDb.ShowAllContacts();                                                
+                        break;                    
                     case ("1", "FILE"):
-                        id = dataFromUser.DataOperationsGetID(dataStorage);
-                        if (id == 0) break;
-                        dataInFileTxt.DeleteByID(id);
+                        dataInFileTxt.FindAndManipulatContactIn(dataStorage);
                         break;
                     case ("2", "FILE"):
-                        id = dataFromUser.DataOperationsGetID(dataStorage);
-                        if (id == 0) break;
-                        dataInFileTxt.EditByID(id);
-                        break;
-                    case ("3", "FILE"):
-                        name = dataFromUser.DataOperationsGetName(dataStorage);
-                        if (name == "0") break;
-                        dataInFileTxt.EditByName(name);
-                        break;
-                    case ("4", "FILE"):
                         dataInFileTxt.AddNewEntry();
                         break;
-                    case ("5", "FILE"):
+                    case ("3", "FILE"):
                         dataInFileTxt.ShowAllContacts();
-                        string choiseExportFile = dataFromUser.DataOperationsExportToTxt();
-                        if (choiseExportFile == "2") break;
-                        dataInFileTxt.SaveDataFromFileToTxt();
                         break;
                 }
             }
-        }
-
+        }       
     }
 }

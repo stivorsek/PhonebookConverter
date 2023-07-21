@@ -1,12 +1,12 @@
-﻿namespace PhonebookConverter.Components.DataTxt
+﻿using PhonebookConverterL.Data.Entities;
+
+namespace PhonebookConverter.Components.DataTxt
 {
     public interface IDataInFile
-    {        
-        void EditByID(int? id);
+    {                
         void ShowAllContacts();
         void AddNewEntry();
-        void DeleteByID(int? id);
-        void SaveDataFromFileToTxt();
-        void EditByName(string name);
+        void SaveDataFromFileToTxt();       
+        void FindAndManipulatContactIn(string dataStorage);
     }
 }

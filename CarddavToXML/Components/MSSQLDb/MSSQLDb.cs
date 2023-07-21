@@ -19,7 +19,7 @@ namespace PhonebookConverter.Components.MSQSQLDb
         }
         public void AddNewEntry()
         {
-            var contact = dataFromUser.DataOperationsAddNewEntryGetData();
+            var contact = dataFromUser.AddNewEntryGetData();
             phonebookDbContext.Add(contact);
             phonebookDbContext.SaveChanges();
 
@@ -40,13 +40,17 @@ namespace PhonebookConverter.Components.MSQSQLDb
         {
             do
             {
-                var choise = dataFromUser.DataOperationsEditGetChoise(contactFromDb);
-                if (choise == "0") break;
-                string parameter = null;
+                var choise = dataFromUser.GetParameterChoise(contactFromDb);
+                if (choise == "0")
+                {
+                    Console.Clear();
+                    break;
+                }
+                string parameter = dataFromUser.EditGetParameter();
                 switch (choise)
                 {
                     case "1":
-                        contactFromDb.Name = dataFromUser.DataOperationsEditGetParameter();
+                        contactFromDb.Name = dataFromUser.EditGetParameter();
                         phonebookDbContext.SaveChanges();
                         break;
                     case "2":
@@ -91,6 +95,9 @@ namespace PhonebookConverter.Components.MSQSQLDb
                 Console.WriteLine($"\t Phone3: {contactFromDb.Phone3}");
                 Console.WriteLine("===============================");
             }
+            string choiseExportMSSQL = dataFromUser.ExportToTxt();
+            if (choiseExportMSSQL == "2") return;
+            SaveDataFromDbToTxt();
         }
         public void SaveDataFromDbToTxt()
         {
@@ -114,6 +121,29 @@ namespace PhonebookConverter.Components.MSQSQLDb
             Console.Clear();
             Console.WriteLine($"Data has been saved in txt file : {fileName}");
             Console.WriteLine();
+        }
+        public void Delete(ContactInDb contact)
+        {
+            phonebookDbContext.Phonebook.Remove(contact);
+            phonebookDbContext.SaveChanges();
+            Console.Clear();
+            Console.WriteLine("Data has been deleted to the database");
+            Console.WriteLine();
+        }
+        public void FindAndManipulatContactIn(string dataStorage)
+        {
+            try
+            {
+                var searchType = dataFromUser.SearchType();
+                if (searchType == "0") throw new Exception("Go back to main menu");
+                var contact = dataFromUser.FindContact(dataStorage, searchType);
+                if (contact == null) throw new Exception("Go back to main menu");
+                var typeOperation = dataFromUser.GetTypeOperationChoise(contact);
+                if (typeOperation == "0") throw new Exception("Go back to main menu");
+                if (typeOperation == "1") Delete(contact);
+                if (typeOperation == "2") Edit(contact);
+            }
+            finally { }
         }
     }
 }

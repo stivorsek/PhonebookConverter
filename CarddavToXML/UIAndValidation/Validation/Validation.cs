@@ -119,8 +119,9 @@ namespace PhonebookConverter.UIAndValidation.Validation
         }
         public int? IntParseValidation(string data)
         {
-            int? result = string.IsNullOrEmpty(data) ? null : int.Parse(data);
-            return result;
+            return string.IsNullOrEmpty(data)
+            ? null
+            : int.Parse(data);            
         }
         public void ExceptionsLoop(Action metoda)
         {
@@ -177,6 +178,19 @@ namespace PhonebookConverter.UIAndValidation.Validation
                 writer.Write(exceptionHeader);
                 writer.Write(ex.Message);
             }
+        }
+
+        public string DataOperationsGetSearchType(string? choise)
+        {
+            return choise == "0" || choise == "1" || choise == "2" || choise == "3" 
+                ? choise
+                : throw new Exception("Wrong choise!!!");
+        }
+        public ContactInDb DataOperationsFindConctat (ContactInDb contact)
+        {
+            return contact != null
+                ? contact 
+                : throw new Exception("Contact with this parameter doesn't exist");
         }
     }
 }
