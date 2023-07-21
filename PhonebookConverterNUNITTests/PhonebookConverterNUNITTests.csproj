@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CarddavToXML\PhonebookConverter.csproj" />
+    <ProjectReference Include="..\PhonebookConverter\PhonebookConverter.csproj" />
   </ItemGroup>
 
 </Project>

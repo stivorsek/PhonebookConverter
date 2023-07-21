@@ -10,7 +10,7 @@ public class UnitTest1
     [SetUp]
     public void SetUp()
     {        
-        validation = new PhonebookConverter.UIAndValidation.Validation.Validation();
+        validation = new Validation();
     }
 
     [Test]
@@ -18,7 +18,7 @@ public class UnitTest1
     {        
         ContactInDb contact = new ContactInDb();
  
-        object result = validation.DataOperationsGetID(contact);
+        object result = validation.GetID(contact);
 
         Assert.AreSame(contact, result);
     }
@@ -27,7 +27,7 @@ public class UnitTest1
     {        
         ContactInDb contact = default;
 
-        Assert.Throws<Exception>(() => validation.DataOperationsGetID(contact));
+        Assert.Throws<Exception>(() => validation.GetID(contact));
     }
     [Test]
     public void ExportToXmlGetFolder_ReturnExistPath()
@@ -66,14 +66,14 @@ public class UnitTest1
     {      
         string loopState = "3";     
         
-        Assert.Throws<Exception>(() => validation.ExportToXmlGetLoopState(loopState));
+        Assert.Throws<Exception>(() => validation.GetExportLoopState(loopState));
     }
     [Test]
     public void ExportToXmlGetLoopState_ReturnLoopState()
     {       
         string loopState = "1";
      
-        bool result = validation.ExportToXmlGetLoopState(loopState);
+        bool result = validation.GetExportLoopState(loopState);
         
         Assert.IsTrue(result);
     }
@@ -82,14 +82,14 @@ public class UnitTest1
     {        
         string loopTime = "0";     
         
-        Assert.Throws<Exception>(() => validation.ExportToXmlGetLoopTime(loopTime));
+        Assert.Throws<Exception>(() => validation.GetExportLoopTime(loopTime));
     }
     [Test]
     public void ExportToXmlGetLoopTime_ReturnLoopTime()
     {        
         string loopTime = "30";
      
-        var result = validation.ExportToXmlGetLoopTime(loopTime);
+        var result = validation.GetExportLoopTime(loopTime);
 
         Assert.AreEqual(int.Parse(loopTime), result);
     }
@@ -98,14 +98,14 @@ public class UnitTest1
     {      
         string pathXml = ".csv";     
         
-        Assert.Throws<Exception>(() => validation.ImportGetPathXml(pathXml));
+        Assert.Throws<Exception>(() => validation.GetImportPathXml(pathXml));
     }
     [Test]
     public void ImportGetPathXml_ReturnPathCsv()
     {     
         string pathXml = "C:\\Users\\Admin\\Downloads\\1.xml";
      
-        string result = validation.ImportGetPathXml(pathXml);
+        string result = validation.GetImportPathXml(pathXml);
      
         Assert.AreEqual(pathXml, result);
     }
@@ -114,14 +114,14 @@ public class UnitTest1
     {
         string pathXml = ".xml";
              
-        Assert.Throws<Exception>(() => validation.ImportGetPathCsv(pathXml));
+        Assert.Throws<Exception>(() => validation.GetImportPathCsv(pathXml));
     }
     [Test]
     public void ImportGetPathCsv_ReturnPathCsv()
     {
         string pathXml = "C:\\Users\\Admin\\Downloads\\2.csv";
         
-        string result = validation.ImportGetPathCsv(pathXml);
+        string result = validation.GetImportPathCsv(pathXml);
         
         Assert.AreEqual(pathXml, result);
     }
@@ -130,14 +130,14 @@ public class UnitTest1
     {
         string idFromUser = "gsfdsf";
         
-        Assert.Throws<FormatException>(() => validation.DataOperationsGetID(idFromUser));
+        Assert.Throws<FormatException>(() => validation.GetID(idFromUser));
     }
     [Test]
     public void DatabaseOperationsGetID_ReturnID()
     {
         string idFromUser = "2";
 
-        var result = validation.DataOperationsGetID(idFromUser);
+        var result = validation.GetID(idFromUser);
 
         Assert.AreEqual(int.Parse(idFromUser), result);
     }
@@ -162,14 +162,14 @@ public class UnitTest1
     {
         string idFromUser = "gsfdsf";
 
-        Assert.Throws<Exception>(() => validation.DataOperationsExportToTxt(idFromUser));
+        Assert.Throws<Exception>(() => validation.ExportToTxt(idFromUser));
     }
     [Test]
     public void DatabaseOperationsExportToTxt_ReturnID()
     {
         string idFromUser = "2";
 
-        var result = validation.DataOperationsExportToTxt(idFromUser);
+        var result = validation.ExportToTxt(idFromUser);
 
         Assert.AreEqual(idFromUser, result);
     }
@@ -178,14 +178,14 @@ public class UnitTest1
     {
         string idFromUser = "gsfdsf";
 
-        Assert.Throws<Exception>(() => validation.DataOperationsGetType(idFromUser));
+        Assert.Throws<Exception>(() => validation.GetType(idFromUser));
     }
     [Test]
     public void DatabaseOperationsGetType_ReturnID()
     {
         string idFromUser = "4";
 
-        var result = validation.DataOperationsGetType(idFromUser);
+        var result = validation.GetType(idFromUser);
 
         Assert.AreEqual(idFromUser, result);
     }
@@ -210,14 +210,14 @@ public class UnitTest1
     {
         string directory = "C:\\test";
 
-        Assert.Throws<Exception>(() => validation.DataOperationsExportToTxtDirectoryExist(directory));
+        Assert.Throws<Exception>(() => validation.ExportToTxtDirectoryExist(directory));
     }
     [Test]
     public void DataOperationsExportToTxtDirectoryExist_ReturnDirectory()
     {
         string directory = "C:\\";
 
-        var result = validation.DataOperationsExportToTxtDirectoryExist(directory);
+        var result = validation.ExportToTxtDirectoryExist(directory);
 
         Assert.AreEqual(directory, result);
     }
@@ -226,14 +226,14 @@ public class UnitTest1
     {
         string choise = "12";
 
-        Assert.Throws<Exception>(() => validation.DataOperationsEditGetChoise(choise));
+        Assert.Throws<Exception>(() => validation.EditGetChoise(choise));
     }
     [Test]
     public void DataOperationsEditByIDGetChoise_ReturnDirectory()
     {
         string choise = "1";
 
-        var result = validation.DataOperationsEditGetChoise(choise);
+        var result = validation.EditGetChoise(choise);
 
         Assert.AreEqual(choise, result);
     }    
