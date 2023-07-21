@@ -90,18 +90,17 @@ namespace PhonebookConverter.UIAndValidationm
         }
 
         private void CheckDataToLoad(string dataType)
-        {
-            var database = dataFromUser.CheckDataType(dataType);
+        {            
             if (dataType == "MSSQL")
             {
-                phonebookDbContext.Database.EnsureCreated();
-                if (database.Count == 0) ImportSampleData(dataType, database);
+                phonebookDbContext.Database.EnsureCreated();                
             }
             if (dataType == "FILE")
             {
-                validation.CheckFileDbExist();
-                if (database.Count == 0) ImportSampleData(dataType, database);
+                validation.CheckFileDbExist();                
             }
+            var database = dataFromUser.CheckDataType(dataType);
+            if (database.Count == 0) ImportSampleData(dataType, database);
         }
 
         private void ImportSampleData(string dataType, List<ContactInDb> database)
