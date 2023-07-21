@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<vp_contact>
+  <root_group></root_group>
+  <root_contact>
+    <contact display_name="Damian" mobile_number="123456" office_number="789012345" other_number="789" />
+    <contact display_name="Karol" mobile_number="643" office_number="245" other_number="743" />
+    <contact display_name="Rober" mobile_number="777" office_number="888" other_number="999" />
+    <contact display_name="Adam" mobile_number="111" office_number="222" other_number="333" />
+    <contact display_name="Natalia" mobile_number="777" office_number="666" other_number="555" />
+    <contact display_name="Andrzej" mobile_number="999987" office_number="555" other_number="1111" />
+    <contact display_name="Witold" mobile_number="643" office_number="245" other_number="743" />
+    <contact display_name="Wojtek" mobile_number="777567" office_number="888" other_number="999" />
+    <contact display_name="Patryk" mobile_number="11167" office_number="222" other_number="333" />
+    <contact display_name="Olek" mobile_number="777123" office_number="666345" other_number="555677" />
+    <contact display_name="Weronika" mobile_number="888" office_number="555" other_number="47942" />
+  </root_contact>
+</vp_contact>
