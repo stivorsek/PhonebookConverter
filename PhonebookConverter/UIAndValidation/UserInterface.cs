@@ -5,6 +5,7 @@ using PhonebookConverter.Components.Export;
 using PhonebookConverter.Components.Import;
 using PhonebookConverter.Components.DataTxt;
 using PhonebookConverter.UIAndValidation.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace PhonebookConverter.UIAndValidationm
 {
@@ -48,16 +49,7 @@ namespace PhonebookConverter.UIAndValidationm
         public void MainMenu()
         {
             var dataType = dataFromUser.GetDataType();
-            if (dataType == "MSSQL")
-            {
-                phonebookDbContext.Database.EnsureCreated();
-            }            
-            if (dataType == "FILE")
-            {
-                validation.CheckFileDbExist();
-                var database = dataFromUser.CheckDataType(dataType);
-                if (database.Count == 0) ImportSampleData(dataType, database);
-            }
+            CheckDataToLoad(dataType);
             exportLoopSettings.CheckExportLoopSettingsExist();
             bool endProgram = false;
             do
@@ -96,6 +88,22 @@ namespace PhonebookConverter.UIAndValidationm
                 });
             } while (endProgram == false);
         }
+
+        private void CheckDataToLoad(string dataType)
+        {
+            var database = dataFromUser.CheckDataType(dataType);
+            if (dataType == "MSSQL")
+            {
+                phonebookDbContext.Database.EnsureCreated();
+                if (database.Count == 0) ImportSampleData(dataType, database);
+            }
+            if (dataType == "FILE")
+            {
+                validation.CheckFileDbExist();
+                if (database.Count == 0) ImportSampleData(dataType, database);
+            }
+        }
+
         private void ImportSampleData(string dataType, List<ContactInDb> database)
         {
             string projectPath = ("Resources\\Files\\PhonebookYealinkLocal.xml") ;                        
