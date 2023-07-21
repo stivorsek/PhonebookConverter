@@ -4,6 +4,8 @@ namespace PhonebookConverter.UIAndValidation.Validation
 {
     public class Validation : IValidation
     {
+        private object fileLock = new object();
+
         public string GetExportFolder(string pathXml)
         {
             return Directory.Exists(pathXml) || pathXml == "0"
@@ -207,6 +209,13 @@ namespace PhonebookConverter.UIAndValidation.Validation
                     : parameter;
             }
             return parameter;
+        }
+        public void CheckFileDbExist()
+        {            
+            if (!File.Exists("DataInCsv.csv"))
+            {
+                File.WriteAllText("DataInCsv.csv","");
+            }            
         }
     }
 }

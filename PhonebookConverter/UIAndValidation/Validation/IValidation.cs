@@ -28,5 +28,6 @@ namespace PhonebookConverter.UIAndValidation.Validation
         ContactInDb DataOperationsFindConctat(ContactInDb contact);
         string EditGetParameter(string? parameter, string choise);
         string GetParameterChoise(string choise);
+        void CheckFileDbExist();
     }
 }

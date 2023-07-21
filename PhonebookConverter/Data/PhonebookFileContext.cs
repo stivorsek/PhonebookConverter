@@ -15,7 +15,7 @@ namespace PhonebookConverter.Data
             this.validation = validation;
         }
         public List<ContactInDb> ReadAllContactsFromFile()
-        {
+        {            
             lock (fileLock)
             {
                 var contactRecords =
@@ -35,12 +35,13 @@ namespace PhonebookConverter.Data
                         };
                     });
                 return contactRecords.ToList();
-            }            
+            }
         }
         public void SaveChanges(List<ContactInDb> contactsInDb)
         {
             lock (fileLock)
             {
+
                 using (var writer = File.AppendText(filePath))
                 {
                     foreach (var contact in contactsInDb)

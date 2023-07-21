@@ -51,11 +51,12 @@ namespace PhonebookConverter.UIAndValidationm
             if (dataType == "MSSQL")
             {
                 phonebookDbContext.Database.EnsureCreated();
-            }
-            var database = dataFromUser.CheckDataType(dataType);
-            if (database == null)
+            }            
+            if (dataType == "FILE")
             {
-                ImportSampleData(dataType);
+                validation.CheckFileDbExist();
+                var database = dataFromUser.CheckDataType(dataType);
+                if (database.Count == 0) ImportSampleData(dataType, database);
             }
             exportLoopSettings.CheckExportLoopSettingsExist();
             bool endProgram = false;
@@ -95,22 +96,23 @@ namespace PhonebookConverter.UIAndValidationm
                 });
             } while (endProgram == false);
         }
-        private void ImportSampleData(string dataType)
+        private void ImportSampleData(string dataType, List<ContactInDb> database)
         {
-            string subfolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "ExampleData", "PhonebookYealinkLocal.xml");            
-            var contacts = xmlReader.TypeChecker(subfolderPath);
-            var database = dataFromUser.CheckDataType(dataType);            
+            string projectPath = ("Resources\\Files\\PhonebookYealinkLocal.xml") ;                        
+            var contacts = xmlReader.TypeChecker(projectPath);            
                 lock (fileLock)
                 {
-                    foreach (var contact in contacts)
+                var id = contacts[contacts.Count - 1].Id;
+                foreach (var contact in contacts)
                     {
                         database.Add(new ContactInDb()
                         {
+                            Id = id++,
                             Name = contact.Name,
                             Phone1 = contact.Phone1,
                             Phone2 = contact.Phone2,
                             Phone3 = contact.Phone3,
-                        });
+                        });                    
                     }
                 }
                 dataFromUser.SaveData(database, dataType);            
@@ -121,18 +123,20 @@ namespace PhonebookConverter.UIAndValidationm
             if (path != "0")
             {
                 var contacts = csvReader.TypeChecker(path);
-                var database = dataFromUser.CheckDataType(dataType);
+                var database = dataFromUser.CheckDataType(dataType);                
                 lock (fileLock)
-                {                    
+                {
+                    var id =contacts[contacts.Count - 1].Id;
                     foreach (var contact in contacts)
                     {
                         database.Add(new ContactInDb()
                         {
+                            Id = id++,
                             Name = contact.Name,
                             Phone1 = contact.Phone1,
                             Phone2 = contact.Phone2,
                             Phone3 = contact.Phone3,
-                        });
+                        });                    
                     }
                 }
                 dataFromUser.SaveData(database, dataType);
@@ -149,10 +153,12 @@ namespace PhonebookConverter.UIAndValidationm
                 var contacts = xmlReader.TypeChecker(path);
                 lock (fileLock)
                 {
+                    var id = contacts[contacts.Count - 1].Id+1;
                     foreach (var contact in contacts)
                     {
                         database.Add(new ContactInDb()
                         {
+                            Id = id++,
                             Name = contact.Name,
                             Phone1 = contact.Phone1,
                             Phone2 = contact.Phone2,
