@@ -15,10 +15,9 @@ namespace PhonebookConverter.UIAndValidation.Validation
             switch (choiseType)
             {
                 case "0": return "0";
-                case "1": return "1";
-                case "2": return "2";
-                case "3": return "3";
-                case "4": return "4";
+                case "1": return "Yealink_Local_Phonebook";
+                case "2": return "Yealink_Remote_Phonebook";
+                case "3": return "Fanvil_Local_and_Remote_Phonebook";                
                 default: throw new Exception("Wrong choise!!!");
             }
         }

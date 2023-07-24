@@ -124,7 +124,7 @@ namespace PhonebookConverter.Components.MSQSQLDb
         {
             try
             {
-                var searchType = dataFromUser.SearchType();
+                var searchType = dataFromUser.GetSearchType();
                 if (searchType == "0") throw new Exception("Go back to last menu");
                 var contact = dataFromUser.FindContact(dataStorage, searchType);
                 if (contact == null) throw new Exception("Go back to last menu");

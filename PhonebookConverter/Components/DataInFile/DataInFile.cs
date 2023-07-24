@@ -123,14 +123,22 @@ namespace PhonebookConverter.Components.DataTxt
         {
             try
             {
-                var searchType = dataFromUser.SearchType();
+                var searchType = dataFromUser.GetSearchType();
                 if (searchType == "0") throw new Exception("Go back to main menu") ;
                 var contact = dataFromUser.FindContact(dataStorage, searchType);
                 if (contact == null) throw new Exception("Go back to main menu");
                 var typeOperation = dataFromUser.GetTypeOperationChoise(contact);
-                if (typeOperation == "0") throw new Exception("Go back to main menu");
-                if (typeOperation == "1") Delete(contact);
-                if (typeOperation == "2") Edit(contact);
+                switch(typeOperation)
+                {
+                    case "0":
+                        throw new Exception("Go back to main menu");
+                    case "1":
+                        Delete(contact);
+                        break;
+                    case "2":
+                        Edit(contact);
+                        break;
+                }
             }
             finally { Console.Clear(); }
         }

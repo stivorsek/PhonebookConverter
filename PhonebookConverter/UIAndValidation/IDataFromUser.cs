@@ -20,7 +20,7 @@ namespace PhonebookConverter.UIAndValidationm
         List<ContactInDb> CheckDataType(string dataType);
         string GetDataType();        
         void SaveData(List<ContactInDb> contacts, string dataType);
-        string SearchType();
+        string GetSearchType();
         ContactInDb FindContact(string dataCenter, string searchType);
         string GetTypeOperationChoise(ContactInDb contactFromDb);
     }

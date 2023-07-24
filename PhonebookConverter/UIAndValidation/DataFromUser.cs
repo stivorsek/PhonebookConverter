@@ -78,9 +78,6 @@ namespace PhonebookConverter.UIAndValidationm
                 Console.WriteLine("\t 2)Yealink Remote Phonebook");
                 Console.WriteLine("\t 3)Fanvil Local and Remote Phonebook");
                 string choiseType = validation.GetExportType(Console.ReadLine());
-                if (choiseType == "1") choiseType = "Yealink_Local_Phonebook";
-                if (choiseType == "2") choiseType = "Yealink_Remote_Phonebook";
-                if (choiseType == "3") choiseType = "Fanvil_Local_and_Remote_Phonebook";
                 Console.Clear();
                 return choiseType;
             });
@@ -155,7 +152,7 @@ namespace PhonebookConverter.UIAndValidationm
                 return choise;
             });
         }
-        public string SearchType()
+        public string GetSearchType()
         {
             return validation.ExceptionsLoop(() =>
             {
@@ -164,7 +161,6 @@ namespace PhonebookConverter.UIAndValidationm
                 Console.WriteLine("\t2) Name");
                 Console.WriteLine("\t3) Phonenumber");
                 var choise = Console.ReadLine();
-                if (choise == "0") return choise;
                 validation.DataOperationsGetSearchType(choise);
                 return choise;
             });
@@ -173,7 +169,7 @@ namespace PhonebookConverter.UIAndValidationm
         {
             return validation.ExceptionsLoop(() =>
             {
-                Console.WriteLine("Please enter the ID, Name or Phonenumber u wanna search by or enter 0 to back to the main menu");
+                Console.WriteLine("Please enter the parameter u wanna search by or enter 0 to back to the main menu");
                 string searchParameter = Console.ReadLine();
                 if (searchParameter == "0")
                 {
@@ -223,7 +219,6 @@ namespace PhonebookConverter.UIAndValidationm
                 Console.WriteLine("");
                 Console.WriteLine("Chose parameter you wanna edit or 0 to go back to the operations Menu");
                 var choise = Console.ReadLine();
-                if (choise == "0") return choise;
                 validation.GetParameterChoise(choise);
                 return choise;
             });
