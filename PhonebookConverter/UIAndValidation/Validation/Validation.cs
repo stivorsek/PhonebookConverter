@@ -4,8 +4,6 @@ namespace PhonebookConverter.UIAndValidation.Validation
 {
     public class Validation : IValidation
     {
-        private object fileLock = new object();
-
         public string GetExportFolder(string pathXml)
         {
             return Directory.Exists(pathXml) || pathXml == "0"
@@ -14,20 +12,24 @@ namespace PhonebookConverter.UIAndValidation.Validation
         }
         public string GetExportType(string choiseType)
         {
-            return choiseType == "0" || choiseType == "1" || choiseType == "2" || choiseType == "3" || choiseType == "4"
-                ? choiseType
-                : throw new Exception("Podano nieprawidłowy rodzaj pliku XML");
+            switch (choiseType)
+            {
+                case "0": return "0";
+                case "1": return "1";
+                case "2": return "2";
+                case "3": return "3";
+                case "4": return "4";
+                default: throw new Exception("Wrong choise!!!");
+            }
         }
         public bool GetExportLoopState(string choiseLoop)
         {
-            bool loopState = false;
-            if (choiseLoop == "1")
+            switch (choiseLoop)
             {
-                loopState = true;
+                case "1": return true;
+                case "2": return false;
+                default: return false;
             }
-            return choiseLoop == "1" || choiseLoop == "2"
-                ? loopState
-                : throw new Exception("Podano nieprawidłowy wybór!!!");
         }
         public int GetExportLoopTime(string timer)
         {
@@ -83,33 +85,58 @@ namespace PhonebookConverter.UIAndValidation.Validation
         }
         public string GetTypeOperationChoise(string choise)
         {
-            return choise == "0" || choise == "1" || choise == "2" 
-                ? choise
-                : throw new Exception("Wrong choise!!!");
+            switch (choise)
+            {
+                case "0": return "0";
+                case "1": return "1";
+                case "2": return "2";
+                default: throw new Exception("Wrong choise!!!");
+            }
         }
         public string GetParameterChoise(string choise)
         {
-            return choise == "0" || choise == "1" || choise == "2" || choise == "3" || choise == "4"
-                ? choise
-                : throw new Exception("Wrong choise!!!");
+            switch (choise)
+            {
+                case "0": return "0";
+                case "1": return "1";
+                case "2": return "2";
+                case "3": return "3";
+                case "4": return "4";
+                default: throw new Exception("Wrong choise!!!");
+            }
         }
         public string ExportToTxt(string choise)
         {
-            return choise == "1" || choise == "2"
-                ? choise
-                : throw new Exception("Wrong choise!!!");
+            switch (choise)
+            {
+                case "1": return "1";
+                case "2": return "2";
+                default: throw new Exception("Wrong choise!!!");
+            }
         }
         public string GetType(string choise)
         {
-            return choise == "0" || choise == "1" || choise == "2" || choise == "3" || choise == "4" || choise =="5"
-                ? choise
-                : throw new Exception("Wrong choise!!!");
+            switch (choise)
+            {
+                case "0": return "0";
+                case "1": return "1";
+                case "2": return "2";
+                case "3": return "3";
+                case "4": return "4";
+                default: throw new Exception("Wrong choise!!!");
+            }
         }
         public string EditGetChoise(string choise)
         {
-            return choise == "0" || choise == "1" || choise == "2" || choise == "3" || choise == "4"
-                ? choise
-                : throw new Exception("Wrong choise!!!");
+            switch(choise)
+            {
+                case "0": return "0";
+                case "1": return "1";
+                case "2": return "2";
+                case "3": return "3";
+                case "4": return "4";
+                default: throw new Exception("Wrong choise!!!");
+            }
         }
         public string ExportToTxtDirectoryExist(string path)
         {
@@ -119,11 +146,12 @@ namespace PhonebookConverter.UIAndValidation.Validation
         }
         public string CheckExportSettingsExist(string choise)
         {
-            if (choise != "1" && choise != "2")
+            switch (choise)
             {
-                throw new Exception("Podano nieprawidłowy wybór!!!");
+                case "1": return "1";
+                case "2": return "2";
+                default: throw new Exception("Wrong choise!!!");
             }
-            return choise;
         }
         public int? IntParseValidation(string data)
         {
@@ -189,9 +217,14 @@ namespace PhonebookConverter.UIAndValidation.Validation
         }
         public string DataOperationsGetSearchType(string? choise)
         {
-            return choise == "0" || choise == "1" || choise == "2" || choise == "3" 
-                ? choise
-                : throw new Exception("Wrong choise!!!");
+            switch (choise)
+            {
+                case "0": return "0";
+                case "1": return "1";
+                case "2": return "2";
+                case "3": return "3";
+                default: throw new Exception("Wrong choise!!!");
+            }
         }
         public ContactInDb DataOperationsFindConctat (ContactInDb contact)
         {
